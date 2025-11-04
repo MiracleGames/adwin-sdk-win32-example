@@ -18,9 +18,9 @@
 
 ---
 
-# 开发环境配置
+# 1.开发环境配置
 
-### 添加引用
+### 1.1.添加引用
 
 下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。
 
@@ -28,7 +28,7 @@
 
 ![csharp_addreference.png](../images/csharp_addreference.png)
 
-### 编译后事件
+### 1.2.编译后事件
 
 在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
 
@@ -39,14 +39,14 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 
 ![csharp_event.png](../images/csharp_event.png)
 
-# SDK初始化
+# 2.SDK初始化
 
-### 简介
+### 2.1.简介
 
 1.  在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
     
 
-### SDK初始化
+### 2.2.SDK初始化
 
 ```c#
 private async void Form1_Load(object sender, EventArgs e)
@@ -77,7 +77,7 @@ private async void Form1_Load(object sender, EventArgs e)
 }
 ```
 
-### 没有初始化成功的错误可能如下
+### 2.3.没有初始化成功的错误可能如下
 
 ● 网络故障，没有正确的网络支持
 
@@ -86,6 +86,10 @@ private async void Form1_Load(object sender, EventArgs e)
 　　● AppKey错误，请登录开发者后台检查应用设置
 
 　　● 服务器问题，请检查result的错误信息，及时[联系技术支持](contact.zh-CN.md)
+
+ 
+
+
 
 # 联系方式
 
