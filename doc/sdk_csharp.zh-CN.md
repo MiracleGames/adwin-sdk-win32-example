@@ -28,15 +28,13 @@
 
 ### 1.1.添加引用
 
-下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。
-
-在项目中添加引用"MiracleGamesAd.dll"。
+      下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。在项目中添加引用"MiracleGamesAd.dll"。
 
 ![csharp_addreference.png](../images/csharp_addreference.png)
 
 ### 1.2.编译后事件
 
-在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
+      在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
 
 ```plaintext
 xcopy /y "$(ProjectDir)dll" "$(OutDir)"
@@ -50,7 +48,7 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 
 ### 2.1.简介
 
-  在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
+      在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
     
 
 ### 2.2.SDK初始化
@@ -86,7 +84,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ### 2.3.没有初始化成功的错误可能如下
 
-● 网络故障，没有正确的网络支持
+　　● 网络故障，没有正确的网络支持
 
 　　● 本SDK不支持VPN，本机开启了VPN软件
 
@@ -99,9 +97,9 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ### 3.1.简介
 
-在接入广告之前，首先需要完成SDK的初始化。
+      在接入广告之前，首先需要完成SDK的初始化。
 
-Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频768\*432】【退屏】
+      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频768\*432】【退屏】
 
 ### 3.2.开屏、插屏、全屏插播、横幅、对联、激励视频广告
 
@@ -134,13 +132,13 @@ AdvertManager.OpenAdvert(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couple
 }
 ```
 
-### 3.4.退屏广告
+### 3.3.退屏广告
 
-弹屏广告是在退出游戏时触发，为了保证退出游戏时广告的弹出率，MG会分两步完成退屏广告的实现
+      弹屏广告是在退出游戏时触发，为了保证退出游戏时广告的弹出率，MG会分两步完成退屏广告的实现
 
-1.在初始化完成后，将退屏广告的信息加载到内存中
+      1.在初始化完成后，将退屏广告的信息加载到内存中
 
-2.在退出游戏时，直接打开退屏广告
+      2.在退出游戏时，直接打开退屏广告
 
 ```c#
 //退屏广告
@@ -156,11 +154,11 @@ private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 }
 ```
 
-### 3.5.广告关闭事件
+### 3.4.广告关闭事件
 
-注册广告关闭的回调事件，一般在页面的构造函数中进行
+       注册广告关闭的回调事件，一般在页面的构造函数中进行
 
-1.广告关闭事件参数说明
+       1.广告关闭事件参数说明
 
 | 参数名 | 参数描述 | 示例 |
 | --- | --- | --- |
