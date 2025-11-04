@@ -5,29 +5,7 @@ VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpApp", "CSharpApp.csproj", "{A082F237-003A-47A6-BC66-C2D6EC38FB10}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\doc\contact.zh-CN.md = ..\..\doc\contact.zh-CN.md
-		..\..\doc\sdk_cpp.zh-CN.md = ..\..\doc\sdk_cpp.zh-CN.md
-		..\..\doc\sdk_csharp.zh-CN.md = ..\..\doc\sdk_csharp.zh-CN.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{CAC5828E-FB0B-498D-8019-BC180ABF9054}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\images\csharp_addreference.png = ..\..\images\csharp_addreference.png
-		..\..\images\csharp_event.png = ..\..\images\csharp_event.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\README.md = ..\..\README.md
-		..\..\README.zh-CN.md = ..\..\README.zh-CN.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{064F4C87-B8BB-4259-AEC8-EE71FBAF9563}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppApp", "..\CppApp\CppApp.vcxproj", "{A64F5DC2-847D-4B91-A666-25FCCD3DDE31}"
-EndProject
+  
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
