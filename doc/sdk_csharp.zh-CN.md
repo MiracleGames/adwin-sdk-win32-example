@@ -159,7 +159,7 @@ private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 
        注册广告关闭的回调事件，一般在页面的构造函数中进行
 
-       1.广告关闭事件参数说明
+       广告关闭事件参数说明
 
 | 参数名 | 参数描述 | 示例 |
 | --- | --- | --- |
