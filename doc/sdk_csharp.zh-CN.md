@@ -18,23 +18,24 @@
 
 ---
 # 集成和功能说明
-### [开发环境配置](#1开发环境配置)
-### [SDK初始化](#2SDK初始化)
-### [广告](#3广告)
-
+### [1.开发环境配置](#1开发环境配置)
+### [2.SDK初始化](#2SDK初始化)
+### [3.广告](#3广告)
+### [联系方式](#联系方式)
 ---
+
 
 # 1.开发环境配置
 
 ### 1.1.添加引用
 
-      下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。在项目中添加引用"MiracleGamesAd.dll"。
+      下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。在项目中添加引用"MiracleGamesAd.dll"。
 
 ![csharp_addreference.png](../images/csharp_addreference.png)
 
 ### 1.2.编译后事件
 
-      在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
+      在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
 
 ```plaintext
 xcopy /y "$(ProjectDir)dll" "$(OutDir)"
@@ -48,8 +49,8 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 
 ### 2.1.简介
 
-      在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
-    
+      在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
+
 
 ### 2.2.SDK初始化
 
