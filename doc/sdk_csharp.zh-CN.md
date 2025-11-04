@@ -17,6 +17,12 @@
 **合规使用说明：** [Miracle Games SDK 合规使用指南](https://www.mguwp.net/developer_compliance.html)
 
 ---
+# 集成和功能说明
+### [开发环境配置](#1开发环境配置)
+### [SDK初始化](#2SDK初始化)
+### [SDK初始化](doc/sdk_html5uwp.zh-CN.md)
+
+---
 
 # 1.开发环境配置
 
@@ -43,7 +49,7 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 
 ### 2.1.简介
 
-1.  在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
+  在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
     
 
 ### 2.2.SDK初始化
