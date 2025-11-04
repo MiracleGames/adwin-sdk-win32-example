@@ -20,7 +20,7 @@
 # 集成和功能说明
 ### [开发环境配置](#1开发环境配置)
 ### [SDK初始化](#2SDK初始化)
-### [SDK初始化](doc/sdk_html5uwp.zh-CN.md)
+### [广告](#3广告)
 
 ---
 
@@ -44,6 +44,7 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 ```
 
 ![csharp_event.png](../images/csharp_event.png)
+
 
 # 2.SDK初始化
 
@@ -94,7 +95,127 @@ private async void Form1_Load(object sender, EventArgs e)
 　　● 服务器问题，请检查result的错误信息，及时[联系技术支持](contact.zh-CN.md)
 
  
+# 3.广告
 
+### 3.1.简介
+
+在接入广告之前，首先需要完成SDK的初始化。
+
+Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频768\*432】【退屏】
+
+### 3.2.开屏、插屏、全屏插播、横幅、对联、激励视频广告
+
+```c#
+//1.开屏广告
+AdvertManager.OpenAdvert(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
+
+//2.插屏广告
+AdvertManager.OpenAdvert(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
+
+//3.全屏插播
+AdvertManager.OpenAdvert(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
+
+//4.横幅
+AdvertManager.OpenAdvert(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
+
+//5.对联
+AdvertManager.OpenAdvert(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
+
+//6.激励视频
+{
+    string comment = "id123,abc,$9.99";//透传参数  
+    dynamic jsonObj = new
+    {
+        unitId = "0f505442fac84f098e81d6f2ca04abe1",
+        comment = Uri.EscapeDataString(comment)//透传参数,需url编码
+    };
+    string json = JsonConvert.SerializeObject(jsonObj);
+    AdvertManager.OpenAdvert(this, json, AdType.Reward);
+}
+```
+
+### 3.4.退屏广告
+
+弹屏广告是在退出游戏时触发，为了保证退出游戏时广告的弹出率，MG会分两步完成退屏广告的实现
+
+1.在初始化完成后，将退屏广告的信息加载到内存中
+
+2.在退出游戏时，直接打开退屏广告
+
+```c#
+//退屏广告
+//Step1.初始化成功之后，加载退屏广告资源
+AdvertManager.SetupExitAdUnitId("7cdc7614b69c4118933e2067e6e14d01");
+
+
+// 退屏广告
+// Step2.在程序关闭时，弹出展示退屏广告
+private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+{
+    _ = AdvertManager.ShowExitAdvert();
+}
+```
+
+### 3.5.广告关闭事件
+
+注册广告关闭的回调事件，一般在页面的构造函数中进行
+
+1.广告关闭事件参数说明
+
+| 参数名 | 参数描述 | 示例 |
+| --- | --- | --- |
+| unitId | 开发者传入的广告位主键 | C6E76462AF |
+| advertStatus | 广告位状态 | 1:广告正常；2:广告被后台关闭；3:没有广告素材 |
+| 以下是仅激励视频广告拥有的参数 |  |  |
+| completeStatus | 广告的播放状态 | 1:广告播放完毕，可以发奖励；0:广告未播放完毕 |
+| comment | 由开发者传入的透传参数，经过 url 编码 | abc%2c123 |
+| rewardId | 奖励的MG订单号，游戏发奖后向MG报告核销时使用 | String |
+| resourceId | 资源Id | String |
+| materialId | 素材 Id | String |
+
+```c#
+public Form1()
+{
+    InitializeComponent();
+    AdvertManager.CloseAdvertEvent += AdvertManager_CloseAdvertEvent;
+    AdvertManager.ClickAdvertEvent += AdvertManager_ClickAdvertEvent;
+}
+
+private void AdvertManager_CloseAdvertEvent(object sender, string e)
+{
+    ShowMessage("广告被关闭 " + e);
+
+    //普通广告 {"unitId":"6bf68881673540788d096b9ea4a3cedb","advertStatus":1,"resourceId":"68d20656bd9558abfdf43465","materialId":"d235efa86ccf44acbe7053af760031b6"}
+    //激励视频广告 {"unitId":"0f505442fac84f098e81d6f2ca04abe1","advertStatus":1,"completeStatus":1,"resourceId":"68ecb9eb20f045c603867874","materialId":"b0817d87ee2544629bac1933a60238d2","comment":"id123%2Cabc%2C%249.99","rewardId":"D1E593C16BBD412CA880FD89F0450A14"}
+
+    JObject jsonObject = JObject.Parse(e);
+    string unitId = (string)jsonObject["unitId"];
+
+    if (unitId == "0f505442fac84f098e81d6f2ca04abe1")//激励视频，根据返回结果发奖励道具
+    {
+        int completeStatus = (int)jsonObject["completeStatus"];
+        string resourceId = (string)jsonObject["resourceId"];
+        string materialId = (string)jsonObject["materialId"];
+        string rewardId = (string)jsonObject["rewardId"];
+        string comment = (string)jsonObject["comment"];//透传参数
+        if (completeStatus == 1)
+        {
+            //视频播放完毕，下发奖励道具 
+            //...
+
+            Task.Run(async () =>
+            {
+                _ = await AdvertManager.ReportMgRewardFulfillmentAsync(unitId, resourceId, materialId, rewardId);//向MG报告
+            });
+        }
+    }
+}
+
+private void AdvertManager_ClickAdvertEvent(object sender, string e)
+{
+    ShowMessage("广告被点击 " + e);
+}
+```
 
 
 # 联系方式

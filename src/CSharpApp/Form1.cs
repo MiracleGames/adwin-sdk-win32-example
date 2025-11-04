@@ -47,6 +47,7 @@ namespace CSharpApp
                 string resourceId = (string)jsonObject["resourceId"];
                 string materialId = (string)jsonObject["materialId"];
                 string rewardId = (string)jsonObject["rewardId"];
+                string comment = (string)jsonObject["comment"];//透传参数
                 if (completeStatus == 1)
                 {
                     //视频播放完毕，下发奖励道具 
@@ -164,9 +165,14 @@ namespace CSharpApp
         /// <param name="e"></param>
         private void btnAd5_Click(object sender, EventArgs e)
         {
-            string comment = "id123,abc,$9.99";//透传参数,需url编码
-            comment = Uri.EscapeDataString(comment);
-            AdvertManager.OpenAdvert(this, "{\"unitId\": \"0f505442fac84f098e81d6f2ca04abe1\",\"comment\":\"" + comment + "\"}", AdType.Reward);
+            string comment = "id123,abc,$9.99";//透传参数  
+            dynamic jsonObj = new
+            {
+                unitId = "0f505442fac84f098e81d6f2ca04abe1",
+                comment = Uri.EscapeDataString(comment)//透传参数,需url编码
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.OpenAdvert(this, json, AdType.Reward);
         }
 
         /// <summary>
