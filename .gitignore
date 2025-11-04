@@ -6,3 +6,6 @@
 /src/CSharpApp/bin/Debug
 /src/CSharpApp/obj/Debug
 /src/CSharpApp/packages/Newtonsoft.Json.13.0.4
+/src/CSharpApp/packages/nlohmann.json.3.12.0
+/src/CSharpApp/x64/Debug
+/src/CppApp/x64/Debug
