@@ -171,7 +171,8 @@ HWND g_hPnlFSInterstitial = NULL;//全屏插播
 HWND g_hPnlOpenScreen = NULL;//全屏插播
 
 // 定义自定义消息
-#define WM_DESTROY_ADVERT (WM_USER + 400)
+#define WM_DESTROY_ADVERT (WM_USER + 300)
+#define WM_OPEN_ADVERT (WM_USER + 301)
 
 void CreateInterstitialAdPannel(HWND hWnd) {
     HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
@@ -243,117 +244,20 @@ void CreateControls(HWND hWnd) {
         150, 10, 1200, 600, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
 }
 
-#pragma region 1.SDK Initialisation
 void InitMgAdSdk() {
     if (hDLL) return;
 
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
         // Register the initialisation completion callback event
-        if (auto func = (RegisterInitCompleteEvent)GetProcAddress(hDLL, "RegisterInitCompleteEvent")) // 初始化完成后的回调函数
+        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) // 初始化完成后的回调函数
             func(onInitCompleteEvent);
-        if (auto func = (RegisterCloseAdvertEvent)GetProcAddress(hDLL, "RegisterCloseAdvertEvent")) //广告关闭事件的回调函数
-            func(onCloseAdvertEvent);
+        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //广告关闭事件的回调函数
+            func(onAdCloseEvent);
 
-        setupAsync(hDLL); // SDK initialisation
+        initialize(hDLL); // SDK initialisation
     }
 }
-
-void setupAsync(HINSTANCE hdll) {
-    SetupAsync func = (SetupAsync)GetProcAddress(hdll, "SetupAsync");
-    //pass in appkey and callback function
-    func("9NC834S3H84L",
-        "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6");
-}
-// Initialise callback functions
-void onInitCompleteEvent(char* s) {
-    nlohmann::json json_obj = nlohmann::json::parse(s);
-    bool success = json_obj["success"];
-    if (success) {
-        //{"success":true,"data":{"adClosable":true,"adRotationInterval":10,"expiresIn":300,"refreshToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Fkd2luLncxMHl4LmNvbS9pc3N1ZXIiLCJ1cG4iOiJMZTlENkZueFljVldKV2dUREZNeW5BPT0iLCJncm91cHMiOlsiZGV2aWNlIl0sImJpcnRoZGF0ZSI6Ik1vbiBPY3QgMjcgMTA6MTI6MzYgVVRDIDIwMjUiLCJleHAiOjE3NjE1NjA1NTYsImlhdCI6MTc2MTU1OTk1NiwianRpIjoiZDRkYmJlNDQtYTVhZS00NGFjLTk2MzYtMDAxYTBkNTZjMmIxIn0.ohaJveJNkq86TKtAsp65o_TvqGXN3qH8v8jI3mVUauHYxRvbt7aY3GBjtta0GUEwXNdEQjPxIwQRTgl2yDAZbGpprI04ssqCgz9sK6rECo6D1uboV-7TpTdJDNcuQUzsXvqsGzbAKOXGwgmSry-Cxnq4R1m73ovIAmk3IdUKb4Ou2zqaamQKw6-hkxDrd-JDrvB_5GoWx4pnIxluKSvR7s8hLKvW1eHI-1lJ88mU4inPk-8gDMsWBW9uSunxO-oKzrZOhwe8gh9OnfyUGO0u8KdOUHml5LA4xQgZbAydU_ADmeorizbElS2U6ZK_Sb7ge9MwMvc-an87uaab4UMGOg","refreshTokenExpiresIn":600,"region":"CN","sessionId":"68ff459415fe022a22eeeba7","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Fkd2luLncxMHl4LmNvbS9pc3N1ZXIiLCJ1cG4iOiJMZTlENkZueFljVldKV2dUREZNeW5BPT0iLCJncm91cHMiOlsiZGV2aWNlIl0sImJpcnRoZGF0ZSI6Ik1vbiBPY3QgMjcgMTA6MTI6MzYgVVRDIDIwMjUiLCJleHAiOjE3NjE1NjAyNTYsImlhdCI6MTc2MTU1OTk1NiwianRpIjoiNGM2NDNmMzItM2U2NC00ZGFkLWEyOWMtYTljMThiYTU3MGJiIn0.gi-NX5VGYk84WVA7cV7Svu2onxvIWMmeJ37uP4ITHcDTVmAYZUyCCcE82jqyaa01ZW76S078VohqghWw-NLkaLlQKyh29mCfPfUUG47QM6S1IgDpwJST5kHEYUTVSXmdCJKu1LNZGaSTxYY8iOZ1dHzfwdWcU23aJIFbWqxrr88PQTLnGaZHZ98DLo6O2Rnz7jjdtPH3M0vKR4N5hVjMoKD5q5mNJOfbl9RNu7cbhYHuef1S_lSDEbRbD4v3Mg4c2aY9iB12HsH9b6JZdGK86swPTyAAF_A0LK5X8VHXbrjFveRf2TGYp23ebpq-8ZJ8jjqlkiSEWiThfpKvZbADEA"}}
-        std::string region = json_obj["data"]["region"];
-        std::string sessionId = json_obj["data"]["sessionId"];
-        std::wstring wregion = UTF8ToWide(region);
-        std::wstring wsessionId = UTF8ToWide(sessionId);
-        AppendLog(L"Initialization successful, region = %ls sessionId= %ls", wregion.c_str(), wsessionId.c_str());
-
-        setupExitAdUnitId(hDLL);//Exit Ad
-
-
-        RECT clientRect;
-        if (GetClientRect(g_hwndMain, &clientRect)) {
-            int clientWidth = clientRect.right - clientRect.left;
-            int clientHeight = clientRect.bottom - clientRect.top;
-            nlohmann::json json_obj = {
-             {"unitId", "768338453d614f3aad85eea7e3916e7e"},
-             {"appType", 1},
-             {"adType", 5},
-             {"handle", reinterpret_cast<int>(g_hwndMain)},
-             {"parentWidth", clientWidth},//开屏广告，需要传入程序的宽高
-             {"parentHeight", clientHeight}
-            };
-            std::string jsonStr = json_obj.dump();
-            //openMGAdvert(jsonStr.c_str());//Open screen advertisement
-        }
-    }
-}
-#pragma endregion
-
-#pragma region 2.AD
-//1.Load the advert on the fallback screen, after SDK initialisation is complete
-void setupExitAdUnitId(HINSTANCE hdll) {
-    if (auto func = (SetupExitAdUnitId)GetProcAddress(hdll, "SetupExitAdUnitId")) {
-        func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01")); // passing in the key value of the advert's primary key that was created in the mg backend.
-
-        AppendLog(L"Load the resources for MG exit ad");
-    }
-}
-
-//2.Turn on the fallback screen advert
-void showExitAdvert(HINSTANCE hdll) {
-    if (auto func = (ShowExitAdvert)GetProcAddress(hdll, "ShowExitAdvert")) {
-        func();
-        AppendLog(L"show fallback screen advert");
-    }
-}
-
-//3.Register Callback event to close the advert
-void onCloseAdvertEvent(char* s) {
-    AppendLog(L"onCloseAdvertEvent: %hs", s);
-    //...
-    // Destroy Ad pannel 
-     
-    // 发送到主UI线程
-    char* jsonCopy = _strdup(s);
-    PostMessage(g_hwndMain, WM_DESTROY_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));
-}
-//4.Open MG Advert window
-void openMGAdvert(const char* json) {
-    OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-    if (func) {
-        // 确保在调用前COM已初始化
-        if (!g_comInitialized) {
-            HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-            if (SUCCEEDED(hr)) {
-                g_comInitialized = true;
-            }
-        }
-
-        int result = func(json);
-        if (result == 1) {
-            // success 
-        }
-    }
-}
-//5.Open MG Advert window
-bool reportFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
-    ReportMgRewardFulfillment func = (ReportMgRewardFulfillment)GetProcAddress(hDLL, "ReportMgRewardFulfillment");
-    if (func) {
-        return func(unitId, resourceId, materialId, rewardId);
-    }
-    return false;
-}
-#pragma endregion
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -400,7 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                    //{"handle", reinterpret_cast<int>(g_hwndMain)}
                 };
                 std::string jsonStr = json_obj.dump();
-                openMGAdvert(jsonStr.c_str()); 
+                showAd(jsonStr.c_str());
             }
             break;
             case ID_BTN_AD2:
@@ -418,7 +322,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                      {"parentHeight", clientHeight}
                     };
                     std::string jsonStr = json_obj.dump();
-                    openMGAdvert(jsonStr.c_str());
+                    showAd(jsonStr.c_str());
                 }
             }
             break;
@@ -434,7 +338,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {"handle", containerHandle}
                 };
                 std::string jsonStr = json_obj.dump(); 
-                openMGAdvert(jsonStr.c_str());
+                showAd(jsonStr.c_str());
             }
             break;
             case ID_BTN_AD4:
@@ -448,7 +352,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
                 };
                 std::string jsonStr = json_obj.dump();
-                openMGAdvert(jsonStr.c_str()); 
+                showAd(jsonStr.c_str());
             }
             break;
             case ID_BTN_AD5:
@@ -467,12 +371,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                      {"parentHeight", clientHeight}
                     };
                     std::string jsonStr = json_obj.dump();
-                    openMGAdvert(jsonStr.c_str());
+                    showAd(jsonStr.c_str());
                 } 
             }
             break; 
             case ID_BTN_EXITAD:
-                showExitAdvert(hDLL);
+                showExitAdBlocking(hDLL);
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -523,13 +427,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         //... 
 
                         //向MG核销订单
-                        bool res = reportFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
-                        AppendLog(L"reportFulfillment: %hs", std::to_string(res).c_str());
+                        reportAdRewardFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
+                        AppendLog(L"ReportAdRewardFulfillment Async: %hs", rewardId.c_str());
                     }
                 }
             }
             catch (const std::exception&)
             { 
+            }
+            free((void*)json);
+        }
+        return 0;
+    }
+    case WM_OPEN_ADVERT: {//开屏广告
+        const char* json = reinterpret_cast<const char*>(lParam);
+        if (json) {
+            try
+            {
+                showAd(json);
+            }
+            catch (const std::exception&)
+            {
             }
             free((void*)json);
         }
@@ -551,6 +469,98 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
+
+#pragma region 1.SDK Initialisation
+void initialize(HINSTANCE hdll) {
+    Initialize func = (Initialize)GetProcAddress(hdll, "Initialize");
+    func("9NC834S3H84L",
+        "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6");
+}
+// Initialise callback functions
+void onInitCompleteEvent(char* s) {
+    nlohmann::json json_obj = nlohmann::json::parse(s); //{"success":true,"data":""}
+    bool success = json_obj["success"];
+    if (success) {
+        AppendLog(L"Initialization successful");
+
+        setupExitAd(hDLL);//Exit Ad
+
+
+        RECT clientRect;
+        if (GetClientRect(g_hwndMain, &clientRect)) {
+            int clientWidth = clientRect.right - clientRect.left;
+            int clientHeight = clientRect.bottom - clientRect.top;
+            nlohmann::json json_obj = {
+             {"unitId", "768338453d614f3aad85eea7e3916e7e"},
+             {"appType", 1},
+             {"adType", 5},
+             {"handle", reinterpret_cast<int>(g_hwndMain)},
+             {"parentWidth", clientWidth},//开屏广告，需要传入程序的宽高
+             {"parentHeight", clientHeight}
+            };
+            std::string jsonStr = json_obj.dump();
+
+            char* jsonCopy = _strdup(jsonStr.c_str());
+            PostMessage(g_hwndMain, WM_OPEN_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));//Open screen advertisement
+        }
+    }
+}
+#pragma endregion
+
+#pragma region 2.AD
+//1.Load the advert on the fallback screen, after SDK initialisation is complete
+void setupExitAd(HINSTANCE hdll) {
+    if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
+        func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01")); // passing in the key value of the advert's primary key that was created in the mg backend.
+
+        AppendLog(L"Load the resources for MG exit ad");
+    }
+}
+
+//2.Turn on the fallback screen advert
+void showExitAdBlocking(HINSTANCE hdll) {
+    if (auto func = (ShowExitAdBlocking)GetProcAddress(hdll, "ShowExitAdBlocking")) {
+        func();
+        AppendLog(L"show fallback screen advert");
+    }
+}
+
+//3.Register Callback event to close the advert
+void onAdCloseEvent(char* s) {
+    AppendLog(L"onAdCloseEvent: %hs", s);
+    //...
+    // Destroy Ad pannel 
+
+    // 发送到主UI线程
+    char* jsonCopy = _strdup(s);
+    PostMessage(g_hwndMain, WM_DESTROY_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));
+}
+//4.Open MG Advert window
+void showAd(const char* json) {
+    ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
+    if (func) {
+        // 确保在调用前COM已初始化
+        if (!g_comInitialized) {
+            HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+            if (SUCCEEDED(hr)) {
+                g_comInitialized = true;
+            }
+        }
+
+        int result = func(json);
+        if (result == 1) {
+            // success 
+        }
+    }
+}
+//5.Open MG Advert window
+void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
+    ReportAdRewardFulfillment func = (ReportAdRewardFulfillment)GetProcAddress(hDLL, "ReportAdRewardFulfillment");
+    if (func) {
+        func(unitId, resourceId, materialId, rewardId);
+    }
+}
+#pragma endregion
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

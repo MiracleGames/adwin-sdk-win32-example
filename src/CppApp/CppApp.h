@@ -9,31 +9,25 @@ extern HINSTANCE hDLL;
 typedef void(*CallbackDelegate)(char* s);
 
 // DLL 函数类型定义
-typedef char* (WINAPI* GetStr)(const char* appKey, const char* secretKey);
-typedef void(WINAPI* SetupAsync)(const char* appKey, const char* secretKey);
-typedef void(WINAPI* OpenMgLog)(bool isError);
-typedef void(WINAPI* RegisterInitCompleteEvent)(CallbackDelegate onInitComplete);
-typedef void(WINAPI* SetupExitAdUnitId)(char* exitAdUnitId);
-typedef void(WINAPI* ShowExitAdvert)();
-typedef int(WINAPI* OpenMGAdvert)(const char* jsonParam);
-typedef bool(WINAPI* ReportMgRewardFulfillment)(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
-typedef void(WINAPI* RegisterCloseAdvertEvent)(CallbackDelegate onCloseAdvert);
+typedef char* (WINAPI* GetStr)(const char* appId, const char* secretKey);
+typedef void(WINAPI* Initialize)(const char* appId, const char* secretKey);
+typedef void(WINAPI* InitCompleteEvent)(CallbackDelegate onInitComplete);
+typedef void(WINAPI* SetupExitAd)(char* exitAdUnitId);
+typedef void(WINAPI* ShowExitAdBlocking)();
+typedef int(WINAPI* ShowAd)(const char* jsonParam);
+typedef void(WINAPI* ReportAdRewardFulfillment)(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
+typedef void(WINAPI* AdCloseEvent)(CallbackDelegate onAdCloseEvent);
 
 // SDK 操作函数声明 
-void setupAsync(HINSTANCE hDLL);
-void openMgLog(HINSTANCE hDLL);
-void setupExitAdUnitId(HINSTANCE hDLL);
-void showExitAdvert(HINSTANCE hDLL);
-void openMGAdvert(const char* s);
-bool reportFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
+void initialize(HINSTANCE hDLL);
+void setupExitAd(HINSTANCE hDLL);
+void showExitAdBlocking(HINSTANCE hDLL);
+void showAd(const char* s);
+void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
 
 // 回调函数声明 
 void onInitCompleteEvent(char* s);
-void onCloseAdvertEvent(char* s);
-
-// 注册函数声明
-//void RegisterInitCompleteEvent(HINSTANCE hDLL);
-//void RegisterCloseAdvertEvent(HINSTANCE hDLL);
+void onAdCloseEvent(char* s);
 
 // 定义所使用控件 ID 
 #define ID_TXT_LOG               101
