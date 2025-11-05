@@ -10,3 +10,5 @@
 /src/CSharpApp/x64/Debug
 /src/CppApp/x64/Debug
 /.vs/CSharpApp
+/x64/Debug
+/packages
