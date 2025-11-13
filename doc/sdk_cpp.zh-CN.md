@@ -272,7 +272,7 @@ void showExitAdBlocking(HINSTANCE hdll) {
 
 | 参数名 | 参数描述 | 示例 |
 | --- | --- | --- |
-| unitId | 开发者传入的广告位主键 | C6E76462AF |
+| unitId | 开发者传入的广告位ID | e333abaf22404c4a8d382c1e7ba42076 |
 | advertStatus | 广告位状态 | 1:广告正常；2:广告被后台关闭；3:没有广告素材 |
 | 以下是仅激励视频广告拥有的参数 |  |  |
 | completeStatus | 广告的播放状态 | 1:广告播放完毕，可以发奖励；0:广告未播放完毕 |
