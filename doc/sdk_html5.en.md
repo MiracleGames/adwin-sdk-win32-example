@@ -1,8 +1,8 @@
-# Miracle Games Android SDK
+# Miracle Games HTML5 SDK
 
 **Other language versions: [English](sdk_html5.en.md), [中文](sdk_html5.zh-CN.md).**
 
-**SDK Name:** Miracle Games Android SDK
+**SDK Name:** Miracle Games HTML5 SDK
 
 **Company Name of SDK Provider:** Beijing Qiyou Lingdong Technology Co., Ltd.
 
@@ -19,12 +19,12 @@
 ---
 ---
 # Integration and Function Description
-### [1. Introduction](#1-introduction)
-### [2. Import JavaScript File](#2-import-javascript-file)
-### [3. Advertisements](#3-advertisements)
-### [4. Ad Click Event](#4-ad-click-event)
-### [5. Ad Close Event](#5-ad-close-event)
-### [Contact Information](#contact-information)
+### [1. Introduction](#1-introduction-1)
+### [2. Import JavaScript File](#2-import-javascript-file-1)
+### [3. Advertisements](#3advertisements)
+### [4. Ad Click Event](#4ad-click-event)
+### [5. Ad Close Event](#5ad-close-event)
+### [Contact Information](#contact-information-1)
 ---
 
 # 1. Introduction
