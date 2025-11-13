@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpApp", "src\CSharpApp\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
+		doc\contact.en.md = doc\contact.en.md
 		doc\contact.zh-CN.md = doc\contact.zh-CN.md
 		doc\sdk_cpp.zh-CN.md = doc\sdk_cpp.zh-CN.md
 		doc\sdk_csharp.zh-CN.md = doc\sdk_csharp.zh-CN.md
+		doc\sdk_html5.en.md = doc\sdk_html5.en.md
 		doc\sdk_html5.zh-CN.md = doc\sdk_html5.zh-CN.md
 	EndProjectSection
 EndProject
