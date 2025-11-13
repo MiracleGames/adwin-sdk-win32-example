@@ -22,7 +22,7 @@
 # Integration and Function Description
 ### [C# SDK](doc/sdk_csharp.en.md)
 ### [C++ SDK](doc/sdk_cpp.en.md)
-### [HTML5 UWP SDK](doc/sdk_html5uwp.en.md)
+### [HTML5 UWP SDK](doc/sdk_html5.en.md)
 
 # Contact Information
 

@@ -21,7 +21,7 @@
 # 集成和功能说明
 ### [C# SDK](doc/sdk_csharp.zh-CN.md)
 ### [C++ SDK](doc/sdk_cpp.zh-CN.md)
-### [HTML5 UWP SDK](doc/sdk_html5uwp.zh-CN.md)
+### [HTML5 UWP SDK](doc/sdk_html5.zh-CN.md)
 
 # 联系方式
 
