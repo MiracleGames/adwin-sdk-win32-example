@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Flash AdsSdk Demo</title> 
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+    <!--第一步.引入SDK文件--> 
+    <script language="javascript" src="http://mdc.mguwp.net/ads/h5adsdk.js"></script>
+
+    <!--第二步.实现功能对接-->
+    <script type="text/javascript">
+        //1.广告 
+        function clientShowMgAd(unitId, adType, media, comment) {
+            var jsonParam = new Object();
+            jsonParam.unitId = unitId;
+            jsonParam.adType = adType;//AdType枚举定义：1.插屏 2.Banner 3.对联 4.全屏插播 5.开屏 6.退屏 7.激励视频
+
+            if (media != undefined && media != "") {
+                jsonParam.media = media;//指定素材类型：image,video,web
+            } 
+            if (comment != undefined && comment != "") {
+                jsonParam.comment = encodeURIComponent(JSON.stringify(comment));
+            } 
+            ShowAd(JSON.stringify(jsonParam)); 
+        } 
+    </script>
+    <!--回调-->
+    <script language="javascript"> 
+        //1.广告回调-接收广告点击事件
+        function AdClickEvent(param) {
+            var jsonObj = JSON.parse(param);
+            var unitId = jsonObj.unitId;
+            document.getElementById("txtResultMsg").value += ("AdClickEvent广告点击事件：广告位=" + unitId + ",其它:" + param + "\r\n");
+        }
+        //2.广告回调-接收广告关闭事件
+        function AdCloseEvent(param) {
+            var jsonObj = JSON.parse(param);
+            var unitId = jsonObj.unitId; 
+
+            //激励视频广告
+            if (jsonObj.hasOwnProperty("completeStatus")) {
+                var completeStatus = jsonObj.completeStatus; 
+                var comment = jsonObj.comment;
+                var rewardId = jsonObj.rewardId;
+                var resourceId = jsonObj.resourceId;
+                var materialId = jsonObj.materialId;
+                if (completeStatus == 1) {//激励视频播放完成
+                    //下放道具
+                    alert("广告位：" + unitId + ",奖励Id：" + rewardId + "已经下放道具");
+
+                    //资产核销，游戏道具下放成功后调用 
+                    var jsonParam = new Object(); 
+                    jsonParam.unitId = unitId;
+                    jsonParam.rewardId = rewardId;
+                    jsonParam.resourceId = resourceId;
+                    jsonParam.materialId = materialId;
+                    reportMgRewardFulfillment(JSON.stringify(jsonParam));
+                }
+            }
+            document.getElementById("txtResultMsg").value += ("AdCloseEvent广告关闭事件：广告位=" + unitId + ",其它:" + param + "\r\n");
+        } 
+    </script>
+</head>
+<body style="zoom: 1;">
+    <div class="section1">
+        <div class="topicContent"> 
+            <div class="sdkCard">
+                <div class="head">广告:9NC834S3H84L</div>
+                <div class="main">
+                    <div>
+                        <a onclick="clientShowMgAd('e9b34829a2ad4a959874f9a180278bfe',2);">横幅 (e9b34829a2ad4a959874f9a180278bfe)</a>
+                        <a onclick="clientShowMgAd('c68cd45e8e374ccd98a704887e5b3582',3);">对联 (c68cd45e8e374ccd98a704887e5b3582)</a>
+                        <div class="clear"></div>
+                    </div> 
+                    <div>
+                        <a onclick="clientShowMgAd('e333abaf22404c4a8d382c1e7ba42076',1);">插屏 (e333abaf22404c4a8d382c1e7ba42076)</a>
+                        <a onclick="clientShowMgAd('e333abaf22404c4a8d382c1e7ba42076',1,'video');">插屏仅视频</a>
+                        <div class="clear"></div>
+                    </div> 
+                    <div>
+                        <a onclick="clientShowMgAd('d65b9c6612bd494fbd6844b490d536dc',4);">全屏插播 (d65b9c6612bd494fbd6844b490d536dc)</a> 
+                        <a onclick="clientShowMgAd('0f505442fac84f098e81d6f2ca04abe1',7,'','orderID=1,name,desc');">激励视频 (0f505442fac84f098e81d6f2ca04abe1)</a>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+    <div class="section2">
+        <div class="topicContent">
+            <div class="sdkCard">
+                <div class="head">广告回调信息:</div>
+                <div class="main">
+                    <textarea id="txtResultMsg" readonly="readonly"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+    <div class="popLayer"></div>
+</body>
+</html> 

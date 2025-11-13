@@ -59,17 +59,17 @@ private async void Form1_Load(object sender, EventArgs e)
 {
     string message;
 
-    var result = await ApplicationManager.SetupAsync("应用ID","秘钥");
+    var result = await ApplicationManager.Initialize("您的应用ID","您的秘钥");
     if (result.ReturnValue)
     {
         //初始化成功.
         message = $"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}";
 
         //开屏广告
-        AdvertManager.OpenAdvert(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
+        AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
 
         //退屏广告；Step1.初始化成功之后，加载退屏广告资源
-        AdvertManager.SetupExitAdUnitId("7cdc7614b69c4118933e2067e6e14d01");
+        AdvertManager.SetupExitAd("7cdc7614b69c4118933e2067e6e14d01");
     }
     else
     {
@@ -106,19 +106,19 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ```c#
 //1.开屏广告
-AdvertManager.OpenAdvert(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
+AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
 
 //2.插屏广告
-AdvertManager.OpenAdvert(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
+AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
 
 //3.全屏插播
-AdvertManager.OpenAdvert(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
+AdvertManager.ShowAd(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
 
 //4.横幅
-AdvertManager.OpenAdvert(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
+AdvertManager.ShowAd(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
 
 //5.对联
-AdvertManager.OpenAdvert(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
+AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
 
 //6.激励视频
 {
@@ -129,7 +129,7 @@ AdvertManager.OpenAdvert(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couple
         comment = Uri.EscapeDataString(comment)//透传参数,需url编码
     };
     string json = JsonConvert.SerializeObject(jsonObj);
-    AdvertManager.OpenAdvert(this, json, AdType.Reward);
+    AdvertManager.ShowAd(this, json, AdType.Reward);
 }
 ```
 
@@ -144,14 +144,14 @@ AdvertManager.OpenAdvert(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couple
 ```c#
 //退屏广告
 //Step1.初始化成功之后，加载退屏广告资源
-AdvertManager.SetupExitAdUnitId("7cdc7614b69c4118933e2067e6e14d01");
+AdvertManager.SetupExitAd("7cdc7614b69c4118933e2067e6e14d01");
 
 
 // 退屏广告
 // Step2.在程序关闭时，弹出展示退屏广告
 private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 {
-    _ = AdvertManager.ShowExitAdvert();
+    _ = AdvertManager.ShowExitAdBlocking();
 }
 ```
 
@@ -176,11 +176,11 @@ private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 public Form1()
 {
     InitializeComponent();
-    AdvertManager.CloseAdvertEvent += AdvertManager_CloseAdvertEvent;
-    AdvertManager.ClickAdvertEvent += AdvertManager_ClickAdvertEvent;
+    AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
+    AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
 }
 
-private void AdvertManager_CloseAdvertEvent(object sender, string e)
+private void AdvertManager_AdCloseEvent(object sender, string e)
 {
     ShowMessage("广告被关闭 " + e);
 
@@ -204,13 +204,13 @@ private void AdvertManager_CloseAdvertEvent(object sender, string e)
 
             Task.Run(async () =>
             {
-                _ = await AdvertManager.ReportMgRewardFulfillmentAsync(unitId, resourceId, materialId, rewardId);//向MG报告
+                _ = await AdvertManager.ReportAdRewardFulfillment(unitId, resourceId, materialId, rewardId);//向MG报告
             });
         }
     }
 }
 
-private void AdvertManager_ClickAdvertEvent(object sender, string e)
+private void AdvertManager_AdClickEvent(object sender, string e)
 {
     ShowMessage("广告被点击 " + e);
 }

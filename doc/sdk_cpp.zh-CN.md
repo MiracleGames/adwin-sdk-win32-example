@@ -52,17 +52,17 @@ void InitMgAdSdk() {
 
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
-        if (auto func = (RegisterInitCompleteEvent)GetProcAddress(hDLL, "RegisterInitCompleteEvent")) //初始化完成后的回调函数
+        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) //初始化完成后的回调函数
             func(onInitCompleteEvent);
-        if (auto func = (RegisterCloseAdvertEvent)GetProcAddress(hDLL, "RegisterCloseAdvertEvent")) //广告关闭事件的回调函数
-            func(onCloseAdvertEvent);
+        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //广告关闭事件的回调函数
+            func(onAdCloseEvent);
 
-        setupAsync(hDLL); //SDK初始化
+        initialize(hDLL); //SDK初始化
     }
 }
 
-void setupAsync(HINSTANCE hdll) {
-    SetupAsync func = (SetupAsync)GetProcAddress(hdll, "SetupAsync");
+void initialize(HINSTANCE hdll) {
+    SetupAsync func = (Initialize)GetProcAddress(hdll, "Initialize");
     func("应用ID","秘钥");
 }
 
@@ -74,7 +74,7 @@ void onInitCompleteEvent(char* s) {
         AppendLog(L"Initialization successful);
 
         //退屏广告；Step1.初始化成功之后，加载退屏广告资源
-        setupExitAdUnitId(hDLL);
+        setupExitAd(hDLL);
 
         RECT clientRect;
         if (GetClientRect(g_hwndMain, &clientRect)) {
@@ -89,7 +89,7 @@ void onInitCompleteEvent(char* s) {
              {"parentHeight", clientHeight}
             };
             std::string jsonStr = json_obj.dump();
-            openMGAdvert(jsonStr.c_str());//开屏广告
+            showAd(jsonStr.c_str());//开屏广告
         }
     }
 }
@@ -117,8 +117,8 @@ void onInitCompleteEvent(char* s) {
 
 ```c++
 //确保在主线程调用MG SDK广告接口
-void openMGAdvert(const char* json) {
-    OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
+void showAd(const char* json) {
+    ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
     if (func) {
         // 确保在调用前COM已初始化
         if (!g_comInitialized) {
@@ -150,7 +150,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
-    openMGAdvert(jsonStr.c_str());//开屏广告
+    ShowAd(jsonStr.c_str());//开屏广告
 }
 
 //2.插屏广告
@@ -164,7 +164,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
    {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
   };
   std::string jsonStr = json_obj.dump();
-  openMGAdvert(jsonStr.c_str()); 
+  ShowAd(jsonStr.c_str()); 
 }
 
 //3.全屏插播
@@ -182,7 +182,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
        {"parentHeight", clientHeight}
       };
       std::string jsonStr = json_obj.dump();
-      openMGAdvert(jsonStr.c_str());
+      ShowAd(jsonStr.c_str());
   }
 }
 
@@ -198,7 +198,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
       {"handle", containerHandle}
   };
   std::string jsonStr = json_obj.dump(); 
-  openMGAdvert(jsonStr.c_str());
+  ShowAd(jsonStr.c_str());
 }
 
 //5.对联
@@ -212,7 +212,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
       {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
   };
   std::string jsonStr = json_obj.dump();
-  openMGAdvert(jsonStr.c_str()); 
+  ShowAd(jsonStr.c_str()); 
 }
 
 //6.激励视频
@@ -231,7 +231,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
-    openMGAdvert(jsonStr.c_str());
+    ShowAd(jsonStr.c_str());
   } 
 }
 ```
@@ -247,8 +247,8 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
 ```c++
 //退屏广告
 //Step1.初始化成功之后，加载退屏广告资源
-void setupExitAdUnitId(HINSTANCE hdll) {
-    if (auto func = (SetupExitAdUnitId)GetProcAddress(hdll, "SetupExitAdUnitId")) {
+void setupExitAd(HINSTANCE hdll) {
+    if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
         func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01"));   
         AppendLog(L"Load the resources for MG exit ad");
     }
@@ -256,8 +256,8 @@ void setupExitAdUnitId(HINSTANCE hdll) {
 
 // 退屏广告
 // Step2.在程序关闭时，弹出展示退屏广告
-void showExitAdvert(HINSTANCE hdll) {
-    if (auto func = (ShowExitAdvert)GetProcAddress(hdll, "ShowExitAdvert")) {
+void showExitAdBlocking(HINSTANCE hdll) {
+    if (auto func = (ShowExitAdBlocking)GetProcAddress(hdll, "ShowExitAdBlocking")) {
         func();
         AppendLog(L"show fallback screen advert");
     }
@@ -283,8 +283,8 @@ void showExitAdvert(HINSTANCE hdll) {
 
 ```c++
 //注册广告关闭回调函数
-void onCloseAdvertEvent(char* s) {
-    AppendLog(L"onCloseAdvertEvent: %hs", s);
+void onAdCloseEvent(char* s) {
+    AppendLog(L"onAdCloseEvent: %hs", s);
     //...
     // Destroy Ad pannel 
      
@@ -294,8 +294,8 @@ void onCloseAdvertEvent(char* s) {
 }
 
 //激励视频广告，向MG核销订单
-bool reportFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
-    ReportMgRewardFulfillment func = (ReportMgRewardFulfillment)GetProcAddress(hDLL, "ReportMgRewardFulfillment");
+bool reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
+    ReportAdRewardFulfillment func = (ReportAdRewardFulfillment)GetProcAddress(hDLL, "ReportAdRewardFulfillment");
     if (func) {
         return func(unitId, resourceId, materialId, rewardId);
     }
@@ -347,8 +347,8 @@ case WM_DESTROY_ADVERT: {
                     //... 
 
                     //向MG核销订单
-                    bool res = reportFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
-                    AppendLog(L"reportFulfillment: %hs", std::to_string(res).c_str());
+                    bool res = reportAdRewardFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
+                    AppendLog(L"reportAdRewardFulfillment: %hs", std::to_string(res).c_str());
                 }
             }
         }
