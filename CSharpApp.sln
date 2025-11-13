@@ -34,11 +34,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HTML5APP", "HTML5APP", "{C8
 		src\HTML5APP\index.html = src\HTML5APP\index.html
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{A9CC7911-CC96-482C-98A5-D4BDBE9D3745}"
-	ProjectSection(SolutionItems) = preProject
-		src\HTML5APP\css\style.css = src\HTML5APP\css\style.css
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,7 +76,6 @@ Global
 		{A082F237-003A-47A6-BC66-C2D6EC38FB10} = {064F4C87-B8BB-4259-AEC8-EE71FBAF9563}
 		{A64F5DC2-847D-4B91-A666-25FCCD3DDE31} = {064F4C87-B8BB-4259-AEC8-EE71FBAF9563}
 		{C8215FA1-9F40-4EEA-9356-39997BC84CEE} = {064F4C87-B8BB-4259-AEC8-EE71FBAF9563}
-		{A9CC7911-CC96-482C-98A5-D4BDBE9D3745} = {C8215FA1-9F40-4EEA-9356-39997BC84CEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {458C0CCF-B549-43A7-8DE9-1BCC89F793BB}
