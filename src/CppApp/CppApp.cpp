@@ -401,7 +401,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     g_hPnlBanner = NULL;
                 }
                 else if (unitId == "c68cd45e8e374ccd98a704887e5b3582")
-                {//删除对量广告容器
+                {//删除对联广告容器
                     int coupletType = json_obj["coupletType"];
                     if (coupletType == 1)//删除左侧容器
                     {
