@@ -29,7 +29,7 @@
 
 # 1. Introduction
 
-      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 640*640】【Floating Ad 300*600】【Full-screen Interstitial 768*432】【Rewarded Video 1024*768】【Exit Screen】
+      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 640*640】【Couplet 300*600】【Full-screen Interstitial 768*432】【Rewarded Video 1024*768】【Exit Screen】
 
 # 2. Import JavaScript File
 
@@ -44,7 +44,7 @@
 
 | Parameter Name | Parameter Description |
 | --- | --- |
-| jsonParam | Ad slot parameters in JSON string format.<br>* unitId = Ad Slot ID<br>    <br>* adType = Ad Type: 1.Interstitial 2.Banner 3.Floating Ad 4.Full-screen Interstitial 5.Splash Screen 6.Exit Screen 7.Rewarded Video<br>    <br>* media = Specify material type: image,video,web; optional.<br>    <br>* comment = Only supported for rewarded video ads, pass-through parameter, should be URL encoded before passing. This parameter will be returned in the ad close event. |
+| jsonParam | Ad slot parameters in JSON string format.<br>* unitId = Ad Slot ID<br>    <br>* adType = Ad Type: 1.Interstitial 2.Banner 3.Couplet 4.Full-screen Interstitial 5.Splash Screen 6.Exit Screen 7.Rewarded Video<br>    <br>* media = Specify material type: image,video,web; optional.<br>    <br>* comment = Only supported for rewarded video ads, pass-through parameter, should be URL encoded before passing. This parameter will be returned in the ad close event. |
 
 ```javascript
 function clientShowMgAd(unitId, adType, media, comment) {

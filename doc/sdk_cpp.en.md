@@ -1,34 +1,34 @@
 # Miracle Games Cpp SDK
 
-**其他语言版本: [English](sdk_cpp.en.md), [中文](sdk_cpp.zh-CN.md).**
+**Other language versions: [English](sdk_cpp.en.md), [中文](sdk_cpp.zh-CN.md).**
 
-**SDK名称：** Miracle Games Cpp SDK
+**SDK Name:** Miracle Games Cpp SDK
 
-**SDK提供方的公司名称：**  北京奇游灵动科技有限公司
+**Company Name of SDK Provider:** Beijing Qiyou Lingdong Technology Co., Ltd.
 
-**处理的个人信息类型：** 您主动上传的数据、设备信息（设备型号、操作系统版本号）、网络信息（网络类型）、应用信息
+**Types of Personal Information Processed:** Data actively uploaded by you, device information (device model, operating system version number), network information (network type), application information.
 
-**使用目的及功能场景：** 提供广告等相关功能
+**Purpose of Use and Functional Scenarios:** Provides login, payment, and other related functions.
 
-**SDK隐私政策：** [Miracle Games 隐私政策](https://www.mguwp.net/developer_privacy.html)
+**SDK Privacy Policy:** [Miracle Games Privacy Policy](https://www.mguwp.net/developer_privacy.html)
 
-**处理方式：** 1、采用SSL协议加密及HTTPS传输加密技术保障安全； 2、采取加密、去标识化等安全措施脱敏处理
+**Processing Method:** 1. Ensures security through SSL protocol encryption and HTTPS transmission encryption technology; 2. Processes data with de-identification measures such as encryption and anonymization.
 
-**合规使用说明：** [Miracle Games SDK 合规使用指南](https://www.mguwp.net/developer_compliance.html)
+**Compliance Usage Instructions:** [Miracle Games SDK Compliance Usage Guide](https://www.mguwp.net/developer_compliance.html)
 
 ---
-# 集成和功能说明
-### [1.开发环境配置](#1开发环境配置-1)
-### [2.SDK初始化](#2SDK初始化-1)
-### [3.广告](#3广告-1)
-### [4.联系方式](contact.zh-CN.md)
+# Integration and Function Description
+### [1. Development Environment Configuration](#1-development-environment-configuration)
+### [2. SDK Initialization](#2-sdk-initialization)
+### [3. Advertisements](#3advertisements)
+### [Contact Information](contact.zh-CN.md)
 ---
 
-# 1.开发环境配置
+# 1.Development Environment Configuration
 
-      1.下载 MiracleGamesAdSDK，解压到项目文件夹中，如dll文件夹。
+      1.Download MiracleGamesAdSDK and extract it to your project folder, such as the dll folder.
 
-      2.在编译后事件中添加命令，将MiracleGamesAdSDK中的所有dll文件，生成到编译文件夹中。
+      2.Add commands in the post-build event to copy all dll files from MiracleGamesAdSDK to the build output folder.
 
 ```plaintext
 xcopy /y "$(ProjectDir)dll\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -38,13 +38,13 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 
 ![cpp_event.png](../images/cpp_event.png)
 
-# 2.SDK初始化
+# 2. SDK Initialization
 
-### 2.1.简介
+### 2.1.Introduction
 
-      在接入Miracle Games SDK之前，首先需要进行SDK的初始化，初始化完成后，才可以配合后台系统使用本SDK的全部功能，在进入游戏后即进行SDK初始化。
+       Before integrating the Miracle Games SDK, you need to initialize the SDK first. Only after initialization is completed can you use all the features of this SDK in conjunction with the backend system. SDK initialization should be performed when the game starts.
 
-### 2.2.SDK初始化
+### 2.2.SDK Initialization
 
 ```c++
 void InitMgAdSdk() {
@@ -52,28 +52,28 @@ void InitMgAdSdk() {
 
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
-        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) //初始化完成后的回调函数
+        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) //Callback function after initialization is complete
             func(onInitCompleteEvent);
-        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //广告关闭事件的回调函数
+        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //Callback function for ad close event
             func(onAdCloseEvent);
 
-        initialize(hDLL); //SDK初始化
+        initialize(hDLL); //SDK initialization
     }
 }
 
 void initialize(HINSTANCE hdll) {
     SetupAsync func = (Initialize)GetProcAddress(hdll, "Initialize");
-    func("应用ID","秘钥");
+    func("YourAppID","YourSecretKey");
 }
 
-//初始化完成的回调函数
+//Callback function when initialization is complete
 void onInitCompleteEvent(char* s) {
     nlohmann::json json_obj = nlohmann::json::parse(s);
     bool success = json_obj["success"];
     if (success) {
         AppendLog(L"Initialization successful);
 
-        //退屏广告；Step1.初始化成功之后，加载退屏广告资源
+        //Exit screen ad; Step 1. Load exit ad resources after successful initialization
         setupExitAd(hDLL);
 
         RECT clientRect;
@@ -85,42 +85,42 @@ void onInitCompleteEvent(char* s) {
              {"appType", 1},
              {"adType", 5},
              {"handle", reinterpret_cast<int>(g_hwndMain)},
-             {"parentWidth", clientWidth},//开屏广告，需要传入容器的宽高
+             {"parentWidth", clientWidth},//Splash screen ad requires container width and height
              {"parentHeight", clientHeight}
             };
             std::string jsonStr = json_obj.dump();
-            showAd(jsonStr.c_str());//开屏广告
+            showAd(jsonStr.c_str());//Splash screen ad
         }
     }
 }
 ```
 
-### 2.3.没有初始化成功的错误可能如下
+### 2.3.Possible reasons for initialization failure include:
 
-● 网络故障，没有正确的网络支持
+● Network failure, no proper network connection
 
-　　● 本SDK不支持VPN，本机开启了VPN软件
+● This SDK does not support VPN; VPN software is enabled on the device
 
-　　● AppId错误，请登录开发者后台检查应用设置
+● Incorrect AppId, please check your application settings in the developer backend
 
-　　● 服务器问题，请检查result的错误信息，及时[联系技术支持](contact.zh-CN.md)
+● Server issues, please check the error information in the result and [contact technical support](contact.zh-CN.md) promptly
 
-# 3.广告
+# 3.Advertisements
 
-### 3.1.简介
+### 3.1.Introduction
 
-      在接入广告之前，首先需要完成SDK的初始化。
+      Before integrating advertisements, you must first complete the SDK initialization.
 
-      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频1024\*768】【退屏】
+      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 640*640】【Couplet 300*600】【Full-screen Interstitial 768*432】【Rewarded Video 1024*768】【Exit Screen】
 
-### 3.2.开屏、插屏、全屏插播、横幅、对联、激励视频广告
+### 3.2.Splash Screen, Interstitial, Full-screen Interstitial, Banner, Couplet, and Rewarded Video Ads
 
 ```c++
-//确保在主线程调用MG SDK广告接口
+//Ensure MG SDK ad interfaces are called in the main thread
 void showAd(const char* json) {
     ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
     if (func) {
-        // 确保在调用前COM已初始化
+        // Ensure COM is initialized before calling
         if (!g_comInitialized) {
             HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
             if (SUCCEEDED(hr)) {
@@ -136,7 +136,7 @@ void showAd(const char* json) {
 }
 
 
-//1.开屏广告
+//1. Splash screen ad
 RECT clientRect;
 if (GetClientRect(g_hwndMain, &clientRect)) {
     int clientWidth = clientRect.right - clientRect.left;
@@ -146,19 +146,19 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
      {"appType", 1},
      {"adType", 5},
      {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//开屏广告，需要传入容器的宽高
+     {"parentWidth", clientWidth},//Splash screen ad requires container width and height
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
-    ShowAd(jsonStr.c_str());//开屏广告
+    ShowAd(jsonStr.c_str());//Splash screen ad
 }
 
-//2.插屏广告
+//2. Interstitial ad
 {
-  CreateInterstitialAdPannel(hWnd);//由开发者维护容器
+  CreateInterstitialAdPannel(hWnd);//Container maintained by developer
   nlohmann::json json_obj = {
    {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
-   {"media", "image"},//仅图片类型的素材，支持媒体类型(image,video,web)。可传空
+   {"media", "image"},//Only image type materials, supported media types (image,video,web). Can be empty
    {"appType", 1},
    {"adType", 1},
    {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
@@ -167,7 +167,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
   ShowAd(jsonStr.c_str()); 
 }
 
-//3.全屏插播
+//3. Full-screen interstitial
 {
   RECT clientRect;
   if (GetClientRect(hWnd, &clientRect)) {
@@ -178,7 +178,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
        {"appType", 1},
        {"adType", 4},
        {"handle", reinterpret_cast<int>(g_hwndMain)},
-       {"parentWidth", clientWidth},//全屏插播广告，需要传入程序的宽高
+       {"parentWidth", clientWidth},//Full-screen interstitial ad requires program width and height
        {"parentHeight", clientHeight}
       };
       std::string jsonStr = json_obj.dump();
@@ -186,7 +186,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
   }
 }
 
-//4.横幅
+//4. Banner
 {
   CreateBannerAdPanel(hWnd); 
   int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
@@ -201,7 +201,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
   ShowAd(jsonStr.c_str());
 }
 
-//5.对联
+//5. Couplet
 {
   CreateCoupletAdPannel(hWnd);
   nlohmann::json json_obj = {
@@ -215,7 +215,7 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
   ShowAd(jsonStr.c_str()); 
 }
 
-//6.激励视频
+//6. Rewarded video
 {
   RECT clientRect;
   if (GetClientRect(hWnd, &clientRect)) {
@@ -223,11 +223,11 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
     int clientHeight = clientRect.bottom - clientRect.top;
     nlohmann::json json_obj = {
      {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
-     {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
+     {"comment", "abc123"},//Pass-through parameter, frontend needs to urlEncode; will be returned unchanged in the ad close callback event
      {"appType", 1},
      {"adType", 7},
      {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//激励视频广告，需要传入程序的宽高
+     {"parentWidth", clientWidth},//Rewarded video ad requires program width and height
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
@@ -236,17 +236,17 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
 }
 ```
 
-### 3.3.退屏广告
+### 3.3.Exit Screen Ad
 
-      弹屏广告是在退出游戏时触发，为了保证退出游戏时广告的弹出率，MG会分两步完成退屏广告的实现
+      The exit screen ad is triggered when exiting the game. To ensure the display rate of the ad when exiting the game, MG implements the exit screen ad in two steps:
 
-      1.在初始化完成后，将退屏广告的信息加载到内存中
+      1. After initialization is completed, load the exit screen ad information into memory.
 
-      2.在退出游戏时，直接打开退屏广告
+      2. When exiting the game, directly display the exit screen ad.
 
 ```c++
-//退屏广告
-//Step1.初始化成功之后，加载退屏广告资源
+//Exit screen ad
+//Step 1. Load exit ad resources after successful initialization
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
         func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01"));   
@@ -254,8 +254,8 @@ void setupExitAd(HINSTANCE hdll) {
     }
 }
 
-// 退屏广告
-// Step2.在程序关闭时，弹出展示退屏广告
+//Exit screen ad
+//Step 2. Display the exit screen ad when the application is closing
 void showExitAdBlocking(HINSTANCE hdll) {
     if (auto func = (ShowExitAdBlocking)GetProcAddress(hdll, "ShowExitAdBlocking")) {
         func();
@@ -264,36 +264,36 @@ void showExitAdBlocking(HINSTANCE hdll) {
 }
 ```
 
-### 3.4.广告关闭事件
+### 3.4.Ad Close Event
 
-      注册广告关闭的回调事件，一般在页面的构造函数中进行
+      Register the callback event for ad closure, typically done in the page constructor.
 
-      广告关闭事件参数说明
+      Ad close event parameter description:
 
-| 参数名 | 参数描述 | 示例 |
+| Parameter Name | Parameter Description | Example |
 | --- | --- | --- |
-| unitId | 开发者传入的广告位ID | e333abaf22404c4a8d382c1e7ba42076 |
-| advertStatus | 广告位状态 | 1:广告正常；2:广告被后台关闭；3:没有广告素材 |
-| 以下是仅激励视频广告拥有的参数 |  |  |
-| completeStatus | 广告的播放状态 | 1:广告播放完毕，可以发奖励；0:广告未播放完毕 |
-| comment | 由开发者传入的透传参数，经过 url 编码 | abc%2c123 |
-| rewardId | 奖励的MG订单号，游戏发奖后向MG报告核销时使用 | String |
-| resourceId | 资源Id | String |
-| materialId | 素材 Id | String |
+| unitId | Developer-provided Ad Slot ID | e333abaf22404c4a8d382c1e7ba42076 |
+| advertStatus | Ad Slot Status | 1:Ad normal; 2:Ad closed by backend; 3:No ad material |
+| The following parameters are only available for rewarded video ads |  |  |
+| completeStatus | Ad playback status | 1:Ad playback completed, reward can be issued; 0:Ad playback not completed |
+| comment | Pass-through parameter provided by the developer, URL encoded | abc%2c123 |
+| rewardId | MG Order ID for the reward, used when the game reports verification after issuing the reward | String |
+| resourceId | Resource Id | String |
+| materialId | Material Id | String |
 
 ```c++
-//注册广告关闭回调函数
+//Ad close callback function
 void onAdCloseEvent(char* s) {
     AppendLog(L"onAdCloseEvent: %hs", s);
     //...
     // Destroy Ad pannel 
      
-    // 发送到主UI线程
+    // Send to main UI thread
     char* jsonCopy = _strdup(s);
     PostMessage(g_hwndMain, WM_DESTROY_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));
 }
 
-//激励视频广告，向MG核销订单
+//Rewarded video ad, report order verification to MG
 bool reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
     ReportAdRewardFulfillment func = (ReportAdRewardFulfillment)GetProcAddress(hDLL, "ReportAdRewardFulfillment");
     if (func) {
@@ -302,7 +302,7 @@ bool reportAdRewardFulfillment(const char* unitId, const char* resourceId, const
     return false;
 }
 
-//在主UI线程中，实现广告关闭回调函数
+//Implement ad close callback function in the main UI thread
 case WM_DESTROY_ADVERT: {
     const char* json = reinterpret_cast<const char*>(lParam);
     if (json) {
@@ -311,19 +311,19 @@ case WM_DESTROY_ADVERT: {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
             if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
-            {//删除插屏广告容器
+            {//Destroy interstitial ad container
                 DestroyWindow(g_hPnlInterstitial);
                 g_hPnlInterstitial = NULL;
             }
             else if (unitId == "e9b34829a2ad4a959874f9a180278bfe")
-            {//删除Banner广告容器
+            {//Destroy Banner ad container
                 DestroyWindow(g_hPnlBanner);
                 g_hPnlBanner = NULL;
             }
             else if (unitId == "c68cd45e8e374ccd98a704887e5b3582")
-            {//删除对联广告容器
+            {//Destroy couplet ad container
                 int coupletType = json_obj["coupletType"];
-                if (coupletType == 1)//删除左侧容器
+                if (coupletType == 1)//Destroy left container
                 {
                     BOOL result = DestroyWindow(g_hPnlCoupletLeft);
                     g_hPnlCoupletLeft = NULL;
@@ -335,7 +335,7 @@ case WM_DESTROY_ADVERT: {
                 }
             }
             else if (unitId == "0f505442fac84f098e81d6f2ca04abe1")
-            {//激励视频
+            {//Rewarded video
                 int completeStatus = json_obj["completeStatus"]; 
                 if (completeStatus == 1)
                 {
@@ -343,10 +343,10 @@ case WM_DESTROY_ADVERT: {
                     std::string materialId = json_obj["materialId"];
                     std::string rewardId = json_obj["rewardId"];
 
-                    //视频播放完毕，下发奖励道具 
+                    //Video playback completed, issue reward items 
                     //... 
 
-                    //向MG核销订单
+                    //Report order verification to MG
                     bool res = reportAdRewardFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
                     AppendLog(L"reportAdRewardFulfillment: %hs", std::to_string(res).c_str());
                 }
