@@ -19,9 +19,9 @@
 ---
 # Integration and Function Description
 ### [1. Development Environment Configuration](#1-development-environment-configuration)
-### [2. SDK Initialization](#2-sdk-initialization)
+### [2. SDK Initialization](#2-sdk-initialization-1)
 ### [3. Advertisements](#3advertisements)
-### [Contact Information](contact.zh-CN.md)
+### [Contact Information](contact.en.md)
 ---
 
 # 1.Development Environment Configuration
@@ -103,7 +103,7 @@ void onInitCompleteEvent(char* s) {
 
 ● Incorrect AppId, please check your application settings in the developer backend
 
-● Server issues, please check the error information in the result and [contact technical support](contact.zh-CN.md) promptly
+● Server issues, please check the error information in the result and [contact technical support](contact.en.md) promptly
 
 # 3.Advertisements
 
