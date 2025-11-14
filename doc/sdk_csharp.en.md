@@ -21,7 +21,7 @@
 ### [1. Development Environment Configuration](#1-development-environment-configuration)
 ### [2. SDK Initialization](#2sdk-initialization)
 ### [3. Advertisements](#3advertisements)
-### [Contact Information](#contact-information)
+### [Contact Information](#contact-information-1)
 ---
 
 
