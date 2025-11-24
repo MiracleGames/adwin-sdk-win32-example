@@ -102,7 +102,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
       Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 1024*768】【Couplet 300*600】【Rewarded Video 1024*768】【Information flow】【Embedded】【Exit Screen】
 
-### 3.2.Splash Screen, Interstitial, Full-screen Interstitial, Banner, Couplet, and Rewarded Video Ads
+### 3.2.Splash Screen, Banner, Interstitial, Couplet, and Rewarded Video, Information flow, Embedded Ads
 
 ```c#
 //1.Splash screen ad

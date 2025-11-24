@@ -36,7 +36,7 @@
 <script language="javascript" src="http://mdc.mguwp.net/ads/h5adsdk.js"></script>
 ```
 
-# 3.插屏、全屏插播、横幅、对联、激励视频广告
+# 3.横幅、插屏、对联、激励视频广告
 
       调用Miracle Games提供的JavaScript方法ShowAd(jsonParam)可以调用广告。参数如下：
 
