@@ -30,10 +30,16 @@ void onInitCompleteEvent(char* s);
 void onAdCloseEvent(char* s);
 
 // 定义所使用控件 ID 
+// 1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频 7.信息流 8.嵌入式
 #define ID_TXT_LOG               101
-#define ID_BTN_AD1               201
-#define ID_BTN_AD2               202
-#define ID_BTN_AD3               203
-#define ID_BTN_AD4               204
-#define ID_BTN_AD5               205
-#define ID_BTN_EXITAD            206
+#define ID_BTN_AD1               210 //开屏 
+#define ID_BTN_EXITAD            220 //退屏
+#define ID_BTN_AD3               230 //Banner
+#define ID_BTN_AD4               240 //插屏
+#define ID_BTN_AD41              241 //插屏仅视频
+#define ID_BTN_AD42              242 //插屏仅Web
+#define ID_BTN_AD5               250 //对联
+#define ID_BTN_AD6               260 //激励视频
+#define ID_BTN_AD61              261 //激励视频仅Web
+#define ID_BTN_AD7               270 //信息流
+#define ID_BTN_AD8               280 //信息流 

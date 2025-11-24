@@ -29,14 +29,18 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btnAd1_1 = new System.Windows.Forms.Button();
-            this.btnAd1_2 = new System.Windows.Forms.Button();
-            this.btnAd5 = new System.Windows.Forms.Button();
-            this.btnAd6 = new System.Windows.Forms.Button();
-            this.btnAd4 = new System.Windows.Forms.Button();
-            this.btnAd3 = new System.Windows.Forms.Button();
-            this.btnAd2 = new System.Windows.Forms.Button();
             this.btnAd1 = new System.Windows.Forms.Button();
+            this.btnAd1_3 = new System.Windows.Forms.Button();
+            this.panelAd6 = new System.Windows.Forms.Panel();
+            this.btnAd8 = new System.Windows.Forms.Button();
+            this.btnAd6_2 = new System.Windows.Forms.Button();
+            this.btnAd7 = new System.Windows.Forms.Button();
+            this.btnAd1_2 = new System.Windows.Forms.Button();
+            this.btnAd6 = new System.Windows.Forms.Button();
+            this.btnDeleteAd = new System.Windows.Forms.Button();
+            this.btnAd5 = new System.Windows.Forms.Button();
+            this.btnAd3 = new System.Windows.Forms.Button();
+            this.btnAd4 = new System.Windows.Forms.Button();
             this.panelAd = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -53,14 +57,18 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd1_1);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd1_2);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd5);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd6);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd4);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd3);
-            this.splitContainer1.Panel1.Controls.Add(this.btnAd2);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd1);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd1_3);
+            this.splitContainer1.Panel1.Controls.Add(this.panelAd6);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd8);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd6_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd7);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd1_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd6);
+            this.splitContainer1.Panel1.Controls.Add(this.btnDeleteAd);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd5);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd3);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd4);
             this.splitContainer1.Panel1.Controls.Add(this.panelAd);
             // 
             // splitContainer1.Panel2
@@ -70,59 +78,107 @@
             this.splitContainer1.SplitterDistance = 420;
             this.splitContainer1.TabIndex = 1;
             // 
-            // btnAd1_1
+            // btnAd1
             // 
-            this.btnAd1_1.Location = new System.Drawing.Point(139, 220);
-            this.btnAd1_1.Name = "btnAd1_1";
-            this.btnAd1_1.Size = new System.Drawing.Size(132, 23);
-            this.btnAd1_1.TabIndex = 13;
-            this.btnAd1_1.Text = "插屏广告，指定控件";
-            this.btnAd1_1.UseVisualStyleBackColor = true;
-            this.btnAd1_1.Click += new System.EventHandler(this.btnAd1_1_Click);
+            this.btnAd1.Location = new System.Drawing.Point(14, 12);
+            this.btnAd1.Name = "btnAd1";
+            this.btnAd1.Size = new System.Drawing.Size(88, 23);
+            this.btnAd1.TabIndex = 18;
+            this.btnAd1.Text = "1.开屏(全屏)";
+            this.btnAd1.UseVisualStyleBackColor = true;
+            this.btnAd1.Click += new System.EventHandler(this.btnAd1_Click);
+            // 
+            // btnAd1_3
+            // 
+            this.btnAd1_3.Location = new System.Drawing.Point(295, 87);
+            this.btnAd1_3.Name = "btnAd1_3";
+            this.btnAd1_3.Size = new System.Drawing.Size(109, 23);
+            this.btnAd1_3.TabIndex = 17;
+            this.btnAd1_3.Text = "插屏广告，仅Web";
+            this.btnAd1_3.UseVisualStyleBackColor = true;
+            this.btnAd1_3.Click += new System.EventHandler(this.btnAd4_3_Click);
+            // 
+            // panelAd6
+            // 
+            this.panelAd6.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelAd6.Location = new System.Drawing.Point(14, 245);
+            this.panelAd6.Name = "panelAd6";
+            this.panelAd6.Size = new System.Drawing.Size(400, 50);
+            this.panelAd6.TabIndex = 16;
+            // 
+            // btnAd8
+            // 
+            this.btnAd8.Location = new System.Drawing.Point(14, 317);
+            this.btnAd8.Name = "btnAd8";
+            this.btnAd8.Size = new System.Drawing.Size(124, 23);
+            this.btnAd8.TabIndex = 15;
+            this.btnAd8.Text = "8.嵌入式，指定控件";
+            this.btnAd8.UseVisualStyleBackColor = true;
+            this.btnAd8.Click += new System.EventHandler(this.btnAd8_Click);
+            // 
+            // btnAd6_2
+            // 
+            this.btnAd6_2.Location = new System.Drawing.Point(144, 170);
+            this.btnAd6_2.Name = "btnAd6_2";
+            this.btnAd6_2.Size = new System.Drawing.Size(109, 23);
+            this.btnAd6_2.TabIndex = 14;
+            this.btnAd6_2.Text = "激励视频(Google)";
+            this.btnAd6_2.UseVisualStyleBackColor = true;
+            this.btnAd6_2.Click += new System.EventHandler(this.btnAd6_2_Click);
+            // 
+            // btnAd7
+            // 
+            this.btnAd7.Location = new System.Drawing.Point(14, 216);
+            this.btnAd7.Name = "btnAd7";
+            this.btnAd7.Size = new System.Drawing.Size(124, 23);
+            this.btnAd7.TabIndex = 13;
+            this.btnAd7.Text = "7.信息流，指定控件";
+            this.btnAd7.UseVisualStyleBackColor = true;
+            this.btnAd7.Click += new System.EventHandler(this.btnAd7_Click);
             // 
             // btnAd1_2
             // 
-            this.btnAd1_2.Location = new System.Drawing.Point(139, 9);
+            this.btnAd1_2.Location = new System.Drawing.Point(144, 87);
             this.btnAd1_2.Name = "btnAd1_2";
-            this.btnAd1_2.Size = new System.Drawing.Size(132, 23);
+            this.btnAd1_2.Size = new System.Drawing.Size(109, 23);
             this.btnAd1_2.TabIndex = 12;
             this.btnAd1_2.Text = "插屏广告，仅视频";
             this.btnAd1_2.UseVisualStyleBackColor = true;
-            this.btnAd1_2.Click += new System.EventHandler(this.btnAd1_2_Click);
-            // 
-            // btnAd5
-            // 
-            this.btnAd5.Location = new System.Drawing.Point(14, 174);
-            this.btnAd5.Name = "btnAd5";
-            this.btnAd5.Size = new System.Drawing.Size(88, 23);
-            this.btnAd5.TabIndex = 11;
-            this.btnAd5.Text = "5.激励视频";
-            this.btnAd5.UseVisualStyleBackColor = true;
-            this.btnAd5.Click += new System.EventHandler(this.btnAd5_Click);
+            this.btnAd1_2.Click += new System.EventHandler(this.btnAd4_2_Click);
             // 
             // btnAd6
             // 
-            this.btnAd6.Location = new System.Drawing.Point(313, 9);
+            this.btnAd6.Location = new System.Drawing.Point(14, 170);
             this.btnAd6.Name = "btnAd6";
             this.btnAd6.Size = new System.Drawing.Size(88, 23);
-            this.btnAd6.TabIndex = 10;
-            this.btnAd6.Text = "6.删除广告";
+            this.btnAd6.TabIndex = 11;
+            this.btnAd6.Text = "6.激励视频";
             this.btnAd6.UseVisualStyleBackColor = true;
             this.btnAd6.Click += new System.EventHandler(this.btnAd6_Click);
             // 
-            // btnAd4
+            // btnDeleteAd
             // 
-            this.btnAd4.Location = new System.Drawing.Point(14, 133);
-            this.btnAd4.Name = "btnAd4";
-            this.btnAd4.Size = new System.Drawing.Size(88, 23);
-            this.btnAd4.TabIndex = 9;
-            this.btnAd4.Text = "4.对联广告";
-            this.btnAd4.UseVisualStyleBackColor = true;
-            this.btnAd4.Click += new System.EventHandler(this.btnAd4_Click);
+            this.btnDeleteAd.Location = new System.Drawing.Point(295, 565);
+            this.btnDeleteAd.Name = "btnDeleteAd";
+            this.btnDeleteAd.Size = new System.Drawing.Size(109, 23);
+            this.btnDeleteAd.TabIndex = 10;
+            this.btnDeleteAd.Text = "删除广告";
+            this.btnDeleteAd.UseVisualStyleBackColor = true;
+            this.btnDeleteAd.Click += new System.EventHandler(this.btnDeleteAd_Click);
+            // 
+            // btnAd5
+            // 
+            this.btnAd5.Location = new System.Drawing.Point(14, 129);
+            this.btnAd5.Name = "btnAd5";
+            this.btnAd5.Size = new System.Drawing.Size(88, 23);
+            this.btnAd5.TabIndex = 9;
+            this.btnAd5.Text = "5.对联广告";
+            this.btnAd5.UseVisualStyleBackColor = true;
+            this.btnAd5.Click += new System.EventHandler(this.btnAd5_Click);
             // 
             // btnAd3
             // 
-            this.btnAd3.Location = new System.Drawing.Point(14, 89);
+            this.btnAd3.Location = new System.Drawing.Point(14, 49);
             this.btnAd3.Name = "btnAd3";
             this.btnAd3.Size = new System.Drawing.Size(88, 23);
             this.btnAd3.TabIndex = 8;
@@ -130,31 +186,22 @@
             this.btnAd3.UseVisualStyleBackColor = true;
             this.btnAd3.Click += new System.EventHandler(this.btnAd3_Click);
             // 
-            // btnAd2
+            // btnAd4
             // 
-            this.btnAd2.Location = new System.Drawing.Point(14, 49);
-            this.btnAd2.Name = "btnAd2";
-            this.btnAd2.Size = new System.Drawing.Size(88, 23);
-            this.btnAd2.TabIndex = 7;
-            this.btnAd2.Text = "2.全屏插播";
-            this.btnAd2.UseVisualStyleBackColor = true;
-            this.btnAd2.Click += new System.EventHandler(this.btnAd2_Click);
-            // 
-            // btnAd1
-            // 
-            this.btnAd1.Location = new System.Drawing.Point(14, 9);
-            this.btnAd1.Name = "btnAd1";
-            this.btnAd1.Size = new System.Drawing.Size(88, 23);
-            this.btnAd1.TabIndex = 6;
-            this.btnAd1.Text = "1.插屏广告";
-            this.btnAd1.UseVisualStyleBackColor = true;
-            this.btnAd1.Click += new System.EventHandler(this.btnAd1_Click);
+            this.btnAd4.Location = new System.Drawing.Point(12, 87);
+            this.btnAd4.Name = "btnAd4";
+            this.btnAd4.Size = new System.Drawing.Size(88, 23);
+            this.btnAd4.TabIndex = 6;
+            this.btnAd4.Text = "4.插屏广告";
+            this.btnAd4.UseVisualStyleBackColor = true;
+            this.btnAd4.Click += new System.EventHandler(this.btnAd4_Click);
             // 
             // panelAd
             // 
-            this.panelAd.Location = new System.Drawing.Point(12, 249);
+            this.panelAd.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelAd.Location = new System.Drawing.Point(14, 346);
             this.panelAd.Name = "panelAd";
-            this.panelAd.Size = new System.Drawing.Size(400, 400);
+            this.panelAd.Size = new System.Drawing.Size(200, 200);
             this.panelAd.TabIndex = 3;
             // 
             // textBox1
@@ -188,16 +235,20 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button btnAd5;
         private System.Windows.Forms.Button btnAd6;
-        private System.Windows.Forms.Button btnAd4;
+        private System.Windows.Forms.Button btnDeleteAd;
+        private System.Windows.Forms.Button btnAd5;
         private System.Windows.Forms.Button btnAd3;
-        private System.Windows.Forms.Button btnAd2;
-        private System.Windows.Forms.Button btnAd1;
+        private System.Windows.Forms.Button btnAd4;
         private System.Windows.Forms.Panel panelAd;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnAd1_2;
-        private System.Windows.Forms.Button btnAd1_1;
+        private System.Windows.Forms.Button btnAd7;
+        private System.Windows.Forms.Button btnAd6_2;
+        private System.Windows.Forms.Panel panelAd6;
+        private System.Windows.Forms.Button btnAd8;
+        private System.Windows.Forms.Button btnAd1_3;
+        private System.Windows.Forms.Button btnAd1;
     }
 }
 

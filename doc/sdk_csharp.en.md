@@ -100,7 +100,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
       Before integrating advertisements, you must first complete the SDK initialization.
 
-      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 640*640】【Couplet 300*600】【Full-screen Interstitial 768*432】【Rewarded Video 768*432】【Exit Screen】
+      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 1024*768】【Couplet 300*600】【Rewarded Video 1024*768】【Information flow】【Embedded】【Exit Screen】
 
 ### 3.2.Splash Screen, Interstitial, Full-screen Interstitial, Banner, Couplet, and Rewarded Video Ads
 
@@ -108,19 +108,16 @@ private async void Form1_Load(object sender, EventArgs e)
 //1.Splash screen ad
 AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
 
-//2.Interstitial ad
-AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
-
-//3.Full-screen interstitial
-AdvertManager.ShowAd(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
-
-//4.Banner
+//2.Banner
 AdvertManager.ShowAd(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
 
-//5.Couplet
+//3.Interstitial ad
+AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
+
+//4.Couplet
 AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
 
-//6.Rewarded video
+//5.Rewarded video
 {
     string comment = "id123,abc,$9.99";//Pass-through parameter
     dynamic jsonObj = new
@@ -130,6 +127,36 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
     };
     string json = JsonConvert.SerializeObject(jsonObj);
     AdvertManager.ShowAd(this, json, AdType.Reward);
+}
+
+//6.Information flow
+{
+    //Dimensions are customizable (e.g., 400*50), set in the MG backend.
+    dynamic jsonObj = new
+    {
+        unitId = "6fab0e0912db497cbf886c2c4a9b131c",
+        media = "image",
+        width = panelAd6.Width,
+        height = panelAd6.Height
+    };
+    string json = JsonConvert.SerializeObject(jsonObj);
+    //Developers are responsible for maintaining the ad container.
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+}
+
+//7.Embedded
+{
+    //Dimensions are customizable (e.g., 200*200), set in the MG backend.
+    dynamic jsonObj = new
+    {
+        unitId = "e065e44302314b888dcb6074fa6efd69",
+        media = "image",
+        width = panelAd6.Width,
+        height = panelAd6.Height
+    };
+    string json = JsonConvert.SerializeObject(jsonObj);
+    //Developers are responsible for maintaining the ad container.
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
 }
 ```
 

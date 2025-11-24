@@ -100,7 +100,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
       在接入广告之前，首先需要完成SDK的初始化。
 
-      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频768\*432】【退屏】
+      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏1024\*768】【对联300\*600】【激励视频1024\*768】【信息流】【嵌入式】【退屏】
 
 ### 3.2.开屏、插屏、全屏插播、横幅、对联、激励视频广告
 
@@ -108,19 +108,16 @@ private async void Form1_Load(object sender, EventArgs e)
 //1.开屏广告
 AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
 
-//2.插屏广告
-AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
-
-//3.全屏插播
-AdvertManager.ShowAd(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
-
-//4.横幅
+//2.横幅
 AdvertManager.ShowAd(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
 
-//5.对联
+//3.插屏广告
+AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
+
+//4.对联
 AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
 
-//6.激励视频
+//5.激励视频
 {
     string comment = "id123,abc,$9.99";//透传参数  
     dynamic jsonObj = new
@@ -130,6 +127,36 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
     };
     string json = JsonConvert.SerializeObject(jsonObj);
     AdvertManager.ShowAd(this, json, AdType.Reward);
+}
+
+//6.信息流
+{
+    //尺寸自定义(示例400*50)，在MG后台设置
+    dynamic jsonObj = new
+    {
+        unitId = "6fab0e0912db497cbf886c2c4a9b131c",
+        media = "image",
+        width = panelAd6.Width,
+        height = panelAd6.Height
+    };
+    string json = JsonConvert.SerializeObject(jsonObj);
+    //需要开发者负责维护广告容器
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+}
+
+//7.嵌入式
+{
+    //尺寸自定义(示例200*200)，在MG后台设置
+    dynamic jsonObj = new
+    {
+        unitId = "e065e44302314b888dcb6074fa6efd69",
+        media = "image",
+        width = panelAd6.Width,
+        height = panelAd6.Height
+    };
+    string json = JsonConvert.SerializeObject(jsonObj);
+    //需要开发者负责维护广告容器
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
 }
 ```
 

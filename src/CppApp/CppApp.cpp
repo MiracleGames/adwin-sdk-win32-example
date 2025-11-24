@@ -163,28 +163,42 @@ std::wstring UTF8ToWide(const std::string& utf8str) {
     return std::wstring(buffer.data());
 }
 
+HWND g_hPnlSplashScreen = NULL;//开屏(全屏)
 HWND g_hPnlBanner = NULL;
 HWND g_hPnlCoupletLeft = NULL;
 HWND g_hPnlCoupletRight = NULL;
-HWND g_hPnlInterstitial = NULL;//插屏
-HWND g_hPnlFSInterstitial = NULL;//全屏插播
-HWND g_hPnlOpenScreen = NULL;//全屏插播
+HWND g_hPnlInterstitial = NULL;//插屏  
+HWND g_hPnlReward = NULL;//激励视频  
+HWND g_hPnlInformationFlow = NULL;//信息流
+HWND g_hPnlEmbedded = NULL;//嵌入式
 
 // 定义自定义消息
 #define WM_DESTROY_ADVERT (WM_USER + 300)
-#define WM_OPEN_ADVERT (WM_USER + 301)
+#define WM_SHOW_OPENSCREEN_ADVERT (WM_USER + 301)
+#define WM_SHOW_ADVERT (WM_USER + 310)
 
-void CreateInterstitialAdPannel(HWND hWnd) {
-    HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+//广告业务参数
+const char* YourAppId = "9NC834S3H84L";
+const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6";
+const char* SplashScreenUnitId = "768338453d614f3aad85eea7e3916e7e";     //开屏:1920 x 1080
+const char* ExitScreenUnitId = "7cdc7614b69c4118933e2067e6e14d01";       //退屏:1920 x 1080
+const char* BannerUnitId = "e9b34829a2ad4a959874f9a180278bfe";           //横幅:728 x 90
+const char* InterstitialUnitId = "e333abaf22404c4a8d382c1e7ba42076";     //插屏:1024 x 768
+const char* CoupletUnitId = "c68cd45e8e374ccd98a704887e5b3582";          //对联:300 x 600
+const char* RewardUnitId = "0f505442fac84f098e81d6f2ca04abe1";           //激励广告:1024x768
+const char* InformationFlowUnitId = "6fab0e0912db497cbf886c2c4a9b131c";  //信息流，由开发者维护广告控件
+const char* EmbeddedUnitId = "e065e44302314b888dcb6074fa6efd69";         //嵌入式，由开发者维护广告控件
+
+void CreateSplashScreenAdPanel(HWND hWnd) {
     RECT rect;
-    GetClientRect(hWnd, &rect);
-    int panelWidth = 640;
-    int panelHeight = 640;
-    int topMargin = (rect.bottom - rect.top - panelHeight) / 2;
-    int leftMargin = (rect.right - rect.left - panelWidth) / 2;
-
-    g_hPnlInterstitial = CreateWindowW(L"STATIC", L"This is a panel for Interstitial advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2011, minstance, NULL);
-    BringWindowToTop(g_hPnlInterstitial); 
+    if (GetClientRect(hWnd, &rect))
+    {
+        int panelWidth = rect.right - rect.left;
+        int panelHeight = rect.bottom - rect.top;
+        HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+        g_hPnlSplashScreen = CreateWindowW(L"STATIC", L"This is a panel for Open Screen advertising", WS_CHILD | WS_VISIBLE, 0, 0, panelWidth, panelHeight, hWnd, (HMENU)2011, minstance, NULL);
+        BringWindowToTop(g_hPnlSplashScreen);
+    }
 }
 
 void CreateBannerAdPanel(HWND hWnd) {
@@ -200,6 +214,19 @@ void CreateBannerAdPanel(HWND hWnd) {
     g_hPnlBanner = CreateWindowW(L"STATIC", L"This is a panel for banner advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, 728, 90, hWnd, (HMENU)2031, minstance, NULL);
 }
 
+void CreateInterstitialAdPannel(HWND hWnd) {
+    HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int panelWidth = 1024;
+    int panelHeight = 768;
+    int topMargin = (rect.bottom - rect.top - panelHeight) / 2;
+    int leftMargin = (rect.right - rect.left - panelWidth) / 2;
+
+    g_hPnlInterstitial = CreateWindowW(L"STATIC", L"This is a panel for Interstitial advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2041, minstance, NULL);
+    BringWindowToTop(g_hPnlInterstitial); 
+}
+
 void CreateCoupletAdPannel(HWND hWnd) {
     HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
     RECT rect;
@@ -209,39 +236,99 @@ void CreateCoupletAdPannel(HWND hWnd) {
     int topMargin = (rect.bottom - rect.top - panelHeight - 50);
     int leftMargin = (rect.right - rect.left - panelWidth);
 
-    g_hPnlCoupletLeft = CreateWindowW(L"STATIC", L"This is a panel for CoupletLeft advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, 0, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2041, minstance, NULL);
+    g_hPnlCoupletLeft = CreateWindowW(L"STATIC", L"This is a panel for CoupletLeft advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, 0, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2051, minstance, NULL);
     //SetWindowPos(g_hPnlCoupletLeft, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     BringWindowToTop(g_hPnlCoupletLeft);
-    g_hPnlCoupletRight = CreateWindowW(L"STATIC", L"This is a panel for CoupletRight advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2042, minstance, NULL);
+    g_hPnlCoupletRight = CreateWindowW(L"STATIC", L"This is a panel for CoupletRight advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2052, minstance, NULL);
     //SetWindowPos(g_hPnlCoupletRight, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     BringWindowToTop(g_hPnlCoupletRight);
 }
 
+void CreateRewardAdPannel(HWND hWnd) {
+    RECT rect;
+    if (GetClientRect(hWnd, &rect))
+    {
+        int panelWidth = 1024;
+        int panelHeight = 768;
+        int topMargin = (rect.bottom - rect.top - panelHeight) / 2;
+        int leftMargin = (rect.right - rect.left - panelWidth) / 2;
+
+        HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+        g_hPnlReward = CreateWindowW(L"STATIC", L"This is a panel for Reward advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2061, minstance, NULL);
+        BringWindowToTop(g_hPnlReward);
+    }
+}
+
+void CreateInformationFlowAdPanel(HWND hWnd) {
+    HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int panelWidth = 400;
+    int panelHeight = 50;
+    int topMargin = (rect.bottom - rect.top - panelHeight - 100);
+    int leftMargin = 10;
+
+    g_hPnlInformationFlow = CreateWindowW(L"STATIC", L"This is a panel for information flow advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2071, minstance, NULL);
+}
+
+void CreateEmbeddedAdPanel(HWND hWnd) {
+    HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int panelWidth = 200;
+    int panelHeight = 200;
+    int topMargin = (rect.bottom - rect.top - panelHeight - 300);
+    int leftMargin = 10;
+
+    g_hPnlEmbedded = CreateWindowW(L"STATIC", L"This is a panel for embedded advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2081, minstance, NULL);
+}
+
+//1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频 7.信息流 8.嵌入式
 void CreateControls(HWND hWnd) {
-
-    CreateWindowW(L"BUTTON", L"插屏",  WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 10, 100, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
-
-    CreateWindowW(L"BUTTON", L"全屏插播", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 45, 100, 30, hWnd, (HMENU)ID_BTN_AD2, hInst, NULL);
-
-    CreateWindowW(L"BUTTON", L"Banner",  WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 80, 100, 30, hWnd, (HMENU)ID_BTN_AD3, hInst, NULL);
-
-    CreateWindowW(L"BUTTON", L"对联", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 115, 100, 30, hWnd, (HMENU)ID_BTN_AD4, hInst, NULL);
-
-    CreateWindowW(L"BUTTON", L"激励视频",  WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 150, 100, 30, hWnd, (HMENU)ID_BTN_AD5, hInst, NULL);
-
+    int y = 10;
+    CreateWindowW(L"BUTTON", L"开屏(全屏)", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y, 100, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
     //退屏广告
     CreateWindowW(L"BUTTON", L"Exit Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 185, 100, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"Banner", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD3, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"插屏", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD4, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"插屏仅视频", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD41, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"插屏仅Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD42, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"对联", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD5, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"激励视频", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD6, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"激励视频Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD61, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"信息流", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD7, hInst, NULL);
+
+    CreateWindowW(L"BUTTON", L"嵌入式", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD8, hInst, NULL);
 
     // Log
     g_hwndLog = CreateWindow(L"EDIT", L"",
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
-        150, 10, 1200, 600, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
+        250, 10, 1200, 550, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
+
+    //信息流广告容器
+    g_hPnlInformationFlow = CreateWindowW(L"STATIC", L"This is a panel for information flow advertising", WS_CHILD | WS_VISIBLE, 10, y += 250, 400, 50, hWnd, (HMENU)2071, hInst, NULL);
+    BringWindowToTop(g_hPnlInformationFlow);
+    //嵌入式广告容器
+    g_hPnlEmbedded = CreateWindowW(L"STATIC", L"This is a panel for embedded advertising", WS_CHILD | WS_VISIBLE, 10, y += 60, 200, 200, hWnd, (HMENU)2081, hInst, NULL);
 }
 
 void InitMgAdSdk() {
@@ -280,109 +367,216 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // Parse the menu selections:
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
 
-            case ID_BTN_AD1:
-            {//插屏广告
-                CreateInterstitialAdPannel(hWnd);
+        case ID_BTN_AD1:
+        {//开屏（全屏）
+            RECT clientRect;
+            if (GetClientRect(hWnd, &clientRect)) {
+                int clientWidth = clientRect.right - clientRect.left;
+                int clientHeight = clientRect.bottom - clientRect.top;
                 nlohmann::json json_obj = {
-                   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
-                   {"media", "image"},//仅图片类型的素材，支持媒体类型(image,video,web)。可传空
-                   {"appType", 1},
-                   {"adType", 1},
-                   {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
-                   //{"handle", reinterpret_cast<int>(g_hwndMain)}
+                 {"unitId", SplashScreenUnitId},
+                 {"appType", 1},
+                 {"adType", 1},//1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频 7.信息流 8.嵌入式
+                 {"handle", reinterpret_cast<int>(g_hwndMain)},
+                 {"width", clientWidth},//开屏广告，需要传入程序的宽高
+                 {"height", clientHeight},
+                 {"parentWidth", clientWidth},
+                 {"parentHeight", clientHeight}
                 };
                 std::string jsonStr = json_obj.dump();
                 showAd(jsonStr.c_str());
             }
             break;
-            case ID_BTN_AD2:
-            {//全屏插播
-                RECT clientRect;
-                if (GetClientRect(hWnd, &clientRect)) {
-                    int clientWidth = clientRect.right - clientRect.left;
-                    int clientHeight = clientRect.bottom - clientRect.top; 
-                    nlohmann::json json_obj = {
-                     {"unitId", "d65b9c6612bd494fbd6844b490d536dc"},
-                     {"appType", 1},
-                     {"adType", 4},
-                     {"handle", reinterpret_cast<int>(g_hwndMain)},
-                     {"parentWidth", clientWidth},//全屏插播广告，需要传入程序的宽高
-                     {"parentHeight", clientHeight}
-                    };
-                    std::string jsonStr = json_obj.dump();
-                    showAd(jsonStr.c_str());
-                }
-            }
-            break;
-            case ID_BTN_AD3:
-            {//Banner
-                CreateBannerAdPanel(hWnd); 
-                int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
-                nlohmann::json json_obj = {
-                    {"unitId", "e9b34829a2ad4a959874f9a180278bfe"},
-                    {"media", "image"},
-                    {"appType", 1},
-                    {"adType", 2},
-                    {"handle", containerHandle}
-                };
-                std::string jsonStr = json_obj.dump(); 
-                showAd(jsonStr.c_str());
-            }
-            break;
-            case ID_BTN_AD4:
-            {//对联
-                CreateCoupletAdPannel(hWnd);
-                nlohmann::json json_obj = {
-                    {"unitId", "c68cd45e8e374ccd98a704887e5b3582"},
-                    {"appType", 1},
-                    {"adType", 3},
-                    {"handle", reinterpret_cast<int>(g_hPnlCoupletLeft)},
-                    {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
-                };
-                std::string jsonStr = json_obj.dump();
-                showAd(jsonStr.c_str());
-            }
-            break;
-            case ID_BTN_AD5:
-            {//激励视频
-                RECT clientRect;
-                if (GetClientRect(hWnd, &clientRect)) {
-                    int clientWidth = clientRect.right - clientRect.left;
-                    int clientHeight = clientRect.bottom - clientRect.top;
-                    nlohmann::json json_obj = {
-                     {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
-                     {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
-                     {"appType", 1},
-                     {"adType", 7},
-                     {"handle", reinterpret_cast<int>(g_hwndMain)},
-                     {"parentWidth", clientWidth},//激励视频广告，需要传入程序的宽高
-                     {"parentHeight", clientHeight}
-                    };
-                    std::string jsonStr = json_obj.dump();
-                    showAd(jsonStr.c_str());
-                } 
-            }
-            break; 
-            case ID_BTN_EXITAD:
-                showExitAdBlocking(hDLL);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
         }
-        break;
+        case ID_BTN_AD3:
+        {//Banner
+            CreateBannerAdPanel(hWnd);
+            int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
+            nlohmann::json json_obj = {
+                {"unitId", BannerUnitId},
+                {"media", "image"},
+                {"appType", 1},
+                {"adType", 3},//Banner
+                {"handle", containerHandle}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD4:
+        {//插屏
+            CreateInterstitialAdPannel(hWnd);
+            nlohmann::json json_obj = {
+               {"unitId", InterstitialUnitId},
+               {"appType", 1},
+               {"adType", 4},
+               {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
+               //{"handle", reinterpret_cast<int>(g_hwndMain)}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD41:
+        {//插屏广告
+            CreateInterstitialAdPannel(hWnd);
+            nlohmann::json json_obj = {
+               {"unitId", InterstitialUnitId},
+               {"media", "video"},//仅视频类型的素材，支持媒体类型(image,video,web)。可传空
+               {"appType", 1},
+               {"adType", 4},
+               {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
+               //{"handle", reinterpret_cast<int>(g_hwndMain)}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD42:
+        {//插屏广告
+            CreateInterstitialAdPannel(hWnd);
+            nlohmann::json json_obj = {
+               {"unitId", InterstitialUnitId},
+               {"media", "web"},//支持媒体类型(image,video,web)。可传空
+               {"appType", 1},
+               {"adType", 4},
+               {"handle", reinterpret_cast<int>(g_hPnlInterstitial)},
+               {"width", 1024 },
+               {"height", 768}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD5:
+        {//对联
+            CreateCoupletAdPannel(hWnd);
+            nlohmann::json json_obj = {
+                {"unitId", CoupletUnitId},
+                {"appType", 1},
+                {"adType", 5},
+                {"handle", reinterpret_cast<int>(g_hPnlCoupletLeft)},
+                {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD6:
+        {
+            CreateRewardAdPannel(hWnd);
+            nlohmann::json json_obj = {
+                 {"unitId", RewardUnitId},
+                 {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
+                 {"appType", 1},
+                 {"adType", 6},//激励视频
+                 {"handle", reinterpret_cast<int>(g_hPnlReward)},
+                 {"width", 1024},
+                 {"height", 768}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD61:
+        {
+            CreateRewardAdPannel(hWnd);
+            nlohmann::json json_obj = {
+                 {"unitId", RewardUnitId},
+                 {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
+                 {"appType", 1},
+                 {"adType", 6},//激励视频
+                 {"media", "web"},
+                 {"handle", reinterpret_cast<int>(g_hPnlReward)},
+                 {"width", 1024},
+                 {"height", 768}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD7:
+        {
+            int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
+            nlohmann::json json_obj = {
+                {"unitId", InformationFlowUnitId},
+                {"media", "image"},
+                {"appType", 1},
+                {"adType", 7},//信息流
+                {"width", 400},//信息流，需要传入程序的宽高
+                {"height", 50},
+                {"handle", containerHandle}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD8:
+        {
+            int containerHandle = reinterpret_cast<int>(g_hPnlEmbedded);
+            nlohmann::json json_obj = {
+                {"unitId", EmbeddedUnitId},
+                {"media", "image"},
+                {"appType", 1},
+                {"adType", 8},//嵌入式
+                {"width", 200},//嵌入式，需要传入程序的宽高
+                {"height", 200},
+                {"handle", containerHandle}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_EXITAD:
+            showExitAdBlocking(hDLL);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+    }
+    break;
+    case WM_SHOW_OPENSCREEN_ADVERT:
+    {
+        CreateSplashScreenAdPanel(g_hwndMain);//创建开屏广告容器
+        RECT clientRect;
+        if (GetClientRect(g_hwndMain, &clientRect)) {
+            int clientWidth = clientRect.right - clientRect.left;
+            int clientHeight = clientRect.bottom - clientRect.top;
+            nlohmann::json json_obj = {
+             {"unitId", SplashScreenUnitId},
+             {"appType", 1},
+             {"adType", 1},
+             {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
+             {"width", clientWidth},//开屏广告，需要传入程序的宽高
+             {"height", clientHeight},
+             {"parentWidth", clientWidth},
+             {"parentHeight", clientHeight}
+            };
+            std::string jsonStr = json_obj.dump();
+            showAd(jsonStr.c_str());
+        }
+        return 0;
+    }
+    case WM_SHOW_ADVERT: {
+        const char* json = reinterpret_cast<const char*>(lParam);
+        if (json) {
+            showAd(json);
+            free((void*)json);
+        }
+        return 0;
+    }
     case WM_DESTROY_ADVERT: {
         const char* json = reinterpret_cast<const char*>(lParam);
         if (json) {
@@ -390,17 +584,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 nlohmann::json json_obj = nlohmann::json::parse(json);
                 std::string unitId = json_obj["unitId"];
-                if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
+                if (unitId == SplashScreenUnitId)
+                {//删除开屏广告容器
+                    DestroyWindow(g_hPnlSplashScreen);
+                    g_hPnlSplashScreen = NULL;
+                }
+                if (unitId == InterstitialUnitId)
                 {//删除插屏广告容器
                     DestroyWindow(g_hPnlInterstitial);
                     g_hPnlInterstitial = NULL;
                 }
-                else if (unitId == "e9b34829a2ad4a959874f9a180278bfe")
+                else if (unitId == BannerUnitId)
                 {//删除Banner广告容器
                     DestroyWindow(g_hPnlBanner);
                     g_hPnlBanner = NULL;
                 }
-                else if (unitId == "c68cd45e8e374ccd98a704887e5b3582")
+                else if (unitId == CoupletUnitId)
                 {//删除对联广告容器
                     int coupletType = json_obj["coupletType"];
                     if (coupletType == 1)//删除左侧容器
@@ -414,9 +613,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         g_hPnlCoupletRight = NULL;
                     }
                 }
-                else if (unitId == "0f505442fac84f098e81d6f2ca04abe1")
+                else if (unitId == RewardUnitId)
                 {//激励视频
-                    int completeStatus = json_obj["completeStatus"]; 
+                    DestroyWindow(g_hPnlReward);
+                    g_hPnlReward = NULL;
+
+                    int completeStatus = json_obj["completeStatus"];
                     if (completeStatus == 1)
                     {
                         std::string resourceId = json_obj["resourceId"];
@@ -428,25 +630,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                         //向MG核销订单
                         reportAdRewardFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
-                        AppendLog(L"ReportAdRewardFulfillment Async: %hs", rewardId.c_str());
+                        AppendLog(L"reportAdRewardFulfillment Async: %hs", rewardId.c_str());
                     }
                 }
             }
-            catch (const std::exception&)
-            { 
-            }
-            free((void*)json);
-        }
-        return 0;
-    }
-    case WM_OPEN_ADVERT: {//开屏广告
-        const char* json = reinterpret_cast<const char*>(lParam);
-        if (json) {
-            try
-            {
-                showAd(json);
-            }
-            catch (const std::exception&)
+            catch (const std::exception& ex)
             {
             }
             free((void*)json);
@@ -454,13 +642,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
     }
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
-        break;
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        // TODO: Add any drawing code that uses hdc here...
+        EndPaint(hWnd, &ps);
+    }
+    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
@@ -472,38 +660,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 #pragma region 1.SDK Initialisation
 void initialize(HINSTANCE hdll) {
-    Initialize func = (Initialize)GetProcAddress(hdll, "Initialize");
-    func("9NC834S3H84L",
-        "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6");
+    try
+    {
+        Initialize func = (Initialize)GetProcAddress(hdll, "Initialize");
+        func(YourAppId, YourSecretKey);
+    }
+    catch (const std::exception&)
+    { 
+    } 
 }
 // Initialise callback functions
 void onInitCompleteEvent(char* s) {
-    nlohmann::json json_obj = nlohmann::json::parse(s); //{"success":true,"data":""}
-    bool success = json_obj["success"];
-    if (success) {
-        AppendLog(L"Initialization successful");
+    try
+    {
+        nlohmann::json json_obj = nlohmann::json::parse(s); //{"success":true,"data":""}
+        bool success = json_obj["success"];
+        if (success) {
+            AppendLog(L"Initialization successful");
 
-        setupExitAd(hDLL);//Exit Ad
+            setupExitAd(hDLL);//Exit Ad
 
-
-        RECT clientRect;
-        if (GetClientRect(g_hwndMain, &clientRect)) {
-            int clientWidth = clientRect.right - clientRect.left;
-            int clientHeight = clientRect.bottom - clientRect.top;
-            nlohmann::json json_obj = {
-             {"unitId", "768338453d614f3aad85eea7e3916e7e"},
-             {"appType", 1},
-             {"adType", 5},
-             {"handle", reinterpret_cast<int>(g_hwndMain)},
-             {"parentWidth", clientWidth},//开屏广告，需要传入程序的宽高
-             {"parentHeight", clientHeight}
-            };
-            std::string jsonStr = json_obj.dump();
-
-            char* jsonCopy = _strdup(jsonStr.c_str());
-            PostMessage(g_hwndMain, WM_OPEN_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));//Open screen advertisement
+            PostMessage(g_hwndMain, WM_SHOW_OPENSCREEN_ADVERT, 0, NULL);//Open screen advertisement 
         }
     }
+    catch (const std::exception&)
+    { 
+    } 
 }
 #pragma endregion
 
@@ -511,7 +693,7 @@ void onInitCompleteEvent(char* s) {
 //1.Load the advert on the fallback screen, after SDK initialisation is complete
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
-        func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01")); // passing in the key value of the advert's primary key that was created in the mg backend.
+        func(const_cast<char*>(ExitScreenUnitId)); // passing in the key value of the advert's primary key that was created in the mg backend.
 
         AppendLog(L"Load the resources for MG exit ad");
     }
@@ -519,9 +701,15 @@ void setupExitAd(HINSTANCE hdll) {
 
 //2.Turn on the fallback screen advert
 void showExitAdBlocking(HINSTANCE hdll) {
-    if (auto func = (ShowExitAdBlocking)GetProcAddress(hdll, "ShowExitAdBlocking")) {
-        func();
-        AppendLog(L"show fallback screen advert");
+    try
+    {
+        if (auto func = (ShowExitAdBlocking)GetProcAddress(hdll, "ShowExitAdBlocking")) {
+            func();
+            AppendLog(L"show fallback screen advert");
+        } 
+    }
+    catch (const std::exception&)
+    {
     }
 }
 
@@ -537,8 +725,8 @@ void onAdCloseEvent(char* s) {
 }
 //4.Open MG Advert window
 void showAd(const char* json) {
-    ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
-    if (func) {
+    try
+    {
         // 确保在调用前COM已初始化
         if (!g_comInitialized) {
             HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -547,13 +735,19 @@ void showAd(const char* json) {
             }
         }
 
-        int result = func(json);
-        if (result == 1) {
-            // success 
+        ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
+        if (func) {
+            int result = func(json);
+            if (result == 1) {
+                // success 
+            }
         }
     }
+    catch (const std::exception& ex)
+    {
+    }
 }
-//5.Open MG Advert window
+//5.Report to MG
 void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId) {
     ReportAdRewardFulfillment func = (ReportAdRewardFulfillment)GetProcAddress(hDLL, "ReportAdRewardFulfillment");
     if (func) {

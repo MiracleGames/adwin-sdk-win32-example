@@ -1,11 +1,18 @@
-﻿using MiracleGamesAd;
-using MiracleGamesAd.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MiracleGamesAd;
+using MiracleGamesAd.Models;
+using MiracleGamesAd.Services.Core.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CSharpApp
 {
@@ -14,40 +21,50 @@ namespace CSharpApp
         public Form1()
         {
             InitializeComponent();
+            ApplicationManager.InitCompleteEvent += ApplicationManager_InitCompleteEvent;
             AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
             AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
         }
 
-        private void ShowMessage(string message)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new Action(() => ShowMessage(message)));
-            }
-            else
-            {
-                StringBuilder sb = new StringBuilder(textBox1.Text);
-                sb.Append("\r\n" + message);
-                textBox1.Text = sb.ToString();
-            }
-        }
+        //private const string YourAppId = "9NC834S3H84L";
+        //private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQghx/v4QmkCnmkmg1R6GM4SNz2iAoySVvlqn7Fup8Cm7qgCgYIKoZIzj0DAQehRANCAASpcj05FNuGhUGCrM3vANm2LgQKOcr1c+cSrQ3RlqgdJVrRJ5h9OOXODSBYtfob56KAUZwr3wVoCnlktGrHklIN";
+        //private const string SplashScreenUnitId = "bae06ac0a86c481a84f85e1fd279a9df";     //开屏:1920 x 1080
+        //private const string ExitScreenUnitId = "d7dc3fda95474a6992b13b931f13ff44";       //退屏:1920 x 1080
+        //private const string BannerUnitId = "ac852ab582d7474db72f0ec6c527c62e";           //横幅:728 x 90
+        //private const string InterstitialUnitId = "65fabafea4f04d8ea8b08167868df897";     //插屏:1024 x 768
+        //private const string CoupletUnitId = "b5fefaab81ea468e8338316c08f14313";          //对联:300 x 600
+        //private const string RewardUnitId = "34670d1775734a4cb3489b0aba3b1e51";           //激励广告:1024x768
+        //private const string InformationFlowUnitId = "c2697177417f4132a4f8d201ac9dc164";  //信息流，由开发者维护广告控件
+        //private const string EmbeddedUnitId = "430e7fdbfd2844a9abb41867c990490b";         //嵌入式，由开发者维护广告控件
+
+        //测试环境参数  
+        private const string YourAppId = "9NC834S3H84L";
+        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6";
+        private const string SplashScreenUnitId = "768338453d614f3aad85eea7e3916e7e";     //开屏:1920 x 1080
+        private const string ExitScreenUnitId = "7cdc7614b69c4118933e2067e6e14d01";       //退屏:1920 x 1080
+        private const string BannerUnitId = "e9b34829a2ad4a959874f9a180278bfe";           //横幅:728 x 90
+        private const string InterstitialUnitId = "e333abaf22404c4a8d382c1e7ba42076";     //插屏:1024 x 768
+        private const string CoupletUnitId = "c68cd45e8e374ccd98a704887e5b3582";          //对联:300 x 600
+        private const string RewardUnitId = "0f505442fac84f098e81d6f2ca04abe1";           //激励广告:1024x768
+        private const string InformationFlowUnitId = "6fab0e0912db497cbf886c2c4a9b131c";  //信息流，由开发者维护广告控件
+        private const string EmbeddedUnitId = "e065e44302314b888dcb6074fa6efd69";         //嵌入式，由开发者维护广告控件
+
         private void AdvertManager_AdCloseEvent(object sender, string e)
         {
             ShowMessage("广告被关闭 " + e);
 
             //普通广告 {"unitId":"6bf68881673540788d096b9ea4a3cedb","advertStatus":1,"resourceId":"68d20656bd9558abfdf43465","materialId":"d235efa86ccf44acbe7053af760031b6"}
-            //激励视频广告 {"unitId":"0f505442fac84f098e81d6f2ca04abe1","advertStatus":1,"completeStatus":1,"resourceId":"68ecb9eb20f045c603867874","materialId":"b0817d87ee2544629bac1933a60238d2","comment":"id123%2Cabc%2C%249.99","rewardId":"D1E593C16BBD412CA880FD89F0450A14"}
+            //激励视频广告 {"unitId":"5c1e9aae78014be7908bf035848d7075","advertStatus":1,"completeStatus":1,"resourceId":"68ecb9eb20f045c603867874","materialId":"b0817d87ee2544629bac1933a60238d2","comment":"id123%2Cabc%2C%249.99","rewardId":"D1E593C16BBD412CA880FD89F0450A14"}
 
             JObject jsonObject = JObject.Parse(e);
             string unitId = (string)jsonObject["unitId"];
 
-            if (unitId == "0f505442fac84f098e81d6f2ca04abe1")//激励视频，根据返回结果发奖励道具
+            if (unitId == RewardUnitId)//激励视频，根据返回结果发奖励道具
             {
                 int completeStatus = (int)jsonObject["completeStatus"];
                 string resourceId = (string)jsonObject["resourceId"];
                 string materialId = (string)jsonObject["materialId"];
                 string rewardId = (string)jsonObject["rewardId"];
-                string comment = (string)jsonObject["comment"];//透传参数
                 if (completeStatus == 1)
                 {
                     //视频播放完毕，下发奖励道具 
@@ -55,11 +72,7 @@ namespace CSharpApp
 
                     Task.Run(async () =>
                     {
-                        var result = await AdvertManager.ReportAdRewardFulfillment(unitId, resourceId, materialId, rewardId);//向MG报告
-                        if (result.ReturnValue)
-                        {
-                            ShowMessage("激励视频广告，奖励道具已向MG核销");
-                        }
+                        _ = await AdvertManager.ReportAdRewardFulfillment(unitId, resourceId, materialId, rewardId);//向MG报告
                     });
                 }
             }
@@ -70,74 +83,67 @@ namespace CSharpApp
             ShowMessage("广告被点击 " + e);
         }
 
-        private async void Form1_Load(object sender, EventArgs e)
+        private void ApplicationManager_InitCompleteEvent(object sender, string e)
         {
-            string message;
-
-            var result = await ApplicationManager.Initialize("9NC834S3H84L",
-                "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6");
-            if (result.ReturnValue)
+            if (ApplicationManager.InitializeCompletedSuccessfully)
             {
-                //初始化成功.
-                message = $"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}";
+                ShowMessage($"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
 
-                //开屏广告
-                AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
-
-                //退屏广告；Step1.初始化成功之后，加载退屏广告资源
-                AdvertManager.SetupExitAd("7cdc7614b69c4118933e2067e6e14d01");
+                //退屏广告Step1.初始化成功之后，加载退屏广告资源
+                AdvertManager.SetupExitAd(ExitScreenUnitId);
             }
             else
             {
-                message = $"初始化失败";
+                ShowMessage("初始化失败");
             }
+        }
 
-            this.Invoke(new Action(() =>
+        private async void Form1_Load(object sender, EventArgs e)
+        {
+            var result = await ApplicationManager.Initialize(YourAppId, YourSecretKey);
+            if (result.ReturnValue)
             {
-                textBox1.Text = message;
-            }));
+                //初始化成功... 
+
+                AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);//开屏广告
+            }
         }
 
         /// <summary>
-        /// 插屏广告 
-        /// 640*640
+        /// 开屏(全屏)广告
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnAd1_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
-        }
-
-        private void btnAd1_2_Click(object sender, EventArgs e)
-        {
-            AdvertManager.ShowAd(this, "{\"unitId\": \"e333abaf22404c4a8d382c1e7ba42076\",\"media\":\"web\"}", AdType.Interstitial);
-        }
-
-        private void btnAd1_1_Click(object sender, EventArgs e)
-        {
-            //指定图片类型 和 广告容器
-            dynamic jsonObj = new
-            {
-                unitId = "e333abaf22404c4a8d382c1e7ba42076",
-                media = "image",
-                width = panelAd.Width,//当容器大小与MG广告标准尺寸有差异时，需要开发者传入容器的尺寸
-                height = panelAd.Height
-            };
-            string json = JsonConvert.SerializeObject(jsonObj);
-            AdvertManager.ShowAd(this.panelAd, json, AdType.Interstitial);
+            AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);
         }
 
         /// <summary>
-        /// 全屏插播广告
-        /// 768*432
+        /// 插屏广告  image,video,web
+        /// 1024*768
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnAd2_Click(object sender, EventArgs e)
+        private void btnAd4_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, "d65b9c6612bd494fbd6844b490d536dc", AdType.FullScreenInterstitial);
+            AdvertManager.ShowAd(this, InterstitialUnitId, AdType.Interstitial);
         }
+
+        private void btnAd4_2_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"video\"}", AdType.Interstitial);
+        }
+
+        private void btnAd4_3_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"web\"}", AdType.Interstitial);
+        }
+
+        private void btnAd4_1_Click(object sender, EventArgs e)
+        {
+
+        } 
 
         /// <summary>
         /// 横幅广告
@@ -147,7 +153,7 @@ namespace CSharpApp
         /// <param name="e"></param>
         private void btnAd3_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
+            AdvertManager.ShowAd(this, BannerUnitId, AdType.Banner);
         }
 
         /// <summary>
@@ -156,9 +162,9 @@ namespace CSharpApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnAd4_Click(object sender, EventArgs e)
+        private void btnAd5_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, "{\"unitId\": \"c68cd45e8e374ccd98a704887e5b3582\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\"}", AdType.Couplet);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + CoupletUnitId + "\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\"}", AdType.Couplet);
         }
 
         /// <summary>
@@ -167,18 +173,46 @@ namespace CSharpApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnAd5_Click(object sender, EventArgs e)
+        private void btnAd6_Click(object sender, EventArgs e)
         {
-            string comment = "id123,abc,$9.99";//透传参数  
-            dynamic jsonObj = new
-            {
-                unitId = "0f505442fac84f098e81d6f2ca04abe1",
-                comment = Uri.EscapeDataString(comment)//透传参数,需url编码
-            };
-            string json = JsonConvert.SerializeObject(jsonObj);
-            AdvertManager.ShowAd(this, json, AdType.Reward);
+            string comment = "id123,abc,$9.99";//透传参数,需url编码
+            comment = Uri.EscapeDataString(comment);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardUnitId + "\",\"comment\":\"" + comment + "\"}", AdType.Reward);
+        }
+        private void btnAd6_2_Click(object sender, EventArgs e)
+        {
+            string comment = "id123,abc,$9.99";//透传参数,需url编码
+            comment = Uri.EscapeDataString(comment);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardUnitId + "\",\"comment\":\"" + comment + "\",\"media\":\"web\"}", AdType.Reward);
         }
 
+        //信息流
+        private void btnAd7_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = InformationFlowUnitId,//尺寸自定义，MG后台设置400*50
+                media = "image",
+                width = panelAd6.Width,
+                height = panelAd6.Height
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+        }
+
+        //嵌入式
+        private void btnAd8_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = EmbeddedUnitId,//尺寸自定义，MG后台设置200*200
+                media = "image",
+                width = panelAd.Width,
+                height = panelAd.Height
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd, json, AdType.Embedded);
+        }
         /// <summary>
         /// 删除广告位
         /// 前端功能，由开发者负责删除指定控件;
@@ -186,11 +220,17 @@ namespace CSharpApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnAd6_Click(object sender, EventArgs e)
+        private void btnDeleteAd_Click(object sender, EventArgs e)
         {
             for (int i = panelAd.Controls.Count; i > 0; i--)//删除指定容器内的广告
             {
                 Control item = panelAd.Controls[0];
+                item.Dispose();
+                panelAd.Controls.Remove(item);
+            }
+            for (int i = panelAd6.Controls.Count; i > 0; i--)//删除指定容器内的广告
+            {
+                Control item = panelAd6.Controls[0];
                 item.Dispose();
                 panelAd.Controls.Remove(item);
             }
@@ -226,5 +266,18 @@ namespace CSharpApp
             _ = AdvertManager.ShowExitAdBlocking();
         }
 
+        private void ShowMessage(string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => ShowMessage(message)));
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder(textBox1.Text);
+                sb.Append("\r\n" + message);
+                textBox1.Text = sb.ToString();
+            }
+        }
     }
 }
