@@ -111,7 +111,7 @@ void onInitCompleteEvent(char* s) {
 
       Before integrating advertisements, you must first complete the SDK initialization.
 
-      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 640*640】【Couplet 300*600】【Full-screen Interstitial 768*432】【Rewarded Video 1024*768】【Exit Screen】
+      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 1024*768】【Couplet 300*600】【Rewarded Video 1024*768】【Information flow】【Embedded】【Exit Screen】
 
 ### 3.2.Splash Screen, Interstitial, Full-screen Interstitial, Banner, Couplet, and Rewarded Video Ads
 
@@ -137,56 +137,28 @@ void showAd(const char* json) {
 
 
 //1. Splash screen ad
-RECT clientRect;
-if (GetClientRect(g_hwndMain, &clientRect)) {
+{
+  CreateSplashScreenAdPanel(g_hwndMain);//Create a splash screen ad container
+  RECT clientRect;
+  if (GetClientRect(g_hwndMain, &clientRect)) {
     int clientWidth = clientRect.right - clientRect.left;
     int clientHeight = clientRect.bottom - clientRect.top;
     nlohmann::json json_obj = {
      {"unitId", "768338453d614f3aad85eea7e3916e7e"},
      {"appType", 1},
-     {"adType", 5},
-     {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//Splash screen ad requires container width and height
+     {"adType", 1},
+     {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
+     {"width", clientWidth},//For splash screen ads, the program's width and height must be provided.
+     {"height", clientHeight},
+     {"parentWidth", clientWidth},
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
-    ShowAd(jsonStr.c_str());//Splash screen ad
-}
-
-//2. Interstitial ad
-{
-  CreateInterstitialAdPannel(hWnd);//Container maintained by developer
-  nlohmann::json json_obj = {
-   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
-   {"media", "image"},//Only image type materials, supported media types (image,video,web). Can be empty
-   {"appType", 1},
-   {"adType", 1},
-   {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
-  };
-  std::string jsonStr = json_obj.dump();
-  ShowAd(jsonStr.c_str()); 
-}
-
-//3. Full-screen interstitial
-{
-  RECT clientRect;
-  if (GetClientRect(hWnd, &clientRect)) {
-      int clientWidth = clientRect.right - clientRect.left;
-      int clientHeight = clientRect.bottom - clientRect.top; 
-      nlohmann::json json_obj = {
-       {"unitId", "d65b9c6612bd494fbd6844b490d536dc"},
-       {"appType", 1},
-       {"adType", 4},
-       {"handle", reinterpret_cast<int>(g_hwndMain)},
-       {"parentWidth", clientWidth},//Full-screen interstitial ad requires program width and height
-       {"parentHeight", clientHeight}
-      };
-      std::string jsonStr = json_obj.dump();
-      ShowAd(jsonStr.c_str());
+    ShowAd(jsonStr.c_str()); 
   }
 }
 
-//4. Banner
+//2. Banner
 {
   CreateBannerAdPanel(hWnd); 
   int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
@@ -194,20 +166,34 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
       {"unitId", "e9b34829a2ad4a959874f9a180278bfe"},
       {"media", "image"},
       {"appType", 1},
-      {"adType", 2},
+      {"adType", 3},
       {"handle", containerHandle}
   };
   std::string jsonStr = json_obj.dump(); 
   ShowAd(jsonStr.c_str());
 }
 
-//5. Couplet
+//3. Interstitial ad
+{
+  CreateInterstitialAdPannel(hWnd);//Container maintained by developer
+  nlohmann::json json_obj = {
+   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
+   {"media", "image"},//Only image type materials, supported media types (image,video,web). Can be empty
+   {"appType", 1},
+   {"adType", 4},
+   {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
+  };
+  std::string jsonStr = json_obj.dump();
+  ShowAd(jsonStr.c_str()); 
+} 
+
+//4. Couplet
 {
   CreateCoupletAdPannel(hWnd);
   nlohmann::json json_obj = {
       {"unitId", "c68cd45e8e374ccd98a704887e5b3582"},
       {"appType", 1},
-      {"adType", 3},
+      {"adType", 5},
       {"handle", reinterpret_cast<int>(g_hPnlCoupletLeft)},
       {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
   };
@@ -217,22 +203,52 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
 
 //6. Rewarded video
 {
-  RECT clientRect;
-  if (GetClientRect(hWnd, &clientRect)) {
-    int clientWidth = clientRect.right - clientRect.left;
-    int clientHeight = clientRect.bottom - clientRect.top;
-    nlohmann::json json_obj = {
+  CreateRewardAdPannel(hWnd);
+  nlohmann::json json_obj = {
      {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
      {"comment", "abc123"},//Pass-through parameter, frontend needs to urlEncode; will be returned unchanged in the ad close callback event
      {"appType", 1},
      {"adType", 7},
-     {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//Rewarded video ad requires program width and height
-     {"parentHeight", clientHeight}
+     {"handle", reinterpret_cast<int>(g_hPnlReward)},
+     {"width", 1024},
+     {"height", 768}
+   };
+   std::string jsonStr = json_obj.dump();
+   ShowAd(jsonStr.c_str());
+}
+
+//6.Information flow
+{ 
+    //Developers are responsible for maintaining the ad container.
+    int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
+    nlohmann::json json_obj = {
+        {"unitId", "6fab0e0912db497cbf886c2c4a9b131c"},
+        {"media", "image"},
+        {"appType", 1},
+        {"adType", 7},//Information flow
+        {"width", 400},//Customize dimensions (e.g., 400×50), set in MG backend
+        {"height", 50},
+        {"handle", containerHandle}
     };
     std::string jsonStr = json_obj.dump();
-    ShowAd(jsonStr.c_str());
-  } 
+    showAd(jsonStr.c_str());  
+}
+
+//7.Embedded
+{ 
+    //Developers are responsible for maintaining the ad container.
+    int containerHandle = reinterpret_cast<int>(g_hPnlEmbedded);
+    nlohmann::json json_obj = {
+        {"unitId", "e065e44302314b888dcb6074fa6efd69"},
+        {"media", "image"},
+        {"appType", 1},
+        {"adType", 8},//Embedded
+        {"width", 200},//Customize dimensions (e.g., 200×200), set in MG backend
+        {"height", 200},
+        {"handle", containerHandle}
+    };
+    std::string jsonStr = json_obj.dump();
+    showAd(jsonStr.c_str()); 
 }
 ```
 
@@ -310,7 +326,12 @@ case WM_DESTROY_ADVERT: {
         {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
-            if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
+            if (unitId == "768338453d614f3aad85eea7e3916e7e")
+            {//Remove the splash screen ad container
+                DestroyWindow(g_hPnlSplashScreen);
+                g_hPnlSplashScreen = NULL;
+            }
+            else if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
             {//Destroy interstitial ad container
                 DestroyWindow(g_hPnlInterstitial);
                 g_hPnlInterstitial = NULL;
@@ -336,6 +357,9 @@ case WM_DESTROY_ADVERT: {
             }
             else if (unitId == "0f505442fac84f098e81d6f2ca04abe1")
             {//Rewarded video
+                DestroyWindow(g_hPnlReward);
+                g_hPnlReward = NULL;
+
                 int completeStatus = json_obj["completeStatus"]; 
                 if (completeStatus == 1)
                 {

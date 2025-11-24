@@ -28,7 +28,7 @@
 
 # 1.简介
 
-      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频1024\*768】【退屏】
+      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏1024\*768】【对联300\*600】【激励视频1024\*768】【退屏】
 
 # 2.在调用广告的页面，引入我们的javascript文件
 
@@ -42,7 +42,7 @@
 
 | 参数名 | 参数描述 |
 | --- | --- |
-| jsonParam | 广告位参数，格式为json字符串。<br>*   unitId = 广告位ID<br>    <br>*   adType = 广告位类型：1.插屏 2.Banner 3.对联 4.全屏插播 5.开屏 6.退屏 7.激励视频<br>    <br>*   media = 指定素材类型：image,video,web；可不传。<br>    <br>*   comment = 仅激励视频广告支持，透传参数，传递前进行urlencode。在广告关闭事件中会得到此参数。 |
+| jsonParam | 广告位参数，格式为json字符串。<br>*   unitId = 广告位ID<br>    <br>*   adType = 广告位类型：1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频<br>    <br>*   media = 指定素材类型：image,video,web；可不传。<br>    <br>*   comment = 仅激励视频广告支持，透传参数，传递前进行urlencode。在广告关闭事件中会得到此参数。 |
 
 ```javascript
 function clientShowMgAd(unitId, adType, media, comment) {

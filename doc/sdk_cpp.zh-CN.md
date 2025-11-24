@@ -76,6 +76,9 @@ void onInitCompleteEvent(char* s) {
         //退屏广告；Step1.初始化成功之后，加载退屏广告资源
         setupExitAd(hDLL);
 
+        //以下内容需要在UI线程中进行
+        //...
+        CreateSplashScreenAdPanel(g_hwndMain);//创建开屏广告容器
         RECT clientRect;
         if (GetClientRect(g_hwndMain, &clientRect)) {
             int clientWidth = clientRect.right - clientRect.left;
@@ -84,9 +87,9 @@ void onInitCompleteEvent(char* s) {
              {"unitId", "768338453d614f3aad85eea7e3916e7e"},
              {"appType", 1},
              {"adType", 5},
-             {"handle", reinterpret_cast<int>(g_hwndMain)},
-             {"parentWidth", clientWidth},//开屏广告，需要传入容器的宽高
-             {"parentHeight", clientHeight}
+             {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
+             {"width", clientWidth},//开屏广告，需要传入程序的宽高
+             {"height", clientHeight},
             };
             std::string jsonStr = json_obj.dump();
             showAd(jsonStr.c_str());//开屏广告
@@ -111,7 +114,7 @@ void onInitCompleteEvent(char* s) {
 
       在接入广告之前，首先需要完成SDK的初始化。
 
-      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏640\*640】【对联300\*600】【全屏插播768\*432】【激励视频1024\*768】【退屏】
+      Miracle Games 广告支持【开屏1920\*1080】【横幅728\*90】【插屏1024\*768】【对联300\*600】【激励视频1024\*768】【信息流】【嵌入式】【退屏】
 
 ### 3.2.开屏、插屏、全屏插播、横幅、对联、激励视频广告
 
@@ -137,56 +140,27 @@ void showAd(const char* json) {
 
 
 //1.开屏广告
-RECT clientRect;
-if (GetClientRect(g_hwndMain, &clientRect)) {
+{
+  CreateSplashScreenAdPanel(g_hwndMain);//创建开屏广告容器
+  RECT clientRect;
+  if (GetClientRect(g_hwndMain, &clientRect)) {
     int clientWidth = clientRect.right - clientRect.left;
     int clientHeight = clientRect.bottom - clientRect.top;
     nlohmann::json json_obj = {
      {"unitId", "768338453d614f3aad85eea7e3916e7e"},
      {"appType", 1},
-     {"adType", 5},
-     {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//开屏广告，需要传入容器的宽高
+     {"adType", 1},
+     {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
+     {"width", clientWidth},//开屏广告，需要传入程序的宽高
+     {"height", clientHeight},
+     {"parentWidth", clientWidth},
      {"parentHeight", clientHeight}
     };
     std::string jsonStr = json_obj.dump();
     ShowAd(jsonStr.c_str());//开屏广告
-}
-
-//2.插屏广告
-{
-  CreateInterstitialAdPannel(hWnd);//由开发者维护容器
-  nlohmann::json json_obj = {
-   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
-   {"media", "image"},//仅图片类型的素材，支持媒体类型(image,video,web)。可传空
-   {"appType", 1},
-   {"adType", 1},
-   {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
-  };
-  std::string jsonStr = json_obj.dump();
-  ShowAd(jsonStr.c_str()); 
-}
-
-//3.全屏插播
-{
-  RECT clientRect;
-  if (GetClientRect(hWnd, &clientRect)) {
-      int clientWidth = clientRect.right - clientRect.left;
-      int clientHeight = clientRect.bottom - clientRect.top; 
-      nlohmann::json json_obj = {
-       {"unitId", "d65b9c6612bd494fbd6844b490d536dc"},
-       {"appType", 1},
-       {"adType", 4},
-       {"handle", reinterpret_cast<int>(g_hwndMain)},
-       {"parentWidth", clientWidth},//全屏插播广告，需要传入程序的宽高
-       {"parentHeight", clientHeight}
-      };
-      std::string jsonStr = json_obj.dump();
-      ShowAd(jsonStr.c_str());
   }
 }
-
-//4.横幅
+//2.横幅
 {
   CreateBannerAdPanel(hWnd); 
   int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
@@ -194,20 +168,34 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
       {"unitId", "e9b34829a2ad4a959874f9a180278bfe"},
       {"media", "image"},
       {"appType", 1},
-      {"adType", 2},
+      {"adType", 3},
       {"handle", containerHandle}
   };
   std::string jsonStr = json_obj.dump(); 
   ShowAd(jsonStr.c_str());
 }
 
-//5.对联
+//3.插屏广告
+{
+  CreateInterstitialAdPannel(hWnd);//由开发者维护容器
+  nlohmann::json json_obj = {
+   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
+   {"media", "image"},//仅图片类型的素材，支持媒体类型(image,video,web)。可传空
+   {"appType", 1},
+   {"adType", 4},
+   {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
+  };
+  std::string jsonStr = json_obj.dump();
+  ShowAd(jsonStr.c_str()); 
+}
+ 
+//4.对联
 {
   CreateCoupletAdPannel(hWnd);
   nlohmann::json json_obj = {
       {"unitId", "c68cd45e8e374ccd98a704887e5b3582"},
       {"appType", 1},
-      {"adType", 3},
+      {"adType", 5},
       {"handle", reinterpret_cast<int>(g_hPnlCoupletLeft)},
       {"handle2", reinterpret_cast<int>(g_hPnlCoupletRight)}
   };
@@ -215,24 +203,54 @@ if (GetClientRect(g_hwndMain, &clientRect)) {
   ShowAd(jsonStr.c_str()); 
 }
 
-//6.激励视频
+//5.激励视频
 {
-  RECT clientRect;
-  if (GetClientRect(hWnd, &clientRect)) {
-    int clientWidth = clientRect.right - clientRect.left;
-    int clientHeight = clientRect.bottom - clientRect.top;
-    nlohmann::json json_obj = {
-     {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
-     {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
-     {"appType", 1},
-     {"adType", 7},
-     {"handle", reinterpret_cast<int>(g_hwndMain)},
-     {"parentWidth", clientWidth},//激励视频广告，需要传入程序的宽高
-     {"parentHeight", clientHeight}
+  CreateRewardAdPannel(hWnd);
+  nlohmann::json json_obj = {
+        {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
+        {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
+        {"appType", 1},
+        {"adType", 6},
+        {"handle", reinterpret_cast<int>(g_hPnlReward)},
+        {"width", 1024},
+        {"height", 768}
     };
     std::string jsonStr = json_obj.dump();
     ShowAd(jsonStr.c_str());
-  } 
+}
+
+//6.信息流
+{ 
+    //需要开发者负责维护广告容器
+    int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
+    nlohmann::json json_obj = {
+        {"unitId", "6fab0e0912db497cbf886c2c4a9b131c"},
+        {"media", "image"},
+        {"appType", 1},
+        {"adType", 7},//信息流
+        {"width", 400},//尺寸自定义(示例400*50)，在MG后台设置
+        {"height", 50},
+        {"handle", containerHandle}
+    };
+    std::string jsonStr = json_obj.dump();
+    showAd(jsonStr.c_str());  
+}
+
+//7.嵌入式
+{ 
+    //需要开发者负责维护广告容器
+    int containerHandle = reinterpret_cast<int>(g_hPnlEmbedded);
+    nlohmann::json json_obj = {
+        {"unitId", "e065e44302314b888dcb6074fa6efd69"},
+        {"media", "image"},
+        {"appType", 1},
+        {"adType", 8},//嵌入式
+        {"width", 200},//尺寸自定义(示例200*200)，在MG后台设置
+        {"height", 200},
+        {"handle", containerHandle}
+    };
+    std::string jsonStr = json_obj.dump();
+    showAd(jsonStr.c_str()); 
 }
 ```
 
@@ -310,7 +328,12 @@ case WM_DESTROY_ADVERT: {
         {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
-            if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
+            if (unitId == "768338453d614f3aad85eea7e3916e7e")
+                {//删除开屏广告容器
+                    DestroyWindow(g_hPnlSplashScreen);
+                    g_hPnlSplashScreen = NULL;
+            }
+            else if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
             {//删除插屏广告容器
                 DestroyWindow(g_hPnlInterstitial);
                 g_hPnlInterstitial = NULL;
@@ -336,6 +359,9 @@ case WM_DESTROY_ADVERT: {
             }
             else if (unitId == "0f505442fac84f098e81d6f2ca04abe1")
             {//激励视频
+                DestroyWindow(g_hPnlReward);
+                g_hPnlReward = NULL;
+
                 int completeStatus = json_obj["completeStatus"]; 
                 if (completeStatus == 1)
                 {
