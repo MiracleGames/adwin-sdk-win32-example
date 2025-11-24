@@ -151,12 +151,12 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
     {
         unitId = "e065e44302314b888dcb6074fa6efd69",
         media = "image",
-        width = panelAd6.Width,
-        height = panelAd6.Height
+        width = panelAd.Width,
+        height = panelAd.Height
     };
     string json = JsonConvert.SerializeObject(jsonObj);
     //需要开发者负责维护广告容器
-    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+    AdvertManager.ShowAd(this.panelAd, json, AdType.Embedded);
 }
 ```
 
