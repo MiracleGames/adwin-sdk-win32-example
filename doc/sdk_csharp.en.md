@@ -55,15 +55,27 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 ### 2.2.SDK Initialization
 
 ```c#
+private const string YourAppId = "69316b6861328938223cc124";
+private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
+private const string SplashScreenUnitId = "b871f83c5e8845f1b43325561bcdd6c7";     //Splash screen ad:1920 x 1080
+private const string ExitScreenUnitId = "5076eab6ae1042b6b92f73ea01981475";       //Exit Screen ad:1920 x 1080
+private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";           //Banner:728 x 90
+private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";     //Interstitial ad:1024 x 768
+private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";          //Couplet:300 x 600
+private const string RewardUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded video:1024x768
+private const string InformationFlowUnitId = "f152f6caf7a8440f8510bc31534baf4e";  //Information flow. Developers are responsible for maintaining the ad container.
+private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded. Developers are responsible for maintaining the ad container.
+
 private async void Form1_Load(object sender, EventArgs e)
 {
-    string message;
+    ApplicationManager.SetAppId(YourAppId, YourSecretKey);
+    ApplicationManager.OpenCmp(this);
+    var result = await ApplicationManager.Initialize(); 
 
-    var result = await ApplicationManager.Initialize("YourAppID","YourSecretKey");
     if (result.ReturnValue)
     {
         //Initialization successful.
-        message = $"Initialization completed: Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}";
+        ShowMessage($"Initialization completed: Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
 
         //Splash screen ad
         AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
@@ -73,13 +85,8 @@ private async void Form1_Load(object sender, EventArgs e)
     }
     else
     {
-        message = $"Initialization failed";
-    }
-
-    this.Invoke(new Action(() =>
-    {
-        textBox1.Text = message;
-    }));
+         ShowMessage("Initialization failed");
+    } 
 }
 ```
 
@@ -106,23 +113,23 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ```c#
 //1.Splash screen ad
-AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
+AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);
 
 //2.Banner
-AdvertManager.ShowAd(this, "e9b34829a2ad4a959874f9a180278bfe", AdType.Banner);
+AdvertManager.ShowAd(this, BannerUnitId, AdType.Banner);
 
 //3.Interstitial ad
-AdvertManager.ShowAd(this, "e333abaf22404c4a8d382c1e7ba42076", AdType.Interstitial);
+AdvertManager.ShowAd(this, InterstitialUnitId, AdType.Interstitial);
 
 //4.Couplet
-AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
+AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
 
 //5.Rewarded video
 {
     string comment = "id123,abc,$9.99";//Pass-through parameter
     dynamic jsonObj = new
     {
-        unitId = "0f505442fac84f098e81d6f2ca04abe1",
+        unitId = RewardUnitId,
         comment = Uri.EscapeDataString(comment)//Pass-through parameter, requires URL encoding
     };
     string json = JsonConvert.SerializeObject(jsonObj);
@@ -134,7 +141,7 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
     //Dimensions are customizable (e.g., 400*50), set in the MG backend.
     dynamic jsonObj = new
     {
-        unitId = "6fab0e0912db497cbf886c2c4a9b131c",
+        unitId = InformationFlowUnitId,
         media = "image",
         width = panelAd6.Width,
         height = panelAd6.Height
@@ -149,7 +156,7 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
     //Dimensions are customizable (e.g., 200*200), set in the MG backend.
     dynamic jsonObj = new
     {
-        unitId = "e065e44302314b888dcb6074fa6efd69",
+        unitId = EmbeddedUnitId,
         media = "image",
         width = panelAd.Width,
         height = panelAd.Height
@@ -171,7 +178,7 @@ AdvertManager.ShowAd(this, "c68cd45e8e374ccd98a704887e5b3582", AdType.Couplet);
 ```c#
 //Exit screen ad
 //Step 1. Load exit ad resources after successful initialization
-AdvertManager.SetupExitAd("7cdc7614b69c4118933e2067e6e14d01");
+AdvertManager.SetupExitAd(ExitScreenUnitId);
 
 
 // Exit screen ad
@@ -217,7 +224,7 @@ private void AdvertManager_AdCloseEvent(object sender, string e)
     JObject jsonObject = JObject.Parse(e);
     string unitId = (string)jsonObject["unitId"];
 
-    if (unitId == "0f505442fac84f098e81d6f2ca04abe1")//Rewarded video, issue reward items based on the result
+    if (unitId == RewardUnitId)//Rewarded video, issue reward items based on the result
     {
         int completeStatus = (int)jsonObject["completeStatus"];
         string resourceId = (string)jsonObject["resourceId"];

@@ -29,6 +29,11 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnDeleteCmp = new System.Windows.Forms.Button();
+            this.btnAd5_2 = new System.Windows.Forms.Button();
+            this.btn4_3 = new System.Windows.Forms.Button();
+            this.btn4_2 = new System.Windows.Forms.Button();
+            this.btnAd3_2 = new System.Windows.Forms.Button();
             this.btnAd1 = new System.Windows.Forms.Button();
             this.btnAd1_3 = new System.Windows.Forms.Button();
             this.panelAd6 = new System.Windows.Forms.Panel();
@@ -43,6 +48,10 @@
             this.btnAd4 = new System.Windows.Forms.Button();
             this.panelAd = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.panelAd6_2 = new System.Windows.Forms.Panel();
+            this.btnAd7_2 = new System.Windows.Forms.Button();
+            this.btnAd8_2 = new System.Windows.Forms.Button();
+            this.panelAd8_2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -57,6 +66,15 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd8_2);
+            this.splitContainer1.Panel1.Controls.Add(this.panelAd8_2);
+            this.splitContainer1.Panel1.Controls.Add(this.panelAd6_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd7_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btnDeleteCmp);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd5_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btn4_3);
+            this.splitContainer1.Panel1.Controls.Add(this.btn4_2);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAd3_2);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd1);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd1_3);
             this.splitContainer1.Panel1.Controls.Add(this.panelAd6);
@@ -74,9 +92,59 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(1264, 791);
-            this.splitContainer1.SplitterDistance = 420;
+            this.splitContainer1.Size = new System.Drawing.Size(1334, 791);
+            this.splitContainer1.SplitterDistance = 443;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // btnDeleteCmp
+            // 
+            this.btnDeleteCmp.Location = new System.Drawing.Point(295, 713);
+            this.btnDeleteCmp.Name = "btnDeleteCmp";
+            this.btnDeleteCmp.Size = new System.Drawing.Size(109, 23);
+            this.btnDeleteCmp.TabIndex = 23;
+            this.btnDeleteCmp.Text = "删除CMP";
+            this.btnDeleteCmp.UseVisualStyleBackColor = true;
+            this.btnDeleteCmp.Click += new System.EventHandler(this.btnDeleteCmp_Click);
+            // 
+            // btnAd5_2
+            // 
+            this.btnAd5_2.Location = new System.Drawing.Point(144, 129);
+            this.btnAd5_2.Name = "btnAd5_2";
+            this.btnAd5_2.Size = new System.Drawing.Size(109, 23);
+            this.btnAd5_2.TabIndex = 22;
+            this.btnAd5_2.Text = "对联，仅Web";
+            this.btnAd5_2.UseVisualStyleBackColor = true;
+            this.btnAd5_2.Click += new System.EventHandler(this.btnAd5_2_Click);
+            // 
+            // btn4_3
+            // 
+            this.btn4_3.Location = new System.Drawing.Point(295, 87);
+            this.btn4_3.Name = "btn4_3";
+            this.btn4_3.Size = new System.Drawing.Size(109, 23);
+            this.btn4_3.TabIndex = 21;
+            this.btn4_3.Text = "插屏，仅Web";
+            this.btn4_3.UseVisualStyleBackColor = true;
+            this.btn4_3.Click += new System.EventHandler(this.btn4_3_Click);
+            // 
+            // btn4_2
+            // 
+            this.btn4_2.Location = new System.Drawing.Point(144, 87);
+            this.btn4_2.Name = "btn4_2";
+            this.btn4_2.Size = new System.Drawing.Size(109, 23);
+            this.btn4_2.TabIndex = 20;
+            this.btn4_2.Text = "插屏，仅视频";
+            this.btn4_2.UseVisualStyleBackColor = true;
+            this.btn4_2.Click += new System.EventHandler(this.btn4_2_Click);
+            // 
+            // btnAd3_2
+            // 
+            this.btnAd3_2.Location = new System.Drawing.Point(144, 49);
+            this.btnAd3_2.Name = "btnAd3_2";
+            this.btnAd3_2.Size = new System.Drawing.Size(109, 23);
+            this.btnAd3_2.TabIndex = 19;
+            this.btnAd3_2.Text = "横幅，仅Web";
+            this.btnAd3_2.UseVisualStyleBackColor = true;
+            this.btnAd3_2.Click += new System.EventHandler(this.btnAd3_2_Click);
             // 
             // btnAd1
             // 
@@ -90,13 +158,13 @@
             // 
             // btnAd1_3
             // 
-            this.btnAd1_3.Location = new System.Drawing.Point(295, 87);
+            this.btnAd1_3.Location = new System.Drawing.Point(295, 12);
             this.btnAd1_3.Name = "btnAd1_3";
             this.btnAd1_3.Size = new System.Drawing.Size(109, 23);
             this.btnAd1_3.TabIndex = 17;
-            this.btnAd1_3.Text = "插屏广告，仅Web";
+            this.btnAd1_3.Text = "开屏广告，仅Web";
             this.btnAd1_3.UseVisualStyleBackColor = true;
-            this.btnAd1_3.Click += new System.EventHandler(this.btnAd4_3_Click);
+            this.btnAd1_3.Click += new System.EventHandler(this.btnAd1_3_Click);
             // 
             // panelAd6
             // 
@@ -108,7 +176,7 @@
             // 
             // btnAd8
             // 
-            this.btnAd8.Location = new System.Drawing.Point(14, 317);
+            this.btnAd8.Location = new System.Drawing.Point(12, 415);
             this.btnAd8.Name = "btnAd8";
             this.btnAd8.Size = new System.Drawing.Size(124, 23);
             this.btnAd8.TabIndex = 15;
@@ -138,13 +206,13 @@
             // 
             // btnAd1_2
             // 
-            this.btnAd1_2.Location = new System.Drawing.Point(144, 87);
+            this.btnAd1_2.Location = new System.Drawing.Point(144, 12);
             this.btnAd1_2.Name = "btnAd1_2";
             this.btnAd1_2.Size = new System.Drawing.Size(109, 23);
             this.btnAd1_2.TabIndex = 12;
-            this.btnAd1_2.Text = "插屏广告，仅视频";
+            this.btnAd1_2.Text = "开屏，仅视频";
             this.btnAd1_2.UseVisualStyleBackColor = true;
-            this.btnAd1_2.Click += new System.EventHandler(this.btnAd4_2_Click);
+            this.btnAd1_2.Click += new System.EventHandler(this.btnAd1_2_Click);
             // 
             // btnAd6
             // 
@@ -158,7 +226,7 @@
             // 
             // btnDeleteAd
             // 
-            this.btnDeleteAd.Location = new System.Drawing.Point(295, 565);
+            this.btnDeleteAd.Location = new System.Drawing.Point(295, 663);
             this.btnDeleteAd.Name = "btnDeleteAd";
             this.btnDeleteAd.Size = new System.Drawing.Size(109, 23);
             this.btnDeleteAd.TabIndex = 10;
@@ -199,7 +267,7 @@
             // panelAd
             // 
             this.panelAd.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panelAd.Location = new System.Drawing.Point(14, 346);
+            this.panelAd.Location = new System.Drawing.Point(12, 444);
             this.panelAd.Name = "panelAd";
             this.panelAd.Size = new System.Drawing.Size(200, 200);
             this.panelAd.TabIndex = 3;
@@ -210,14 +278,50 @@
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(840, 791);
+            this.textBox1.Size = new System.Drawing.Size(887, 791);
             this.textBox1.TabIndex = 0;
+            // 
+            // panelAd6_2
+            // 
+            this.panelAd6_2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelAd6_2.Location = new System.Drawing.Point(14, 335);
+            this.panelAd6_2.Name = "panelAd6_2";
+            this.panelAd6_2.Size = new System.Drawing.Size(400, 50);
+            this.panelAd6_2.TabIndex = 25;
+            // 
+            // btnAd7_2
+            // 
+            this.btnAd7_2.Location = new System.Drawing.Point(14, 306);
+            this.btnAd7_2.Name = "btnAd7_2";
+            this.btnAd7_2.Size = new System.Drawing.Size(124, 23);
+            this.btnAd7_2.TabIndex = 24;
+            this.btnAd7_2.Text = "7.信息流，仅Web";
+            this.btnAd7_2.UseVisualStyleBackColor = true;
+            this.btnAd7_2.Click += new System.EventHandler(this.btnAd7_2_Click);
+            // 
+            // btnAd8_2
+            // 
+            this.btnAd8_2.Location = new System.Drawing.Point(230, 415);
+            this.btnAd8_2.Name = "btnAd8_2";
+            this.btnAd8_2.Size = new System.Drawing.Size(124, 23);
+            this.btnAd8_2.TabIndex = 27;
+            this.btnAd8_2.Text = "8.嵌入式，仅Web";
+            this.btnAd8_2.UseVisualStyleBackColor = true;
+            this.btnAd8_2.Click += new System.EventHandler(this.btnAd8_2_Click);
+            // 
+            // panelAd8_2
+            // 
+            this.panelAd8_2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelAd8_2.Location = new System.Drawing.Point(230, 444);
+            this.panelAd8_2.Name = "panelAd8_2";
+            this.panelAd8_2.Size = new System.Drawing.Size(200, 200);
+            this.panelAd8_2.TabIndex = 26;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 791);
+            this.ClientSize = new System.Drawing.Size(1334, 791);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -249,6 +353,15 @@
         private System.Windows.Forms.Button btnAd8;
         private System.Windows.Forms.Button btnAd1_3;
         private System.Windows.Forms.Button btnAd1;
+        private System.Windows.Forms.Button btnAd3_2;
+        private System.Windows.Forms.Button btn4_3;
+        private System.Windows.Forms.Button btn4_2;
+        private System.Windows.Forms.Button btnAd5_2;
+        private System.Windows.Forms.Button btnDeleteCmp;
+        private System.Windows.Forms.Panel panelAd6_2;
+        private System.Windows.Forms.Button btnAd7_2;
+        private System.Windows.Forms.Button btnAd8_2;
+        private System.Windows.Forms.Panel panelAd8_2;
     }
 }
 

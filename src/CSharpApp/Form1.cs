@@ -21,33 +21,21 @@ namespace CSharpApp
         public Form1()
         {
             InitializeComponent();
-            ApplicationManager.InitCompleteEvent += ApplicationManager_InitCompleteEvent;
+            ApplicationManager.CmpClosedEvent += ApplicationManager_CmpClosedEvent;
             AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
             AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
         }
 
-        //private const string YourAppId = "9NC834S3H84L";
-        //private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQghx/v4QmkCnmkmg1R6GM4SNz2iAoySVvlqn7Fup8Cm7qgCgYIKoZIzj0DAQehRANCAASpcj05FNuGhUGCrM3vANm2LgQKOcr1c+cSrQ3RlqgdJVrRJ5h9OOXODSBYtfob56KAUZwr3wVoCnlktGrHklIN";
-        //private const string SplashScreenUnitId = "bae06ac0a86c481a84f85e1fd279a9df";     //开屏:1920 x 1080
-        //private const string ExitScreenUnitId = "d7dc3fda95474a6992b13b931f13ff44";       //退屏:1920 x 1080
-        //private const string BannerUnitId = "ac852ab582d7474db72f0ec6c527c62e";           //横幅:728 x 90
-        //private const string InterstitialUnitId = "65fabafea4f04d8ea8b08167868df897";     //插屏:1024 x 768
-        //private const string CoupletUnitId = "b5fefaab81ea468e8338316c08f14313";          //对联:300 x 600
-        //private const string RewardUnitId = "34670d1775734a4cb3489b0aba3b1e51";           //激励广告:1024x768
-        //private const string InformationFlowUnitId = "c2697177417f4132a4f8d201ac9dc164";  //信息流，由开发者维护广告控件
-        //private const string EmbeddedUnitId = "430e7fdbfd2844a9abb41867c990490b";         //嵌入式，由开发者维护广告控件
-
-        //测试环境参数  
-        private const string YourAppId = "9NC834S3H84L";
-        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgiJm0JnjgpDjxEKKzH/7kc3N8r+nvmHko1EPV6My6WG6gCgYIKoZIzj0DAQehRANCAAR2z1Eih/EOFjBMbpgMdvfYjUqFEVaRbnEeYEYZrp4K3pGj1YoY0/dmRRQ58OaHfxKotbFDMwNDBpuHwtxTqGE6";
-        private const string SplashScreenUnitId = "768338453d614f3aad85eea7e3916e7e";     //开屏:1920 x 1080
-        private const string ExitScreenUnitId = "7cdc7614b69c4118933e2067e6e14d01";       //退屏:1920 x 1080
-        private const string BannerUnitId = "e9b34829a2ad4a959874f9a180278bfe";           //横幅:728 x 90
-        private const string InterstitialUnitId = "e333abaf22404c4a8d382c1e7ba42076";     //插屏:1024 x 768
-        private const string CoupletUnitId = "c68cd45e8e374ccd98a704887e5b3582";          //对联:300 x 600
-        private const string RewardUnitId = "0f505442fac84f098e81d6f2ca04abe1";           //激励广告:1024x768
-        private const string InformationFlowUnitId = "6fab0e0912db497cbf886c2c4a9b131c";  //信息流，由开发者维护广告控件
-        private const string EmbeddedUnitId = "e065e44302314b888dcb6074fa6efd69";         //嵌入式，由开发者维护广告控件
+        private const string YourAppId = "69316b6861328938223cc124";
+        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
+        private const string SplashScreenUnitId = "b871f83c5e8845f1b43325561bcdd6c7";     //开屏:1920 x 1080
+        private const string ExitScreenUnitId = "5076eab6ae1042b6b92f73ea01981475";       //退屏:1920 x 1080
+        private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";           //横幅:728 x 90
+        private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";     //插屏:1024 x 768
+        private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";          //对联:300 x 600
+        private const string RewardUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //激励广告:1024x768
+        private const string InformationFlowUnitId = "f152f6caf7a8440f8510bc31534baf4e";  //信息流，由开发者维护广告控件
+        private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //嵌入式，由开发者维护广告控件
 
         private void AdvertManager_AdCloseEvent(object sender, string e)
         {
@@ -83,29 +71,32 @@ namespace CSharpApp
             ShowMessage("广告被点击 " + e);
         }
 
-        private void ApplicationManager_InitCompleteEvent(object sender, string e)
+        private void ApplicationManager_CmpClosedEvent(object sender, string e)
         {
-            if (ApplicationManager.InitializeCompletedSuccessfully)
-            {
-                ShowMessage($"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
-
-                //退屏广告Step1.初始化成功之后，加载退屏广告资源
-                AdvertManager.SetupExitAd(ExitScreenUnitId);
-            }
-            else
-            {
-                ShowMessage("初始化失败");
-            }
+            ShowMessage("CMP授权结果 " + e);
         }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            var result = await ApplicationManager.Initialize(YourAppId, YourSecretKey);
+            ApplicationManager.SetAppId(YourAppId, YourSecretKey);
+            ApplicationManager.OpenCmp(this);
+            var result = await ApplicationManager.Initialize();
             if (result.ReturnValue)
             {
                 //初始化成功... 
+                ShowMessage($"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
+
+                //退屏广告Step1.初始化成功之后，加载退屏广告资源
+                AdvertManager.SetupExitAd(ExitScreenUnitId);
+
+                //...
+
 
                 AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);//开屏广告
+            }
+            else
+            {
+                ShowMessage("初始化失败");
             }
         }
 
@@ -118,6 +109,15 @@ namespace CSharpApp
         {
             AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);
         }
+        private void btnAd1_2_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashScreenUnitId + "\",\"media\":\"video\"}", AdType.FullScreen);
+        }
+
+        private void btnAd1_3_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashScreenUnitId + "\",\"media\":\"web\"}", AdType.FullScreen);
+        }
 
         /// <summary>
         /// 插屏广告  image,video,web
@@ -129,21 +129,14 @@ namespace CSharpApp
         {
             AdvertManager.ShowAd(this, InterstitialUnitId, AdType.Interstitial);
         }
-
-        private void btnAd4_2_Click(object sender, EventArgs e)
+        private void btn4_2_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"video\"}", AdType.Interstitial);
         }
-
-        private void btnAd4_3_Click(object sender, EventArgs e)
+        private void btn4_3_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"web\"}", AdType.Interstitial);
         }
-
-        private void btnAd4_1_Click(object sender, EventArgs e)
-        {
-
-        } 
 
         /// <summary>
         /// 横幅广告
@@ -156,6 +149,11 @@ namespace CSharpApp
             AdvertManager.ShowAd(this, BannerUnitId, AdType.Banner);
         }
 
+        private void btnAd3_2_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + BannerUnitId + "\",\"media\":\"web\"}", AdType.Banner);
+        }
+
         /// <summary>
         /// 对联广告
         /// 300*600
@@ -165,6 +163,10 @@ namespace CSharpApp
         private void btnAd5_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + CoupletUnitId + "\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\"}", AdType.Couplet);
+        }
+        private void btnAd5_2_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + CoupletUnitId + "\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\",\"media\":\"web\"}", AdType.Couplet);
         }
 
         /// <summary>
@@ -199,6 +201,18 @@ namespace CSharpApp
             string json = JsonConvert.SerializeObject(jsonObj);
             AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
         }
+        private void btnAd7_2_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = InformationFlowUnitId,//尺寸自定义，MG后台设置400*50
+                media = "web",
+                width = panelAd6_2.Width,
+                height = panelAd6_2.Height
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd6_2, json, AdType.InformationFlow);
+        }
 
         //嵌入式
         private void btnAd8_Click(object sender, EventArgs e)
@@ -213,6 +227,20 @@ namespace CSharpApp
             string json = JsonConvert.SerializeObject(jsonObj);
             AdvertManager.ShowAd(this.panelAd, json, AdType.Embedded);
         }
+
+        private void btnAd8_2_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = EmbeddedUnitId,//尺寸自定义，MG后台设置200*200
+                media = "web",
+                width = panelAd8_2.Width,
+                height = panelAd8_2.Height
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd8_2, json, AdType.Embedded);
+        }
+
         /// <summary>
         /// 删除广告位
         /// 前端功能，由开发者负责删除指定控件;
@@ -277,6 +305,20 @@ namespace CSharpApp
                 StringBuilder sb = new StringBuilder(textBox1.Text);
                 sb.Append("\r\n" + message);
                 textBox1.Text = sb.ToString();
+            }
+        }
+
+        private void btnDeleteCmp_Click(object sender, EventArgs e)
+        {
+            for (int i = this.Controls.Count; i > 0; i--)
+            {
+                Control item = this.Controls[0];
+                if (item.Name == "UCCmpView")
+                {
+                    item.Dispose();
+                    this.Controls.Remove(item);
+                    return;
+                }
             }
         }
     }
