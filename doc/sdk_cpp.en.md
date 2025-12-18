@@ -47,52 +47,163 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 ### 2.2.SDK Initialization
 
 ```c++
-void InitMgAdSdk() {
+void InitMgAdSdk(HWND hWnd) {
     if (hDLL) return;
 
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
-        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) //Callback function after initialization is complete
+        // Register the CMP callback event
+        if (auto func = (CmpSizeChangedEvent)GetProcAddress(hDLL, "CmpSizeChangedEvent")) // CMP container size changed
+            func(onCmpSizeChangedEvent);
+        if (auto func = (CmpClosedEvent)GetProcAddress(hDLL, "CmpClosedEvent")) // CMP closed
+            func(onCmpClosedEvent);
+
+        // Register the initialisation completion callback event
+        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) // Callback function after initialization is complete
             func(onInitCompleteEvent);
-        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //Callback function for ad close event
+        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) // Callback function for ad close event
             func(onAdCloseEvent);
 
-        initialize(hDLL); //SDK initialization
+        //1. Set parameters
+        setAppId(hDLL, YourAppId, YourSecretKey);
+
+        //2. First, determine whether to pop up CMP
+        if (isOpenCmp(hDLL))
+        {
+            RECT clientRect;
+            if (GetClientRect(hWnd, &clientRect)) {
+                int panelWidth = clientRect.right - clientRect.left;
+                int panelHeight = clientRect.bottom - clientRect.top;
+
+                //2.1. Create CMP container
+                HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+                g_hPnlCmp = CreateWindowW(L"STATIC", L"This is a panel for CMP", WS_CHILD | WS_VISIBLE, 0, 0, panelWidth, 50, hWnd, (HMENU)3011, minstance, NULL);
+                BringWindowToTop(g_hPnlCmp);
+
+                //2.2. Pop up CMP
+                nlohmann::json json_obj = {
+                 {"handle", reinterpret_cast<int>(g_hPnlCmp)},
+                 {"parentWidth", panelWidth},
+                 {"parentHeight", panelHeight}
+                };
+                std::string jsonStr = json_obj.dump();
+                openCmp(hDLL, jsonStr.c_str());
+            }
+        }
+
+        //3.SDK initialisation
+        initialize(hDLL);
     }
 }
 
-void initialize(HINSTANCE hdll) {
-    SetupAsync func = (Initialize)GetProcAddress(hdll, "Initialize");
-    func("YourAppID","YourSecretKey");
+#pragma region 1.CMP
+void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey) {
+    try
+    {
+        SetAppId func = (SetAppId)GetProcAddress(hdll, "SetAppId");
+        func(appId, secretKey);
+    }
+    catch (const std::exception&)
+    {
+    }
 }
+bool isOpenCmp(HINSTANCE hdll) {
+    bool result = false;
+    try
+    {
+        IsOpenCmp func = (IsOpenCmp)GetProcAddress(hdll, "IsOpenCmp");
+        result = func();
+    }
+    catch (const std::exception&)
+    {
+    }
+    AppendLog(L"Cmp IsOpen Flag  %hs", result ? "true" : "false");
+    return result;
+}
+void openCmp(HINSTANCE hdll, const char* jsonParam) {
+    try
+    {
+        OpenCmp func = (OpenCmp)GetProcAddress(hdll, "OpenCmp");
+        g_cmpSdkControlHandle = func(jsonParam);
+    }
+    catch (const std::exception&)
+    {
+    }
+}
+// Cmp size changed callback functions
+void onCmpSizeChangedEvent(char* s) {
+    try
+    {
+        AppendLog(L"Cmp size changed  %hs", s);
+        nlohmann::json json_obj = nlohmann::json::parse(s); //{"width":900,"height":440}
+        int width = json_obj["width"];
+        int height = json_obj["height"];
+        g_cmpChangedWidth = width;
+        g_cmpChangedHeight = height;
 
-//Callback function when initialization is complete
-void onInitCompleteEvent(char* s) {
-    nlohmann::json json_obj = nlohmann::json::parse(s);
-    bool success = json_obj["success"];
-    if (success) {
-        AppendLog(L"Initialization successful);
-
-        //Exit screen ad; Step 1. Load exit ad resources after successful initialization
-        setupExitAd(hDLL);
-
-        RECT clientRect;
-        if (GetClientRect(g_hwndMain, &clientRect)) {
-            int clientWidth = clientRect.right - clientRect.left;
-            int clientHeight = clientRect.bottom - clientRect.top;
-            nlohmann::json json_obj = {
-             {"unitId", "768338453d614f3aad85eea7e3916e7e"},
-             {"appType", 1},
-             {"adType", 5},
-             {"handle", reinterpret_cast<int>(g_hwndMain)},
-             {"parentWidth", clientWidth},//Splash screen ad requires container width and height
-             {"parentHeight", clientHeight}
-            };
-            std::string jsonStr = json_obj.dump();
-            showAd(jsonStr.c_str());//Splash screen ad
+        RECT parentRect;
+        if (GetClientRect(g_hwndMain, &parentRect)) {
+            int parentWidth = parentRect.right - parentRect.left;
+            int parentHeight = parentRect.bottom - parentRect.top;
+            int x = (parentWidth - width) / 2;
+            int y = (parentHeight - height) / 2;
+            SetWindowPos(g_hPnlCmp, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
         }
     }
+    catch (const std::exception&)
+    {
+    }
 }
+void onCmpClosedEvent(char* s) {
+    try
+    {
+        g_cmpChangedWidth = 0;
+        g_cmpChangedHeight = 0;
+
+        // Remove CMP container
+        /* DestroyWindow(g_hPnlCmp);
+        g_hPnlCmp = NULL;*/
+        PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
+
+        AppendLog(L"Cmp container destroyed");
+    }
+    catch (const std::exception&)
+    {
+    }
+}
+#pragma endregion
+
+#pragma region 2.SDK Initialisation
+void initialize(HINSTANCE hdll) {
+    try
+    {
+        Initialize func = (Initialize)GetProcAddress(hdll, "Initialize");
+        func();
+    }
+    catch (const std::exception&)
+    {
+    }
+}
+
+// Initialise callback functions
+void onInitCompleteEvent(char* s) {
+    try
+    {
+        nlohmann::json json_obj = nlohmann::json::parse(s); //{"success":true,"data":""}
+        bool success = json_obj["success"];
+        if (success) {
+            AppendLog(L"Initialization successful");
+
+            setupExitAd(hDLL);//Exit Ad
+
+            //PostMessage(g_hwndMain, WM_SHOW_OPENSCREEN_ADVERT, 0, NULL);//Open screen advertisement 
+        }
+    }
+    catch (const std::exception&)
+    {
+    }
+}
+#pragma endregion
 ```
 
 ### 2.3.Possible reasons for initialization failure include:
@@ -137,17 +248,16 @@ void showAd(const char* json) {
 
 
 //1. Splash screen ad
-{
-  CreateSplashScreenAdPanel(g_hwndMain);//Create a splash screen ad container
+{ 
   RECT clientRect;
   if (GetClientRect(g_hwndMain, &clientRect)) {
     int clientWidth = clientRect.right - clientRect.left;
     int clientHeight = clientRect.bottom - clientRect.top;
     nlohmann::json json_obj = {
-     {"unitId", "768338453d614f3aad85eea7e3916e7e"},
+     {"unitId", SplashScreenUnitId},
      {"appType", 1},
      {"adType", 1},
-     {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
+     {"handle", reinterpret_cast<int>(g_hwndMain)},
      {"width", clientWidth},//For splash screen ads, the program's width and height must be provided.
      {"height", clientHeight},
      {"parentWidth", clientWidth},
@@ -163,7 +273,7 @@ void showAd(const char* json) {
   CreateBannerAdPanel(hWnd); 
   int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
   nlohmann::json json_obj = {
-      {"unitId", "e9b34829a2ad4a959874f9a180278bfe"},
+      {"unitId", BannerUnitId},
       {"media", "image"},
       {"appType", 1},
       {"adType", 3},
@@ -177,7 +287,7 @@ void showAd(const char* json) {
 {
   CreateInterstitialAdPannel(hWnd);//Container maintained by developer
   nlohmann::json json_obj = {
-   {"unitId", "e333abaf22404c4a8d382c1e7ba42076"},
+   {"unitId", InterstitialUnitId},
    {"media", "image"},//Only image type materials, supported media types (image,video,web). Can be empty
    {"appType", 1},
    {"adType", 4},
@@ -191,7 +301,7 @@ void showAd(const char* json) {
 {
   CreateCoupletAdPannel(hWnd);
   nlohmann::json json_obj = {
-      {"unitId", "c68cd45e8e374ccd98a704887e5b3582"},
+      {"unitId", CoupletUnitId},
       {"appType", 1},
       {"adType", 5},
       {"handle", reinterpret_cast<int>(g_hPnlCoupletLeft)},
@@ -201,11 +311,11 @@ void showAd(const char* json) {
   ShowAd(jsonStr.c_str()); 
 }
 
-//6. Rewarded video
+//5. Rewarded video
 {
   CreateRewardAdPannel(hWnd);
   nlohmann::json json_obj = {
-     {"unitId", "0f505442fac84f098e81d6f2ca04abe1"},
+     {"unitId", RewardUnitId},
      {"comment", "abc123"},//Pass-through parameter, frontend needs to urlEncode; will be returned unchanged in the ad close callback event
      {"appType", 1},
      {"adType", 7},
@@ -222,7 +332,7 @@ void showAd(const char* json) {
     //Developers are responsible for maintaining the ad container.
     int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
     nlohmann::json json_obj = {
-        {"unitId", "6fab0e0912db497cbf886c2c4a9b131c"},
+        {"unitId", InformationFlowUnitId},
         {"media", "image"},
         {"appType", 1},
         {"adType", 7},//Information flow
@@ -239,7 +349,7 @@ void showAd(const char* json) {
     //Developers are responsible for maintaining the ad container.
     int containerHandle = reinterpret_cast<int>(g_hPnlEmbedded);
     nlohmann::json json_obj = {
-        {"unitId", "e065e44302314b888dcb6074fa6efd69"},
+        {"unitId", EmbeddedUnitId},
         {"media", "image"},
         {"appType", 1},
         {"adType", 8},//Embedded
@@ -265,7 +375,7 @@ void showAd(const char* json) {
 //Step 1. Load exit ad resources after successful initialization
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
-        func(const_cast<char*>("7cdc7614b69c4118933e2067e6e14d01"));   
+        func(ExitScreenUnitId);   
         AppendLog(L"Load the resources for MG exit ad");
     }
 }
@@ -326,22 +436,22 @@ case WM_DESTROY_ADVERT: {
         {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
-            if (unitId == "768338453d614f3aad85eea7e3916e7e")
+            if (unitId == SplashScreenUnitId)
             {//Remove the splash screen ad container
                 DestroyWindow(g_hPnlSplashScreen);
                 g_hPnlSplashScreen = NULL;
             }
-            else if (unitId == "e333abaf22404c4a8d382c1e7ba42076")
+            else if (unitId == InterstitialUnitId)
             {//Destroy interstitial ad container
                 DestroyWindow(g_hPnlInterstitial);
                 g_hPnlInterstitial = NULL;
             }
-            else if (unitId == "e9b34829a2ad4a959874f9a180278bfe")
+            else if (unitId == BannerUnitId)
             {//Destroy Banner ad container
                 DestroyWindow(g_hPnlBanner);
                 g_hPnlBanner = NULL;
             }
-            else if (unitId == "c68cd45e8e374ccd98a704887e5b3582")
+            else if (unitId == CoupletUnitId)
             {//Destroy couplet ad container
                 int coupletType = json_obj["coupletType"];
                 if (coupletType == 1)//Destroy left container
@@ -355,7 +465,7 @@ case WM_DESTROY_ADVERT: {
                     g_hPnlCoupletRight = NULL;
                 }
             }
-            else if (unitId == "0f505442fac84f098e81d6f2ca04abe1")
+            else if (unitId == RewardUnitId)
             {//Rewarded video
                 DestroyWindow(g_hPnlReward);
                 g_hPnlReward = NULL;

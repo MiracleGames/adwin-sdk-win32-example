@@ -9,16 +9,27 @@ extern HINSTANCE hDLL;
 typedef void(*CallbackDelegate)(char* s);
 
 // DLL 函数类型定义
-typedef char* (WINAPI* GetStr)(const char* appId, const char* secretKey);
-typedef void(WINAPI* Initialize)(const char* appId, const char* secretKey);
+typedef char* (WINAPI* GetStr)(const char* parama, const char* paramb);
+
+typedef void(WINAPI* SetAppId)(const char* appId, const char* secretKey);
+typedef bool(WINAPI* IsOpenCmp)();
+typedef int(WINAPI* OpenCmp)(const char* jsonParam);
+typedef void(WINAPI* CmpSizeChangedEvent)(CallbackDelegate onCmpSizeChanged);
+typedef void(WINAPI* CmpClosedEvent)(CallbackDelegate onCmpClosed);
+
+typedef void(WINAPI* Initialize)();
 typedef void(WINAPI* InitCompleteEvent)(CallbackDelegate onInitComplete);
-typedef void(WINAPI* SetupExitAd)(char* exitAdUnitId);
+
+typedef void(WINAPI* SetupExitAd)(const char* exitAdUnitId);
 typedef void(WINAPI* ShowExitAdBlocking)();
 typedef int(WINAPI* ShowAd)(const char* jsonParam);
 typedef void(WINAPI* ReportAdRewardFulfillment)(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
 typedef void(WINAPI* AdCloseEvent)(CallbackDelegate onAdCloseEvent);
 
 // SDK 操作函数声明 
+void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey);
+bool isOpenCmp(HINSTANCE hDLL);
+void openCmp(HINSTANCE hDLL, const char* jsonParam);
 void initialize(HINSTANCE hDLL);
 void setupExitAd(HINSTANCE hDLL);
 void showExitAdBlocking(HINSTANCE hDLL);
@@ -26,6 +37,9 @@ void showAd(const char* s);
 void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
 
 // 回调函数声明 
+void onCmpSizeChangedEvent(char* s);
+void onCmpClosedEvent(char* s);
+
 void onInitCompleteEvent(char* s);
 void onAdCloseEvent(char* s);
 
@@ -43,3 +57,4 @@ void onAdCloseEvent(char* s);
 #define ID_BTN_AD61              261 //激励视频仅Web
 #define ID_BTN_AD7               270 //信息流
 #define ID_BTN_AD8               280 //信息流 
+#define ID_BTN_DELCMP            301 //删除CMP 
