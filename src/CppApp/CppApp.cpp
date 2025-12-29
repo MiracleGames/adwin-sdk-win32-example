@@ -301,45 +301,45 @@ void CreateEmbeddedAdPanel(HWND hWnd) {
 
 void CreateControls(HWND hWnd) {
     int y = 10;
-    CreateWindowW(L"BUTTON", L"开屏(全屏)", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y, 100, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Splash Screen", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y, 130, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
     CreateWindowW(L"BUTTON", L"Exit Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Banner", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD3, hInst, NULL);
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD3, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"插屏", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD4, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Interstitial", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD4, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"插屏仅视频", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD41, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Interstitial Video", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD41, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"插屏仅Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD42, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Interstitial Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD42, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"对联", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD5, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Couplet", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD5, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"激励视频", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD6, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Rewarded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD6, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"激励视频Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD61, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Rewarded Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD61, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"信息流", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD7, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Information flow", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD7, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"嵌入式", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_AD8, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Embedded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD8, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"关闭CMP", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 100, 30, hWnd, (HMENU)ID_BTN_DELCMP, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Close CMP", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_DELCMP, hInst, NULL);
 
     // Log
     g_hwndLog = CreateWindow(L"EDIT", L"",
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
-        250, 10, 1200, 550, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
+        300, 10, 1200, 550, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
 
     //信息流广告容器 (Information flow ad container)
     g_hPnlInformationFlow = CreateWindowW(L"STATIC", L"This is a panel for information flow advertising", WS_CHILD | WS_VISIBLE, 10, y += 250, 400, 50, hWnd, (HMENU)2071, hInst, NULL);
@@ -457,7 +457,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
             nlohmann::json json_obj = {
                 {"unitId", BannerUnitId},
-                {"media", "image"},
+                {"media", "image"},//Only image-type creatives,support media types (image, video, web). Can be left empty.
                 {"appType", 1},
                 {"adType", 3},//Banner
                 {"handle", containerHandle}
@@ -774,7 +774,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 /*
 业务流程：
 1.在App启动时，先设置appId和secretKey。
-2.判断是否需要显示CMP。
+2.判断并根据结果显示CMP。
     若需要则显示CMP，OpenCmp接口会返回SDK中的CMP控件句柄。
     在程序尺寸发生改变时，需要维护CMP容器跟随发生改变。
 3.CMP初始窗口的高度为50px，固定在App顶部。当用户选择"自定义"，CMP界面将改变为显示在程序中间的矩形区域。
@@ -900,7 +900,7 @@ void onInitCompleteEvent(char* s) {
 
             setupExitAd(hDLL);//Exit Ad
 
-            PostMessage(g_hwndMain, WM_SHOW_OPENSCREEN_ADVERT, 0, NULL);//Open screen advertisement 
+            //PostMessage(g_hwndMain, WM_SHOW_OPENSCREEN_ADVERT, 0, NULL);//Open screen advertisement 
         }
     }
     catch (const std::exception&)
