@@ -254,7 +254,7 @@ void showAd(const char* json) {
         int clientWidth = clientRect.right - clientRect.left;
         int clientHeight = clientRect.bottom - clientRect.top;
         nlohmann::json json_obj = {
-            {"unitId", SplashScreenUnitId},
+            {"unitId", SplashAdUnitId},
             {"appType", 1},
             {"adType", 1},//1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频 7.信息流 8.嵌入式
             {"handle", reinterpret_cast<int>(g_hwndMain)},
@@ -315,7 +315,7 @@ void showAd(const char* json) {
 {
   CreateRewardAdPannel(hWnd);
   nlohmann::json json_obj = {
-        {"unitId", RewardUnitId},
+        {"unitId", RewardedUnitId},
         {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回
         {"appType", 1},
         {"adType", 6},
@@ -332,7 +332,7 @@ void showAd(const char* json) {
     //需要开发者负责维护广告容器
     int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
     nlohmann::json json_obj = {
-        {"unitId", InformationFlowUnitId},
+        {"unitId", FeedUnitId},
         {"media", "image"},
         {"appType", 1},
         {"adType", 7},//信息流
@@ -375,7 +375,7 @@ void showAd(const char* json) {
 //Step1.初始化成功之后，加载退屏广告资源
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
-        func(ExitScreenUnitId);   
+        func(ExitAdUnitId);   
         AppendLog(L"Load the resources for MG exit ad");
     }
 }
@@ -436,7 +436,7 @@ case WM_DESTROY_ADVERT: {
         {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
-            if (unitId == SplashScreenUnitId)
+            if (unitId == SplashAdUnitId)
                 {//删除开屏广告容器
                     DestroyWindow(g_hPnlSplashScreen);
                     g_hPnlSplashScreen = NULL;
@@ -465,7 +465,7 @@ case WM_DESTROY_ADVERT: {
                     g_hPnlCoupletRight = NULL;
                 }
             }
-            else if (unitId == RewardUnitId)
+            else if (unitId == RewardedUnitId)
             {//激励视频
                 DestroyWindow(g_hPnlReward);
                 g_hPnlReward = NULL;

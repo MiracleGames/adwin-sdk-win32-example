@@ -31,7 +31,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnAd8_2 = new System.Windows.Forms.Button();
             this.panelAd8_2 = new System.Windows.Forms.Panel();
-            this.panelAd6_2 = new System.Windows.Forms.Panel();
             this.btnAd7_2 = new System.Windows.Forms.Button();
             this.btnDeleteCmp = new System.Windows.Forms.Button();
             this.btnAd5_2 = new System.Windows.Forms.Button();
@@ -52,6 +51,7 @@
             this.btnAd4 = new System.Windows.Forms.Button();
             this.panelAd = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.panelAd6_2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,9 +66,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.Controls.Add(this.panelAd8_2);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd8_2);
-            this.splitContainer1.Panel1.Controls.Add(this.panelAd8_2);
-            this.splitContainer1.Panel1.Controls.Add(this.panelAd6_2);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd7_2);
             this.splitContainer1.Panel1.Controls.Add(this.btnDeleteCmp);
             this.splitContainer1.Panel1.Controls.Add(this.btnAd5_2);
@@ -114,14 +113,6 @@
             this.panelAd8_2.Name = "panelAd8_2";
             this.panelAd8_2.Size = new System.Drawing.Size(200, 200);
             this.panelAd8_2.TabIndex = 26;
-            // 
-            // panelAd6_2
-            // 
-            this.panelAd6_2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panelAd6_2.Location = new System.Drawing.Point(14, 335);
-            this.panelAd6_2.Name = "panelAd6_2";
-            this.panelAd6_2.Size = new System.Drawing.Size(400, 50);
-            this.panelAd6_2.TabIndex = 25;
             // 
             // btnAd7_2
             // 
@@ -333,11 +324,20 @@
             this.textBox1.Size = new System.Drawing.Size(887, 791);
             this.textBox1.TabIndex = 0;
             // 
+            // panelAd6_2
+            // 
+            this.panelAd6_2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelAd6_2.Location = new System.Drawing.Point(14, 335);
+            this.panelAd6_2.Name = "panelAd6_2";
+            this.panelAd6_2.Size = new System.Drawing.Size(400, 50);
+            this.panelAd6_2.TabIndex = 25;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1334, 791);
+            this.Controls.Add(this.panelAd6_2);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
             this.Text = "Form1";

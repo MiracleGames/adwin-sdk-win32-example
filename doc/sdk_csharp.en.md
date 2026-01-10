@@ -57,14 +57,14 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 ```c#
 private const string YourAppId = "69316b6861328938223cc124";
 private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-private const string SplashScreenUnitId = "b871f83c5e8845f1b43325561bcdd6c7";     //Splash screen ad:1920 x 1080
-private const string ExitScreenUnitId = "5076eab6ae1042b6b92f73ea01981475";       //Exit Screen ad:1920 x 1080
-private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";           //Banner:728 x 90
-private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";     //Interstitial ad:1024 x 768
-private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";          //Couplet:300 x 600
-private const string RewardUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded video:1024x768
-private const string InformationFlowUnitId = "f152f6caf7a8440f8510bc31534baf4e";  //Information flow. Developers are responsible for maintaining the ad container.
-private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded. Developers are responsible for maintaining the ad container.
+private const string SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+private const string ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
+private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
+private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
+private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
+private const string RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
+private const string FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
+private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
 
 private async void Form1_Load(object sender, EventArgs e)
 {
@@ -78,7 +78,7 @@ private async void Form1_Load(object sender, EventArgs e)
         ShowMessage($"Initialization completed: Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
 
         //Splash screen ad
-        AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.FullScreen);
+        AdvertManager.ShowAd(this, "768338453d614f3aad85eea7e3916e7e", AdType.Splash);
 
         //Exit screen ad; Step 1. Load exit ad resources after successful initialization
         AdvertManager.SetupExitAd("7cdc7614b69c4118933e2067e6e14d01");
@@ -113,7 +113,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ```c#
 //1.Splash screen ad
-AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);
+AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);
 
 //2.Banner
 AdvertManager.ShowAd(this, BannerUnitId, AdType.Banner);
@@ -129,26 +129,26 @@ AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
     string comment = "id123,abc,$9.99";//Pass-through parameter
     dynamic jsonObj = new
     {
-        unitId = RewardUnitId,
+        unitId = RewardedUnitId,
         comment = Uri.EscapeDataString(comment)//Pass-through parameter, requires URL encoding
     };
     string json = JsonConvert.SerializeObject(jsonObj);
-    AdvertManager.ShowAd(this, json, AdType.Reward);
+    AdvertManager.ShowAd(this, json, AdType.Rewarded);
 }
 
-//6.Information flow
+//6.Feed
 {
     //Dimensions are customizable (e.g., 400*50), set in the MG backend.
     dynamic jsonObj = new
     {
-        unitId = InformationFlowUnitId,
+        unitId = FeedUnitId,
         media = "image",
         width = panelAd6.Width,
         height = panelAd6.Height
     };
     string json = JsonConvert.SerializeObject(jsonObj);
     //Developers are responsible for maintaining the ad container.
-    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.Feed);
 }
 
 //7.Embedded
@@ -178,7 +178,7 @@ AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
 ```c#
 //Exit screen ad
 //Step 1. Load exit ad resources after successful initialization
-AdvertManager.SetupExitAd(ExitScreenUnitId);
+AdvertManager.SetupExitAd(ExitAdUnitId);
 
 
 // Exit screen ad
@@ -224,7 +224,7 @@ private void AdvertManager_AdCloseEvent(object sender, string e)
     JObject jsonObject = JObject.Parse(e);
     string unitId = (string)jsonObject["unitId"];
 
-    if (unitId == RewardUnitId)//Rewarded video, issue reward items based on the result
+    if (unitId == RewardedUnitId)//Rewarded video, issue reward items based on the result
     {
         int completeStatus = (int)jsonObject["completeStatus"];
         string resourceId = (string)jsonObject["resourceId"];

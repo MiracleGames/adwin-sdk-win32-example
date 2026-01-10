@@ -13,7 +13,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
-//MG Ads SDK相关的全局变量 (Global variables related to MG Ads SDK)
+//Global variables related to MG Ads SDK
 HINSTANCE hDLL = NULL;
 int g_nCmdShow = 0;
 HWND g_hwndLog = NULL;
@@ -36,13 +36,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // TODO: Place code here.
 
-    // 初始化 COM 为 STA (Initialize COM as STA)
+    // Initialize COM as STA
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     if (SUCCEEDED(hr)) {
         g_comInitialized = true;
     }
     else {
-        MessageBox(nullptr, L"COM初始化失败", L"错误", MB_ICONERROR);
+        MessageBox(nullptr, L"COM Initialize failed", L"Error", MB_ICONERROR);
         return FALSE;
     }
 
@@ -71,7 +71,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
-    // 清理 COM  (Clean up COM)
+    // Clean up COM
     if (g_comInitialized) {
         CoUninitialize();
     }
@@ -164,17 +164,17 @@ std::wstring UTF8ToWide(const std::string& utf8str) {
     return std::wstring(buffer.data());
 }
 
-HWND g_hPnlCmp = NULL; //CMP容器，启动时在程序的最上面，宽度铺满，高度50 (CMP container, at startup it should be at the very top of the program, width full, height 50)
-HWND g_hPnlSplashScreen = NULL; //开屏 [Splash Screen]
-HWND g_hPnlBanner = NULL; //横幅 [Banner]
-HWND g_hPnlCoupletLeft = NULL; //对联左 [Couplet left]
-HWND g_hPnlCoupletRight = NULL; //对联右 [Couplet right]
-HWND g_hPnlInterstitial = NULL;//插屏 [Interstitial] 
-HWND g_hPnlReward = NULL;//激励视频 [Rewarded Video]
-HWND g_hPnlInformationFlow = NULL;//信息流 [Information flow]
-HWND g_hPnlEmbedded = NULL;//嵌入式 [Embedded]
+HWND g_hPnlCmp = NULL; //CMP container, at startup it should be at the very top of the program, width full, height 50
+HWND g_hPnlSplashScreen = NULL; //[Splash Ad]
+HWND g_hPnlBanner = NULL; //[Banner]
+HWND g_hPnlCoupletLeft = NULL; //[Couplet left]
+HWND g_hPnlCoupletRight = NULL; //[Couplet right]
+HWND g_hPnlInterstitial = NULL;//[Interstitial] 
+HWND g_hPnlReward = NULL;//[Rewarded]
+HWND g_hPnlFeed = NULL;//[Feed]
+HWND g_hPnlEmbedded = NULL;//[Embedded]
 
-// 自定义消息
+// Custom Message
 #define WM_SHOW_ADVERT (WM_USER + 300)
 #define WM_SHOW_OPENSCREEN_ADVERT (WM_USER + 301)
 #define WM_DESTROY_CMP (WM_USER + 310)
@@ -184,17 +184,17 @@ int g_cmpChangedWidth = 0;
 int g_cmpChangedHeight = 0;
 int g_cmpSdkControlHandle = 0;
 
-//1.开屏[Splash Screen] 2.退屏[Exit Screen] 3.Banner 4.插屏[Interstitial] 5.对联[Couplet] 6.激励视频[Rewarded Video] 7.信息流[Information flow] 8.嵌入式[Embedded]
+//1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
 const char* YourAppId = "69316b6861328938223cc124";
 const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-const char* SplashScreenUnitId = "b871f83c5e8845f1b43325561bcdd6c7";     //Splash Screen:1920 x 1080
-const char* ExitScreenUnitId = "5076eab6ae1042b6b92f73ea01981475";       //Exit Screen:1920 x 1080
-const char* BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";           //Banner:728 x 90
-const char* InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";     //Interstitial:1024 x 768
-const char* CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";          //Couplet:300 x 600
-const char* RewardUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Video:1024x768
-const char* InformationFlowUnitId = "f152f6caf7a8440f8510bc31534baf4e";  //Information flow,Ad control is maintained by the developer.
-const char* EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded,Ad control is maintained by the developer.
+const char* SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+const char* ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
+const char* BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
+const char* InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
+const char* CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
+const char* RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
+const char* FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
+const char* EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
 
 void CreateSplashScreenAdPanel(HWND hWnd) {
     RECT rect;
@@ -266,7 +266,7 @@ void CreateRewardAdPannel(HWND hWnd) {
         int leftMargin = (rect.right - rect.left - panelWidth) / 2;
 
         HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
-        g_hPnlReward = CreateWindowW(L"STATIC", L"This is a panel for Reward advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2061, minstance, NULL);
+        g_hPnlReward = CreateWindowW(L"STATIC", L"This is a panel for Rewarded advertising", WS_TABSTOP | WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2061, minstance, NULL);
         BringWindowToTop(g_hPnlReward);
     }
 }
@@ -281,7 +281,7 @@ void CreateInformationFlowAdPanel(HWND hWnd) {
         int leftMargin = 10;
 
         HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
-        g_hPnlInformationFlow = CreateWindowW(L"STATIC", L"This is a panel for information flow advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2071, minstance, NULL);
+        g_hPnlFeed = CreateWindowW(L"STATIC", L"This is a panel for feed advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, panelWidth, panelHeight, hWnd, (HMENU)2071, minstance, NULL);
     }
 }
 
@@ -301,7 +301,7 @@ void CreateEmbeddedAdPanel(HWND hWnd) {
 
 void CreateControls(HWND hWnd) {
     int y = 10;
-    CreateWindowW(L"BUTTON", L"Splash Screen", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+    CreateWindowW(L"BUTTON", L"Splash Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y, 130, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
     CreateWindowW(L"BUTTON", L"Exit Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
@@ -327,7 +327,7 @@ void CreateControls(HWND hWnd) {
     CreateWindowW(L"BUTTON", L"Rewarded Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD61, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"Information flow", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+    CreateWindowW(L"BUTTON", L"Feed", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD7, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Embedded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -339,12 +339,12 @@ void CreateControls(HWND hWnd) {
     // Log
     g_hwndLog = CreateWindow(L"EDIT", L"",
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
-        300, 10, 1200, 550, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
+        300, 10, 1200, 200, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
 
-    //信息流广告容器 (Information flow ad container)
-    g_hPnlInformationFlow = CreateWindowW(L"STATIC", L"This is a panel for information flow advertising", WS_CHILD | WS_VISIBLE, 10, y += 250, 400, 50, hWnd, (HMENU)2071, hInst, NULL);
-    BringWindowToTop(g_hPnlInformationFlow);
-    //嵌入式广告容器 (Embedded ad container)
+    //Feed ad container
+    g_hPnlFeed = CreateWindowW(L"STATIC", L"This is a panel for Feed advertising", WS_CHILD | WS_VISIBLE, 10, y += 150, 400, 50, hWnd, (HMENU)2071, hInst, NULL);
+    BringWindowToTop(g_hPnlFeed);
+    //Embedded ad container
     g_hPnlEmbedded = CreateWindowW(L"STATIC", L"This is a panel for embedded advertising", WS_CHILD | WS_VISIBLE, 10, y += 60, 200, 200, hWnd, (HMENU)2081, hInst, NULL);
 }
 
@@ -354,21 +354,21 @@ void InitMgAdSdk(HWND hWnd) {
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
         // Register the CMP callback event
-        if (auto func = (CmpSizeChangedEvent)GetProcAddress(hDLL, "CmpSizeChangedEvent")) // CMP容器尺寸发生改变 (CMP container size changed)
+        if (auto func = (CmpSizeChangedEvent)GetProcAddress(hDLL, "CmpSizeChangedEvent")) // CMP container size changed
             func(onCmpSizeChangedEvent);
-        if (auto func = (CmpClosedEvent)GetProcAddress(hDLL, "CmpClosedEvent")) //CMP窗口已关闭 (CMP closed)
+        if (auto func = (CmpClosedEvent)GetProcAddress(hDLL, "CmpClosedEvent")) //CMP closed
             func(onCmpClosedEvent);
 
         // Register the initialisation completion callback event
-        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) // 初始化完成后的回调函数 (Callback function after initialization is complete)
+        if (auto func = (InitCompleteEvent)GetProcAddress(hDLL, "InitCompleteEvent")) //Callback function after initialization is complete
             func(onInitCompleteEvent);
-        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //广告关闭事件的回调函数 (Callback function for ad close event)
+        if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //Callback function for ad close event
             func(onAdCloseEvent);
 
-        //1.设置参数 (Set parameters)
+        //1.Set parameters
         setAppId(hDLL, YourAppId, YourSecretKey);
 
-        //2.首先判断是否需要弹出CMP (First, determine whether to pop up CMP)
+        //2.First, determine whether to pop up CMP
         if (isOpenCmp(hDLL))
         {
             RECT clientRect;
@@ -376,19 +376,19 @@ void InitMgAdSdk(HWND hWnd) {
                 int panelWidth = clientRect.right - clientRect.left;
                 int panelHeight = clientRect.bottom - clientRect.top;
 
-                //2.1.创建CMP容器 (Create CMP container)
+                //2.1.Create CMP container
                 HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
                 g_hPnlCmp = CreateWindowW(L"STATIC", L"This is a panel for CMP", WS_CHILD | WS_VISIBLE, 0, 0, panelWidth, 50, hWnd, (HMENU)3011, minstance, NULL);
                 BringWindowToTop(g_hPnlCmp);
 
-                //2.2.弹出CMP (Show CMP)
+                //2.2.Show CMP
                 nlohmann::json json_obj = {
                  {"handle", reinterpret_cast<int>(g_hPnlCmp)},
                  {"parentWidth", panelWidth},
                  {"parentHeight", panelHeight}
                 };
                 std::string jsonStr = json_obj.dump();
-                openCmp(hDLL, jsonStr.c_str());//返回SDK中CMP控件的句柄，使用全局变量g_cmpSdkControlHandle保存 (Returns the handle of the CMP control in the SDK, saved using the global variable g_cmpSdkControlHandle.)
+                openCmp(hDLL, jsonStr.c_str());//Returns the handle of the CMP control in the SDK, saved using the global variable g_cmpSdkControlHandle.
             }
         }
 
@@ -431,17 +431,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
         case ID_BTN_AD1:
-        {//开屏 [Splash Screen]
+        {//Splash Ad
             RECT clientRect;
             if (GetClientRect(hWnd, &clientRect)) {
                 int clientWidth = clientRect.right - clientRect.left;
                 int clientHeight = clientRect.bottom - clientRect.top;
                 nlohmann::json json_obj = {
-                 {"unitId", SplashScreenUnitId},
+                 {"unitId", SplashAdUnitId},
                  {"appType", 1},
-                 {"adType", 1},//1.开屏[Splash Screen] 2.退屏[Exit Screen] 3.Banner 4.插屏[Interstitial] 5.对联[Couplet] 6.激励视频[Rewarded Video] 7.信息流[Information flow] 8.嵌入式[Embedded]
+                 {"adType", 1},//1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
                  {"handle", reinterpret_cast<int>(g_hwndMain)},
-                 {"width", clientWidth},//开屏广告，需要传入程序的宽高
+                 {"width", clientWidth},//For splash ad, the program's width and height must be provided.
                  {"height", clientHeight},
                  {"parentWidth", clientWidth},
                  {"parentHeight", clientHeight}
@@ -457,7 +457,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
             nlohmann::json json_obj = {
                 {"unitId", BannerUnitId},
-                {"media", "image"},//Only image-type creatives,support media types (image, video, web). Can be left empty.
+                {"media", "web"},//Only image-type creatives,support media types (image, video, web). Can be left empty.
                 {"appType", 1},
                 {"adType", 3},//Banner
                 {"handle", containerHandle}
@@ -467,12 +467,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         case ID_BTN_AD4:
-        {//插屏 [Interstitial]
+        {//Interstitial
             CreateInterstitialAdPannel(hWnd);
             nlohmann::json json_obj = {
                {"unitId", InterstitialUnitId},
                {"appType", 1},
-               {"adType", 4},//Interstitial
+               {"adType", 4},
                {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
             };
             std::string jsonStr = json_obj.dump();
@@ -511,7 +511,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         case ID_BTN_AD5:
-        {//对联[Couplet]
+        {//Couplet
             CreateCoupletAdPannel(hWnd);
             nlohmann::json json_obj = {
                 {"unitId", CoupletUnitId},
@@ -525,13 +525,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         case ID_BTN_AD6:
-        {//激励视频[Rewarded Video]
+        {//Rewarded
             CreateRewardAdPannel(hWnd);
             nlohmann::json json_obj = {
-                 {"unitId", RewardUnitId},
-                 {"comment", "abc123"},//透传参数，前端需要进行urlEncode；在广告关闭回调事件中会原封不动的返回 (Passthrough parameter, the frontend needs to perform urlEncode; it will be returned unchanged in the ad close callback event.)
+                 {"unitId", RewardedUnitId},
+                 {"comment", "abc123"},//Passthrough parameter, the frontend needs to perform urlEncode; it will be returned unchanged in the ad close callback event.
                  {"appType", 1},
-                 {"adType", 6},//Rewarded Video
+                 {"adType", 6},
                  {"handle", reinterpret_cast<int>(g_hPnlReward)},
                  {"width", 1024},
                  {"height", 768}
@@ -544,7 +544,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             CreateRewardAdPannel(hWnd);
             nlohmann::json json_obj = {
-                 {"unitId", RewardUnitId},
+                 {"unitId", RewardedUnitId},
                  {"comment", "abc123"},
                  {"appType", 1},
                  {"adType", 6},
@@ -558,14 +558,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         case ID_BTN_AD7:
-        {//信息流[Information flow] 
-            int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
+        {//Feed
+            int containerHandle = reinterpret_cast<int>(g_hPnlFeed);
             nlohmann::json json_obj = {
-                {"unitId", InformationFlowUnitId},
-                {"media", "image"},
+                {"unitId", FeedUnitId},
+                {"media", "web"},
                 {"appType", 1},
-                {"adType", 7},//Information flow
-                {"width", 400},//信息流，需要传入容器的宽高 (Information flow requires passing in the container's width and height.)
+                {"adType", 7},
+                {"width", 400},//Feed requires passing in the container's width and height.
                 {"height", 50},
                 {"handle", containerHandle}
             };
@@ -574,14 +574,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         case ID_BTN_AD8:
-        {//嵌入式[Embedded]
+        {//Embedded
             int containerHandle = reinterpret_cast<int>(g_hPnlEmbedded);
             nlohmann::json json_obj = {
                 {"unitId", EmbeddedUnitId},
-                {"media", "image"},
+                {"media", "web"},
                 {"appType", 1},
-                {"adType", 8},//Embedded
-                {"width", 200},//嵌入式，需要传入容器的宽高 (Embedded requires passing in the container's width and height.)
+                {"adType", 8},
+                {"width", 200},//Embedded requires passing in the container's width and height.
                 {"height", 200},
                 {"handle", containerHandle}
             };
@@ -597,7 +597,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    case WM_SHOW_OPENSCREEN_ADVERT://在UI线程中显示开屏广告 (Display the splash screen ad in the UI thread.)
+    case WM_SHOW_OPENSCREEN_ADVERT://Display the splash screen ad in the UI thread.
     {
         CreateSplashScreenAdPanel(g_hwndMain);
         RECT clientRect;
@@ -605,11 +605,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int clientWidth = clientRect.right - clientRect.left;
             int clientHeight = clientRect.bottom - clientRect.top;
             nlohmann::json json_obj = {
-             {"unitId", SplashScreenUnitId},
+             {"unitId", SplashAdUnitId},
              {"appType", 1},
              {"adType", 1},
              {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
-             {"width", clientWidth},//开屏广告，需要传入程序的宽高 (Splash screen ad requires passing in the program's width and height.)
+             {"width", clientWidth},//Splash ad requires passing in the program's width and height.
              {"height", clientHeight},
              {"parentWidth", clientWidth},
              {"parentHeight", clientHeight}
@@ -645,28 +645,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 nlohmann::json json_obj = nlohmann::json::parse(json);
                 std::string unitId = json_obj["unitId"];
-                if (unitId == SplashScreenUnitId)
-                {//删除开屏广告容器 (Delete splash screen ad container)
+                if (unitId == SplashAdUnitId)
+                {//Delete splash ad container
                     DestroyWindow(g_hPnlSplashScreen);
                     g_hPnlSplashScreen = NULL;
                 }
                 else if (unitId == InterstitialUnitId)
-                {//删除插屏广告容器 (Delete interstitial ad container)
+                {//Delete interstitial ad container
                     DestroyWindow(g_hPnlInterstitial);
                     g_hPnlInterstitial = NULL;
                 }
                 else if (unitId == BannerUnitId)
-                {//删除Banner广告容器 (Delete banner ad container)
+                {//Delete banner ad container
                     DestroyWindow(g_hPnlBanner);
                     g_hPnlBanner = NULL;
                 }
                 else if (unitId == CoupletUnitId)
-                {//删除对联广告容器 (Delete couplet ad container)
+                {//Delete couplet ad container
                     int advertStatus = json_obj["advertStatus"];
-                    if (advertStatus == 1)//广告已显示，由用户关闭 (Ad already displayed, closed by user)
+                    if (advertStatus == 1)//Ad already displayed, closed by user
                     {
                         int coupletType = json_obj["coupletType"];
-                        if (coupletType == 1)//删除左侧容器 (Delete left container)
+                        if (coupletType == 1)//Delete left container
                         {
                             BOOL result = DestroyWindow(g_hPnlCoupletLeft);
                             g_hPnlCoupletLeft = NULL;
@@ -678,7 +678,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         }
                     }
                     else
-                    {//没有获取到广告素材，不显示广告。删除已创建的容器 (No ad creatives obtained, ad not displayed. Delete created container)
+                    {//No ad creatives obtained, ad not displayed. Delete created container
                         BOOL result = DestroyWindow(g_hPnlCoupletLeft);
                         g_hPnlCoupletLeft = NULL;
 
@@ -686,8 +686,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         g_hPnlCoupletRight = NULL;
                     }
                 }
-                else if (unitId == RewardUnitId)
-                {//激励视频
+                else if (unitId == RewardedUnitId)
+                {//Rewarded
                     DestroyWindow(g_hPnlReward);
                     g_hPnlReward = NULL;
 
@@ -698,11 +698,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         std::string materialId = json_obj["materialId"];
                         std::string rewardId = json_obj["rewardId"];
 
-                        //视频播放完毕，下发奖励道具 
                         //Video playback finished, issue reward items
                         //... 
 
-                        //向MG核销订单 (Report order fulfillment to MG)
+                        //Report order fulfillment to MG
                         reportAdRewardFulfillment(unitId.c_str(), resourceId.c_str(), materialId.c_str(), rewardId.c_str());
                         AppendLog(L"reportAdRewardFulfillment Async: %hs", rewardId.c_str());
                     }
@@ -724,11 +723,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_SIZE:
-        if (g_hPnlCmp != NULL) //App窗口尺寸发生改变时，需修改CMP容器的尺寸 (When the window size changes, the CMP container's size needs to be modified.)
+        if (g_hPnlCmp != NULL) //When the window size changes, the CMP container's size needs to be modified.
         {
             if (g_cmpChangedWidth > 0 && g_cmpChangedHeight > 0)
             {
-                //1.CMP界面中用户选择"自定义"，CMP界面由上部的横幅改变为程序中间的矩形 (In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.)
+                //1.In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.
                 RECT parentRect;
                 if (GetClientRect(g_hwndMain, &parentRect)) {
                     int parentWidth = parentRect.right - parentRect.left;
@@ -740,7 +739,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             else
             {
-                //2.CMP原始界面。高度固定50px，宽度保持铺满App (CMP original interface. The height is fixed at 50px, and the width remains full across the App.)
+                //2.CMP original interface. The height is fixed at 50px, and the width remains full across the App.
                 RECT cmpRect;
                 GetClientRect(g_hPnlCmp, &cmpRect);
                 int cmpWidth = cmpRect.right - cmpRect.left;
@@ -750,11 +749,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 int parentWidth = parentRect.right - parentRect.left;
                 if (cmpWidth != parentWidth)
                 {
-                    //修改CMP容器的尺寸 (Modify the size of the CMP container.)
+                    //Modify the size of the CMP container.
                     SetWindowPos(g_hPnlCmp, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
                     if (g_cmpSdkControlHandle > 0)
                     {
-                        //修改SDK中CMP控件的尺寸。此Handle是OpenCmp接口返回 (Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.)
+                        //Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.
                         HWND hWndSdkControl = (HWND)(INT_PTR)g_cmpSdkControlHandle;
                         SetWindowPos(hWndSdkControl, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
                     }
@@ -817,48 +816,105 @@ void openCmp(HINSTANCE hdll, const char* jsonParam) {
     try
     {
         OpenCmp func = (OpenCmp)GetProcAddress(hdll, "OpenCmp");
-        g_cmpSdkControlHandle = func(jsonParam);//返回SDK中CMP控件的句柄
+        g_cmpSdkControlHandle = func(jsonParam);//Return the handle of the CMP control in the SDK
     }
     catch (const std::exception&)
     {
     }
 }
-// Cmp size changed callback functions
+
+// Cmp size changed callback function
 void onCmpSizeChangedEvent(char* s) {
     try
     {
-        AppendLog(L"Cmp size changed  %hs", s);
-        nlohmann::json json_obj = nlohmann::json::parse(s); //{"width":900,"height":440}
-        int width = json_obj["width"];
-        int height = json_obj["height"];
-        g_cmpChangedWidth = width;
-        g_cmpChangedHeight = height;
+        nlohmann::json json_obj = nlohmann::json::parse(s);//{"width":900,"height":440}
+        int width = (int)json_obj["width"];
+        int height = (int)json_obj["height"];
+        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control  2.From Ad control 
+        if (cmpOrigin == 1)
+        {
+            AppendLog(L"Cmp size changed  %hs", s);
+            g_cmpChangedWidth = width;
+            g_cmpChangedHeight = height;
 
-        RECT parentRect;
-        if (GetClientRect(g_hwndMain, &parentRect)) {
-            int parentWidth = parentRect.right - parentRect.left;
-            int parentHeight = parentRect.bottom - parentRect.top;
-            int x = (parentWidth - width) / 2;
-            int y = (parentHeight - height) / 2;
-            SetWindowPos(g_hPnlCmp, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
+            RECT parentRect;
+            if (GetClientRect(g_hwndMain, &parentRect)) {
+                int parentWidth = parentRect.right - parentRect.left;
+                int parentHeight = parentRect.bottom - parentRect.top;
+                int x = (parentWidth - width) / 2;
+                int y = (parentHeight - height) / 2;
+                SetWindowPos(g_hPnlCmp, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
+            }
+        }
+        else {
+            //In Google Ads' CMP, when users click to authorize, developers need to modify the size and positioning of the ad control
+            AppendLog(L"Cmp ad size changed  %hs", s);
+            std::string unitId = json_obj["unitId"];
+            int cppHandle = (int)json_obj["cppHandle"];
+            if (cppHandle > 0)
+            {
+                RECT parentRect;
+                if (GetClientRect(g_hwndMain, &parentRect)) {
+                    int parentWidth = parentRect.right - parentRect.left;
+                    int parentHeight = parentRect.bottom - parentRect.top;
+                    int x = (parentWidth - width) / 2;
+                    int y = (parentHeight - height) / 2;
+
+                    HWND cppHwnd = reinterpret_cast<HWND>(cppHandle);
+                    SetWindowPos(cppHwnd, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
+                }
+            }
         }
     }
     catch (const std::exception&)
     {
     }
 }
+
 void onCmpClosedEvent(char* s) {
     try
     {
-        g_cmpChangedWidth = 0;
-        g_cmpChangedHeight = 0;
+        nlohmann::json json_obj = nlohmann::json::parse(s);
+        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control  2.From Ad control
+        if (cmpOrigin == 1)
+        {
+            g_cmpChangedWidth = 0;
+            g_cmpChangedHeight = 0;
 
-        //移除CMP容器 (Remove CMP container)
-        /* DestroyWindow(g_hPnlCmp);
-        g_hPnlCmp = NULL;*/
-        PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
+            //Remove CMP container
+            /* DestroyWindow(g_hPnlCmp);
+            g_hPnlCmp = NULL;*/
+            PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
 
-        AppendLog(L"Cmp 容器已销毁");
+            AppendLog(L"CMP has been removed.");
+        }
+        else
+        {
+            //In Google Ads' CMP, after the user grants permission, the developer needs to restore the size and positioning of the ad controls
+            AppendLog(L"Cmp ad reset size %hs", s);
+
+            std::string unitId = json_obj["unitId"];
+            int cppHandle = (int)json_obj["cppHandle"];
+            if (unitId == BannerUnitId)
+            {
+                RECT parentRect;
+                if (GetClientRect(g_hwndMain, &parentRect)) {
+                    int width = 728;
+                    int height = 90; // Banner 728x90
+                    int x = (parentRect.right - parentRect.left - width) / 2;
+                    int y = (parentRect.bottom - parentRect.top - height - 50);
+                    SetWindowPos(g_hPnlBanner, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
+                }
+            }
+            else if (unitId == FeedUnitId)
+            {
+                SetWindowPos(g_hPnlFeed, NULL, 10, 545, 400, 50, SWP_NOZORDER | SWP_SHOWWINDOW);
+            }
+            else if (unitId == EmbeddedUnitId)
+            {
+                SetWindowPos(g_hPnlEmbedded, NULL, 10, 605, 200, 200, SWP_NOZORDER | SWP_SHOWWINDOW);
+            }
+        }
     }
     catch (const std::exception&)
     {
@@ -913,7 +969,7 @@ void onInitCompleteEvent(char* s) {
 //1.Load the advert on the fallback screen, after SDK initialisation is complete
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
-        func(ExitScreenUnitId); // passing in the key value of the advert's primary key that was created in the mg backend.
+        func(ExitAdUnitId); // passing in the key value of the advert's primary key that was created in the mg backend.
 
         AppendLog(L"Load the resources for MG exit ad");
     }
@@ -933,7 +989,7 @@ void onAdCloseEvent(char* s) {
     //...
     // Destroy Ad pannel 
 
-    // 发送到主UI线程
+    // Send to the main UI thread
     char* jsonCopy = _strdup(s);
     PostMessage(g_hwndMain, WM_DESTROY_ADVERT, 0, reinterpret_cast<LPARAM>(jsonCopy));
 }
@@ -941,7 +997,7 @@ void onAdCloseEvent(char* s) {
 void showAd(const char* json) {
     try
     {
-        // 确保在调用前COM已初始化
+        // Ensure that COM has been initialized before calling.
         if (!g_comInitialized) {
             HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
             if (SUCCEEDED(hr)) {

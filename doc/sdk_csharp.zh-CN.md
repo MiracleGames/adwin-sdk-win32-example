@@ -57,13 +57,13 @@ xcopy /yei "$(ProjectDir)dll\runtimes" "$(OutDir)runtimes"
 ```c#
 private const string YourAppId = "69316b6861328938223cc124";
 private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-private const string SplashScreenUnitId = "b871f83c5e8845f1b43325561bcdd6c7";     //开屏:1920 x 1080
-private const string ExitScreenUnitId = "5076eab6ae1042b6b92f73ea01981475";       //退屏:1920 x 1080
-private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";           //横幅:728 x 90
-private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";     //插屏:1024 x 768
-private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";          //对联:300 x 600
-private const string RewardUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //激励广告:1024x768
-private const string InformationFlowUnitId = "f152f6caf7a8440f8510bc31534baf4e";  //信息流，由开发者维护广告控件
+private const string SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //开屏:1920 x 1080
+private const string ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //退屏:1920 x 1080
+private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //横幅:728 x 90
+private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //插屏:1024 x 768
+private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //对联:300 x 600
+private const string RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //激励广告:1024x768
+private const string FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //信息流，由开发者维护广告控件
 private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //嵌入式，由开发者维护广告控件
 
 private async void Form1_Load(object sender, EventArgs e)
@@ -77,12 +77,12 @@ private async void Form1_Load(object sender, EventArgs e)
         ShowMessage($"初始化完成:Token={ApplicationManager.AccessToken.Token}, ExpiresIn={ApplicationManager.AccessToken.ExpiresIn}");
 
         //退屏广告Step1.初始化成功之后，加载退屏广告资源
-        AdvertManager.SetupExitAd(ExitScreenUnitId);
+        AdvertManager.SetupExitAd(ExitAdUnitId);
 
         //...
 
 
-        AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);//开屏广告
+        AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);//开屏广告
     }
     else
     {
@@ -114,7 +114,7 @@ private async void Form1_Load(object sender, EventArgs e)
 
 ```c#
 //1.开屏广告
-AdvertManager.ShowAd(this, SplashScreenUnitId, AdType.FullScreen);
+AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);
 
 //2.横幅
 AdvertManager.ShowAd(this, BannerUnitId, AdType.Banner);
@@ -130,11 +130,11 @@ AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
     string comment = "id123,abc,$9.99";//透传参数  
     dynamic jsonObj = new
     {
-        unitId = RewardUnitId,
+        unitId = RewardedUnitId,
         comment = Uri.EscapeDataString(comment)//透传参数,需url编码
     };
     string json = JsonConvert.SerializeObject(jsonObj);
-    AdvertManager.ShowAd(this, json, AdType.Reward);
+    AdvertManager.ShowAd(this, json, AdType.Rewarded);
 }
 
 //6.信息流
@@ -142,14 +142,14 @@ AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
     //尺寸自定义(示例400*50)，在MG后台设置
     dynamic jsonObj = new
     {
-        unitId = InformationFlowUnitId,
+        unitId = FeedUnitId,
         media = "image",
         width = panelAd6.Width,
         height = panelAd6.Height
     };
     string json = JsonConvert.SerializeObject(jsonObj);
     //需要开发者负责维护广告容器
-    AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+    AdvertManager.ShowAd(this.panelAd6, json, AdType.Feed);
 }
 
 //7.嵌入式
@@ -179,7 +179,7 @@ AdvertManager.ShowAd(this, CoupletUnitId, AdType.Couplet);
 ```c#
 //退屏广告
 //Step1.初始化成功之后，加载退屏广告资源
-AdvertManager.SetupExitAd(ExitScreenUnitId);
+AdvertManager.SetupExitAd(ExitAdUnitId);
 
 
 // 退屏广告
@@ -225,7 +225,7 @@ private void AdvertManager_AdCloseEvent(object sender, string e)
     JObject jsonObject = JObject.Parse(e);
     string unitId = (string)jsonObject["unitId"];
 
-    if (unitId == RewardUnitId)//激励视频，根据返回结果发奖励道具
+    if (unitId == RewardedUnitId)//激励视频，根据返回结果发奖励道具
     {
         int completeStatus = (int)jsonObject["completeStatus"];
         string resourceId = (string)jsonObject["resourceId"];
