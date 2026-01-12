@@ -222,7 +222,7 @@ void onInitCompleteEvent(char* s) {
 
       Before integrating advertisements, you must first complete the SDK initialization.
 
-      Miracle Games advertisements support 【Splash Screen 1920*1080】【Banner 728*90】【Interstitial 1024*768】【Couplet 300*600】【Rewarded Video 1024*768】【Information flow】【Embedded】【Exit Screen】
+      Miracle Games advertisements support 【Splash Ad 1920*1080】【Banner 728*90】【Interstitial 1024*768】【Couplet 300*600】【Rewarded 1024*768】【Feed】【Embedded】【Exit Ad】
 
 ### 3.2.Splash Screen, Banner, Interstitial, Couplet, and Rewarded Video, Information flow, Embedded Ads
 
@@ -254,7 +254,7 @@ void showAd(const char* json) {
     int clientWidth = clientRect.right - clientRect.left;
     int clientHeight = clientRect.bottom - clientRect.top;
     nlohmann::json json_obj = {
-     {"unitId", SplashScreenUnitId},
+     {"unitId", SplashAdUnitId},
      {"appType", 1},
      {"adType", 1},
      {"handle", reinterpret_cast<int>(g_hwndMain)},
@@ -315,7 +315,7 @@ void showAd(const char* json) {
 {
   CreateRewardAdPannel(hWnd);
   nlohmann::json json_obj = {
-     {"unitId", RewardUnitId},
+     {"unitId", RewardedUnitId},
      {"comment", "abc123"},//Pass-through parameter, frontend needs to urlEncode; will be returned unchanged in the ad close callback event
      {"appType", 1},
      {"adType", 7},
@@ -332,7 +332,7 @@ void showAd(const char* json) {
     //Developers are responsible for maintaining the ad container.
     int containerHandle = reinterpret_cast<int>(g_hPnlInformationFlow);
     nlohmann::json json_obj = {
-        {"unitId", InformationFlowUnitId},
+        {"unitId", FeedUnitId},
         {"media", "image"},
         {"appType", 1},
         {"adType", 7},//Information flow
@@ -375,7 +375,7 @@ void showAd(const char* json) {
 //Step 1. Load exit ad resources after successful initialization
 void setupExitAd(HINSTANCE hdll) {
     if (auto func = (SetupExitAd)GetProcAddress(hdll, "SetupExitAd")) {
-        func(ExitScreenUnitId);   
+        func(ExitAdUnitId);   
         AppendLog(L"Load the resources for MG exit ad");
     }
 }
@@ -436,7 +436,7 @@ case WM_DESTROY_ADVERT: {
         {
             nlohmann::json json_obj = nlohmann::json::parse(json);
             std::string unitId = json_obj["unitId"];
-            if (unitId == SplashScreenUnitId)
+            if (unitId == SplashAdUnitId)
             {//Remove the splash screen ad container
                 DestroyWindow(g_hPnlSplashScreen);
                 g_hPnlSplashScreen = NULL;
@@ -465,7 +465,7 @@ case WM_DESTROY_ADVERT: {
                     g_hPnlCoupletRight = NULL;
                 }
             }
-            else if (unitId == RewardUnitId)
+            else if (unitId == RewardedUnitId)
             {//Rewarded video
                 DestroyWindow(g_hPnlReward);
                 g_hPnlReward = NULL;

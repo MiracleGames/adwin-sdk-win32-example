@@ -21,21 +21,29 @@ namespace CSharpApp
         public Form1()
         {
             InitializeComponent();
+            ApplicationManager.CmpSizeChangedEvent += ApplicationManager_CmpSizeChangedEvent;
             ApplicationManager.CmpClosedEvent += ApplicationManager_CmpClosedEvent;
+
             AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
             AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
         }
-        //Parameters are created in the developer backend. https://developer.ad.mguwp.net
-        private const string YourAppId = "692e5d6a207c9dd383ba56f7";
-        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg9pm4A6JkgQr7Xx5UUmX/NT+ZKM+ZF/2btAIBsdrJF76gCgYIKoZIzj0DAQehRANCAARrjJmtngZzxhRAa0Wn99ZN7QGf9ozmvghuvaicqFmA3j35XDkfXBgIqMTABogfpd+1LrAADeXkgOPzqw6b12my";
-        private const string SplashAdUnitId = "9ad41e3410084523a4f2a13ca65df395";         //Splash Ad:1920 x 1080
-        private const string ExitAdUnitId = "a0e4a92613674feab0e3eaa36d1c17b8";           //Exit Ad:1920 x 1080
-        private const string BannerUnitId = "948ba7ccdfa34a0b8e2f96a66244c494";           //Banner Ad:728 x 90
-        private const string InterstitialUnitId = "10494292d2d9431691c3bebf0f35815c";     //Interstitial Ad:1024 x 768
-        private const string CoupletUnitId = "ef5f566b0eb14132987efbd57d6af60f";          //Couple Ad:300 x 600
-        private const string RewardedUnitId = "a9bd7d57faef4f8cb016979284c86102";         //Rewarded Ad:1024x768
-        private const string FeedUnitId = "e13d9a6a4dbd42c2bd50561773dbda40";             //Feed，Developers need to maintain the advertising control.
-        private const string EmbeddedUnitId = "eb60d1e936c044adb696d9fa8147d590";         //Embedded，Developers need to maintain the advertising control.
+
+        //Production environment
+        private const string YourAppId = "69316b6861328938223cc124";
+        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
+        private const string SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+        private const string ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
+        private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
+        private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
+        private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
+        private const string RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
+        private const string FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
+        private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
+
+        private void AdvertManager_AdClickEvent(object sender, string e)
+        {
+            ShowMessage("Ad clicked " + e);
+        }
 
         private void AdvertManager_AdCloseEvent(object sender, string e)
         {
@@ -64,16 +72,85 @@ namespace CSharpApp
                     });
                 }
             }
+            //Feed and Embedded ads may alter their Location within the AdSizeChangedEvent event; Location must be restored here.
+            else if (unitId == FeedUnitId)
+            {
+                panelAd6_2.Size = new Size(400, 50);
+                panelAd6_2.Location = new Point(14, 335);
+            }
+            else if (unitId == EmbeddedUnitId)
+            {
+                panelAd8_2.Size = new Size(200, 200);
+                panelAd8_2.Location = new Point(230, 444);
+            }
         }
 
-        private void AdvertManager_AdClickEvent(object sender, string e)
+        private void ApplicationManager_CmpSizeChangedEvent(object sender, string e)
         {
-            ShowMessage("Ad clicked " + e);
-        }
+            /*
+              * In Feed and Embedded ads, 
+              * When user interact with the CMP, the ad control size will change to 900×440; at this point, developers need to adjust the ad control's size and Location.
+              */
+            ShowMessage("Cmp Ad Size Changed " + e);
+
+            JObject jsonObject = JObject.Parse(e);
+            int cmpOrigin = (int)jsonObject["cmpOrigin"];//1.From CMP control  2.From Ad control
+            if (cmpOrigin == 2)
+            {
+                string unitId = (string)jsonObject["unitId"];
+                int width = (int)jsonObject["width"];
+                int height = (int)jsonObject["height"];
+                if (unitId == FeedUnitId)
+                {
+                    panelAd6_2.Anchor = AnchorStyles.None;
+                    panelAd6_2.BringToFront();
+                    panelAd6_2.Size = new Size(width, height);
+                    int x = (this.ClientSize.Width - width) / 2;
+                    int y = (this.ClientSize.Height - height) / 2;
+                    panelAd6_2.Location = new Point(x, y);
+                }
+                else if (unitId == EmbeddedUnitId)
+                {
+                    panelAd8_2.Anchor = AnchorStyles.None;
+                    panelAd8_2.BringToFront();
+                    panelAd8_2.Size = new Size(width, height);
+                    int x = (this.ClientSize.Width - width) / 2;
+                    int y = (this.ClientSize.Height - height) / 2;
+                    panelAd8_2.Location = new Point(x, y);
+                }
+            }
+        } 
 
         private void ApplicationManager_CmpClosedEvent(object sender, string e)
         {
-            ShowMessage("CMP Authorization results " + e);
+            JObject jsonObject = JObject.Parse(e);
+            int cmpOrigin = (int)jsonObject["cmpOrigin"];//1.From CMP control  2.From Ad control
+            if (cmpOrigin == 2)
+            {
+                /*
+                * In Feed and Embedded ads,
+                * after the user completes the CMP operation, developers must restore the Location and size of the control.
+                */
+                ShowMessage("Cmp Reset Ad Size " + e);
+
+                string unitId = (string)jsonObject["unitId"];
+                if (unitId == FeedUnitId)
+                {
+                    panelAd6_2.Size = new Size(400, 50);
+                    panelAd6_2.Location = new Point(14, 335);
+                    panelAd6_2.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                }
+                else if (unitId == EmbeddedUnitId)
+                {
+                    panelAd8_2.Size = new Size(200, 200);
+                    panelAd8_2.Location = new Point(230, 444);
+                    panelAd8_2.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                }
+            }
+            else
+            {
+                ShowMessage("CMP Authorization results " + e);
+            }
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -93,23 +170,12 @@ namespace CSharpApp
                 //...
 
 
-                AdvertManager.ShowAd(this, SplashAdUnitId, AdType.FullScreen);//Splash Ad
+                AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);//Splash Ad
             }
             else
             {
                 ShowMessage("Initialization failed");
             }
-        }
-
-        /// <summary>
-        /// Exit ad
-        /// Step 2. Display a Exit ad when the app closes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _ = AdvertManager.ShowExitAdBlocking();
         }
 
         /// <summary>
@@ -119,16 +185,16 @@ namespace CSharpApp
         /// <param name="e"></param>
         private void btnAd1_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, SplashAdUnitId, AdType.FullScreen);
+            AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);
         }
         private void btnAd1_2_Click(object sender, EventArgs e)
         { 
-            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"video\"}", AdType.FullScreen);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"video\"}", AdType.Splash);
         }
 
         private void btnAd1_3_Click(object sender, EventArgs e)
         {
-            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"web\"}", AdType.FullScreen);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"web\"}", AdType.Splash);
         }
 
         /// <summary>
@@ -192,13 +258,13 @@ namespace CSharpApp
         {
             string comment = "id123,abc,$9.99";//Transparent parameters require URL encoding.
             comment = Uri.EscapeDataString(comment);
-            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\"}", AdType.Reward);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\"}", AdType.Rewarded);
         }
         private void btnAd6_2_Click(object sender, EventArgs e)
         {
             string comment = "id123,abc,$9.99";
             comment = Uri.EscapeDataString(comment);
-            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\",\"media\":\"web\"}", AdType.Reward);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\",\"media\":\"web\"}", AdType.Rewarded);
         }
 
         //Feed
@@ -212,7 +278,7 @@ namespace CSharpApp
                 height = panelAd6.Height
             };
             string json = JsonConvert.SerializeObject(jsonObj);
-            AdvertManager.ShowAd(this.panelAd6, json, AdType.InformationFlow);
+            AdvertManager.ShowAd(this.panelAd6, json, AdType.Feed);
         }
         private void btnAd7_2_Click(object sender, EventArgs e)
         {
@@ -224,7 +290,7 @@ namespace CSharpApp
                 height = panelAd6_2.Height
             };
             string json = JsonConvert.SerializeObject(jsonObj);
-            AdvertManager.ShowAd(this.panelAd6_2, json, AdType.InformationFlow);
+            AdvertManager.ShowAd(this.panelAd6_2, json, AdType.Feed);
         }
 
         //Embedded
@@ -294,7 +360,18 @@ namespace CSharpApp
                     this.Controls.Remove(item);
                 }
             }
-        }  
+        } 
+
+        /// <summary>
+        /// Exit ad
+        /// Step 2. Display a Exit ad when the app closes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _ = AdvertManager.ShowExitAdBlocking();
+        }
 
         private void ShowMessage(string message)
         {
