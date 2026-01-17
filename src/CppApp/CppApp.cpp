@@ -219,6 +219,7 @@ void CreateBannerAdPanel(HWND hWnd) {
 
         HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
         g_hPnlBanner = CreateWindowW(L"STATIC", L"This is a panel for banner advertising", WS_CHILD | WS_VISIBLE, leftMargin, topMargin, 728, 90, hWnd, (HMENU)2031, minstance, NULL);
+        BringWindowToTop(g_hPnlBanner);
     }
 }
 
@@ -346,6 +347,7 @@ void CreateControls(HWND hWnd) {
     BringWindowToTop(g_hPnlFeed);
     //Embedded ad container
     g_hPnlEmbedded = CreateWindowW(L"STATIC", L"This is a panel for embedded advertising", WS_CHILD | WS_VISIBLE, 10, y += 60, 200, 200, hWnd, (HMENU)2081, hInst, NULL);
+    BringWindowToTop(g_hPnlEmbedded);
 }
 
 void InitMgAdSdk(HWND hWnd) {
@@ -723,44 +725,56 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_SIZE:
-        if (g_hPnlCmp != NULL) //When the window size changes, the CMP container's size needs to be modified.
+    {
+        if (wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED)
         {
-            if (g_cmpChangedWidth > 0 && g_cmpChangedHeight > 0)
+            int parentWidth = LOWORD(lParam);
+            int parentHeight = HIWORD(lParam);
+            if (g_hPnlCmp != NULL)//When the window size changes, the CMP container's size needs to be modified.
             {
-                //1.In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.
-                RECT parentRect;
-                if (GetClientRect(g_hwndMain, &parentRect)) {
-                    int parentWidth = parentRect.right - parentRect.left;
-                    int parentHeight = parentRect.bottom - parentRect.top;
-                    int x = (parentWidth - g_cmpChangedWidth) / 2;
-                    int y = (parentHeight - g_cmpChangedHeight) / 2;
-                    SetWindowPos(g_hPnlCmp, NULL, x, y, g_cmpChangedWidth, g_cmpChangedHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-                }
-            }
-            else
-            {
-                //2.CMP original interface. The height is fixed at 50px, and the width remains full across the App.
                 RECT cmpRect;
                 GetClientRect(g_hPnlCmp, &cmpRect);
                 int cmpWidth = cmpRect.right - cmpRect.left;
                 int cmpHeight = cmpRect.bottom - cmpRect.top;
-                RECT parentRect;
-                GetClientRect(g_hwndMain, &parentRect);
-                int parentWidth = parentRect.right - parentRect.left;
-                if (cmpWidth != parentWidth)
+                if (cmpHeight > 50)
                 {
-                    //Modify the size of the CMP container.
-                    SetWindowPos(g_hPnlCmp, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-                    if (g_cmpSdkControlHandle > 0)
+                    //1.In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.
+                    int x = (parentWidth - cmpWidth) / 2;
+                    int y = (parentHeight - cmpHeight) / 2;
+                    SetWindowPos(g_hPnlCmp, NULL, x, y, cmpWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+                }
+                else
+                {
+                    //2.CMP original interface. The height is fixed at 50px, and the width remains full across the App.
+                    if (cmpWidth != parentWidth)
                     {
-                        //Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.
-                        HWND hWndSdkControl = (HWND)(INT_PTR)g_cmpSdkControlHandle;
-                        SetWindowPos(hWndSdkControl, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+                        //Modify the size of the CMP panel.
+                        SetWindowPos(g_hPnlCmp, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+                        if (g_cmpSdkControlHandle > 0)
+                        {
+                            //Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.
+                            HWND hWndSdkControl = (HWND)(INT_PTR)g_cmpSdkControlHandle;
+                            SetWindowPos(hWndSdkControl, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+                        }
                     }
                 }
             }
+
+            if (g_hPnlBanner != NULL) {
+                RECT adcRect;
+                GetClientRect(g_hPnlBanner, &adcRect);
+                int adWidth = adcRect.right - adcRect.left;
+                int adHeight = adcRect.bottom - adcRect.top;
+                if (adHeight == 90)
+                {
+                    int x = (parentWidth - 728) / 2;
+                    int y = parentHeight - 90 - 50;
+                    SetWindowPos(g_hPnlBanner, NULL, x, y, 728, 90, SWP_NOZORDER | SWP_SHOWWINDOW);
+                }
+            }
         }
-        break;
+    }
+    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
@@ -771,23 +785,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 #pragma region 1.CMP
 /*
-业务流程：
-1.在App启动时，先设置appId和secretKey。
-2.判断并根据结果显示CMP。
-    若需要则显示CMP，OpenCmp接口会返回SDK中的CMP控件句柄。
-    在程序尺寸发生改变时，需要维护CMP容器跟随发生改变。
-3.CMP初始窗口的高度为50px，固定在App顶部。当用户选择"自定义"，CMP界面将改变为显示在程序中间的矩形区域。
-4.当用户完成选择之后，需要移除CMP容器。
-5.CMP界面仅在App首次运行时会显示。
+为实现CMP功能，开发者需按以下步骤创建并管理控件：
+1.初始化创建：开发者需在应用启动时，创建CMP控件并将其置于视图顶层。控件初始尺寸应设为：宽度与App等宽，高度为50 px。
+2.响应应用布局变化：当应用窗口尺寸改变时，开发者需手动更新CMP控件的宽度，确保其始终与新的可用宽度保持一致。
+3.完成与清理：当用户完成授权(即CMP关闭)后，开发者必须在 CmpClosedEvent 回调事件中，销毁CMP控件实例，以释放资源。
 
-Business Process:
-1.When the application starts, first set the appId and secretKey.
-2.Determine whether to display the CMP.
-    If required, display the CMP. The OpenCmp interface will return the handle of the CMP control within the SDK.
-    When the program size changes, the CMP container must be adjusted accordingly.
-3.The initial CMP window has a fixed height of 50px and is positioned at the top of the application. If the user selects "Custom", the CMP interface will change to a rectangular area displayed in the middle of the program.
-4.After the user completes their selection, remove the CMP container.
-5.The CMP interface will only be presented during the first launch of the App.
+To implement CMP functionality, developers must create and manage the control following these steps:
+1. Initialization and Creation: Developers must create the CMP control upon application launch and place it at the top layer of the view. The control's initial dimensions should be set to: width equal to the App's width, height set to 50 px.
+2. Respond to Layout Changes: When the application window resizes, developers must manually update the CMP control's width to ensure it consistently matches the new available width.
+3. Completion and Cleanup: After the user completes authorization (i.e., the CMP closes), developers must destroy the CMP control instance within the CmpClosedEvent callback to release resources.
 */
 void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey) {
     try
@@ -822,6 +828,18 @@ void openCmp(HINSTANCE hdll, const char* jsonParam) {
     {
     }
 }
+
+/*
+为确保CMP界面交互期间布局正确：
+在触发onCmpSizeChangedEvent(即CPP界面改变时)，开发者应同步调整Banner广告控件的尺寸，并确保其在父容器中保持居中。
+在触发onCmpClosedEvent(即用户完成权限操作，CMP关闭后)，开发者需将Banner广告控件恢复至初始的尺寸与位置。
+*注意：此适配仅针对横幅、信息流、嵌入式广告。
+
+To ensure correct layout during CMP interface interactions:
+When triggering onCmpSizeChangedEvent (i.e., when the CPP UI changes), developers should synchronously adjust the Banner ad control's dimensions and ensure it remains centered within its parent container.
+When triggering onCmpClosedEvent (i.e., after the CMP closes), developers must restore the Banner ad control to its initial size and position.
+*Note: This adaptation applies only to banner, feed, and in-app ads.
+*/
 
 // Cmp size changed callback function
 void onCmpSizeChangedEvent(char* s) {
@@ -870,18 +888,17 @@ void onCmpSizeChangedEvent(char* s) {
     {
     }
 }
-
 void onCmpClosedEvent(char* s) {
     try
     {
         nlohmann::json json_obj = nlohmann::json::parse(s);
-        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control  2.From Ad control
+        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control   2.From Ad control
         if (cmpOrigin == 1)
         {
             g_cmpChangedWidth = 0;
             g_cmpChangedHeight = 0;
 
-            //Remove CMP container
+            //Remove CMP control
             /* DestroyWindow(g_hPnlCmp);
             g_hPnlCmp = NULL;*/
             PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
@@ -923,18 +940,6 @@ void onCmpClosedEvent(char* s) {
 #pragma endregion
 
 #pragma region 2.SDK Initialisation
-/*
-业务流程
-1.在CMP之后，紧接着进行SDK的初始化。
-2.SDK初始化完成之后，根据需要设置退屏广告单元Id、显示开屏广告。
-    请注意：开屏广告需要在UI线程中创建广告容器。
-
-Business Process:
-
-1. After the CMP, proceed immediately with the initialization of the SDK.
-2. Upon successful SDK initialization, set up the exit screen ad unit ID and display the splash screen ad as needed.
-   Please note: The splash screen ad requires creating the ad container within the UI thread.
-*/
 void initialize(HINSTANCE hdll) {
     try
     {

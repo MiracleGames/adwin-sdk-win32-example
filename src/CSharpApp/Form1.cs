@@ -21,9 +21,6 @@ namespace CSharpApp
         public Form1()
         {
             InitializeComponent();
-            ApplicationManager.CmpSizeChangedEvent += ApplicationManager_CmpSizeChangedEvent;
-            ApplicationManager.CmpClosedEvent += ApplicationManager_CmpClosedEvent;
-
             AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
             AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
         }
@@ -85,73 +82,6 @@ namespace CSharpApp
             }
         }
 
-        private void ApplicationManager_CmpSizeChangedEvent(object sender, string e)
-        {
-            /*
-              * In Feed and Embedded ads, 
-              * When user interact with the CMP, the ad control size will change to 900×440; at this point, developers need to adjust the ad control's size and Location.
-              */
-            ShowMessage("Cmp Ad Size Changed " + e);
-
-            JObject jsonObject = JObject.Parse(e);
-            int cmpOrigin = (int)jsonObject["cmpOrigin"];//1.From CMP control  2.From Ad control
-            if (cmpOrigin == 2)
-            {
-                string unitId = (string)jsonObject["unitId"];
-                int width = (int)jsonObject["width"];
-                int height = (int)jsonObject["height"];
-                if (unitId == FeedUnitId)
-                {
-                    panelAd6_2.Anchor = AnchorStyles.None;
-                    panelAd6_2.BringToFront();
-                    panelAd6_2.Size = new Size(width, height);
-                    int x = (this.ClientSize.Width - width) / 2;
-                    int y = (this.ClientSize.Height - height) / 2;
-                    panelAd6_2.Location = new Point(x, y);
-                }
-                else if (unitId == EmbeddedUnitId)
-                {
-                    panelAd8_2.Anchor = AnchorStyles.None;
-                    panelAd8_2.BringToFront();
-                    panelAd8_2.Size = new Size(width, height);
-                    int x = (this.ClientSize.Width - width) / 2;
-                    int y = (this.ClientSize.Height - height) / 2;
-                    panelAd8_2.Location = new Point(x, y);
-                }
-            }
-        } 
-
-        private void ApplicationManager_CmpClosedEvent(object sender, string e)
-        {
-            JObject jsonObject = JObject.Parse(e);
-            int cmpOrigin = (int)jsonObject["cmpOrigin"];//1.From CMP control  2.From Ad control
-            if (cmpOrigin == 2)
-            {
-                /*
-                * In Feed and Embedded ads,
-                * after the user completes the CMP operation, developers must restore the Location and size of the control.
-                */
-                ShowMessage("Cmp Reset Ad Size " + e);
-
-                string unitId = (string)jsonObject["unitId"];
-                if (unitId == FeedUnitId)
-                {
-                    panelAd6_2.Size = new Size(400, 50);
-                    panelAd6_2.Location = new Point(14, 335);
-                    panelAd6_2.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-                }
-                else if (unitId == EmbeddedUnitId)
-                {
-                    panelAd8_2.Size = new Size(200, 200);
-                    panelAd8_2.Location = new Point(230, 444);
-                    panelAd8_2.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-                }
-            }
-            else
-            {
-                ShowMessage("CMP Authorization results " + e);
-            }
-        }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
@@ -188,7 +118,7 @@ namespace CSharpApp
             AdvertManager.ShowAd(this, SplashAdUnitId, AdType.Splash);
         }
         private void btnAd1_2_Click(object sender, EventArgs e)
-        { 
+        {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"video\"}", AdType.Splash);
         }
 
@@ -207,7 +137,7 @@ namespace CSharpApp
         private void btnAd4_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, InterstitialUnitId, AdType.Interstitial);
-        }  
+        }
         private void btn4_2_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"video\"}", AdType.Interstitial);
@@ -360,7 +290,7 @@ namespace CSharpApp
                     this.Controls.Remove(item);
                 }
             }
-        } 
+        }
 
         /// <summary>
         /// Exit ad
@@ -399,6 +329,6 @@ namespace CSharpApp
                     return;
                 }
             }
-        } 
+        }
     }
 }
