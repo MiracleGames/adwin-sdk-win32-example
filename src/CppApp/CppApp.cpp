@@ -356,8 +356,6 @@ void InitMgAdSdk(HWND hWnd) {
     hDLL = LoadLibrary(L"MgAdSDKCSharpDLL.dll");
     if (hDLL) {
         // Register the CMP callback event
-        if (auto func = (CmpSizeChangedEvent)GetProcAddress(hDLL, "CmpSizeChangedEvent")) // CMP container size changed
-            func(onCmpSizeChangedEvent);
         if (auto func = (CmpClosedEvent)GetProcAddress(hDLL, "CmpClosedEvent")) //CMP closed
             func(onCmpClosedEvent);
 
@@ -787,13 +785,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 /*
 为实现CMP功能，开发者需按以下步骤创建并管理控件：
 1.初始化创建：开发者需在应用启动时，创建CMP控件并将其置于视图顶层。控件初始尺寸应设为：宽度与App等宽，高度为50 px。
-2.响应应用布局变化：当应用窗口尺寸改变时，开发者需手动更新CMP控件的宽度，确保其始终与新的可用宽度保持一致。
-3.完成与清理：当用户完成授权(即CMP关闭)后，开发者必须在 CmpClosedEvent 回调事件中，销毁CMP控件实例，以释放资源。
+2.完成与清理：当用户完成授权(即CMP关闭)后，开发者必须在 CmpClosedEvent 回调事件中，销毁CMP控件实例，以释放资源。
 
 To implement CMP functionality, developers must create and manage the control following these steps:
 1. Initialization and Creation: Developers must create the CMP control upon application launch and place it at the top layer of the view. The control's initial dimensions should be set to: width equal to the App's width, height set to 50 px.
-2. Respond to Layout Changes: When the application window resizes, developers must manually update the CMP control's width to ensure it consistently matches the new available width.
-3. Completion and Cleanup: After the user completes authorization (i.e., the CMP closes), developers must destroy the CMP control instance within the CmpClosedEvent callback to release resources.
+2. Completion and Cleanup: After the user completes authorization (i.e., the CMP closes), developers must destroy the CMP control instance within the CmpClosedEvent callback to release resources.
 */
 void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey) {
     try
@@ -829,109 +825,18 @@ void openCmp(HINSTANCE hdll, const char* jsonParam) {
     }
 }
 
-/*
-为确保CMP界面交互期间布局正确：
-在触发onCmpSizeChangedEvent(即CPP界面改变时)，开发者应同步调整Banner广告控件的尺寸，并确保其在父容器中保持居中。
-在触发onCmpClosedEvent(即用户完成权限操作，CMP关闭后)，开发者需将Banner广告控件恢复至初始的尺寸与位置。
-*注意：此适配仅针对横幅、信息流、嵌入式广告。
-
-To ensure correct layout during CMP interface interactions:
-When triggering onCmpSizeChangedEvent (i.e., when the CPP UI changes), developers should synchronously adjust the Banner ad control's dimensions and ensure it remains centered within its parent container.
-When triggering onCmpClosedEvent (i.e., after the CMP closes), developers must restore the Banner ad control to its initial size and position.
-*Note: This adaptation applies only to banner, feed, and in-app ads.
-*/
-
-// Cmp size changed callback function
-void onCmpSizeChangedEvent(char* s) {
-    try
-    {
-        nlohmann::json json_obj = nlohmann::json::parse(s);//{"width":900,"height":440}
-        int width = (int)json_obj["width"];
-        int height = (int)json_obj["height"];
-        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control  2.From Ad control 
-        if (cmpOrigin == 1)
-        {
-            AppendLog(L"Cmp size changed  %hs", s);
-            g_cmpChangedWidth = width;
-            g_cmpChangedHeight = height;
-
-            RECT parentRect;
-            if (GetClientRect(g_hwndMain, &parentRect)) {
-                int parentWidth = parentRect.right - parentRect.left;
-                int parentHeight = parentRect.bottom - parentRect.top;
-                int x = (parentWidth - width) / 2;
-                int y = (parentHeight - height) / 2;
-                SetWindowPos(g_hPnlCmp, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
-            }
-        }
-        else {
-            //In Google Ads' CMP, when users click to authorize, developers need to modify the size and positioning of the ad control
-            AppendLog(L"Cmp ad size changed  %hs", s);
-            std::string unitId = json_obj["unitId"];
-            int cppHandle = (int)json_obj["cppHandle"];
-            if (cppHandle > 0)
-            {
-                RECT parentRect;
-                if (GetClientRect(g_hwndMain, &parentRect)) {
-                    int parentWidth = parentRect.right - parentRect.left;
-                    int parentHeight = parentRect.bottom - parentRect.top;
-                    int x = (parentWidth - width) / 2;
-                    int y = (parentHeight - height) / 2;
-
-                    HWND cppHwnd = reinterpret_cast<HWND>(cppHandle);
-                    SetWindowPos(cppHwnd, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
-                }
-            }
-        }
-    }
-    catch (const std::exception&)
-    {
-    }
-}
 void onCmpClosedEvent(char* s) {
     try
     {
-        nlohmann::json json_obj = nlohmann::json::parse(s);
-        int cmpOrigin = (int)json_obj["cmpOrigin"];//1.From CMP control   2.From Ad control
-        if (cmpOrigin == 1)
-        {
-            g_cmpChangedWidth = 0;
-            g_cmpChangedHeight = 0;
+        g_cmpChangedWidth = 0;
+        g_cmpChangedHeight = 0;
 
-            //Remove CMP control
-            /* DestroyWindow(g_hPnlCmp);
-            g_hPnlCmp = NULL;*/
-            PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
+        //Remove CMP control
+        /* DestroyWindow(g_hPnlCmp);
+        g_hPnlCmp = NULL;*/
+        PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
 
-            AppendLog(L"CMP has been removed.");
-        }
-        else
-        {
-            //In Google Ads' CMP, after the user grants permission, the developer needs to restore the size and positioning of the ad controls
-            AppendLog(L"Cmp ad reset size %hs", s);
-
-            std::string unitId = json_obj["unitId"];
-            int cppHandle = (int)json_obj["cppHandle"];
-            if (unitId == BannerUnitId)
-            {
-                RECT parentRect;
-                if (GetClientRect(g_hwndMain, &parentRect)) {
-                    int width = 728;
-                    int height = 90; // Banner 728x90
-                    int x = (parentRect.right - parentRect.left - width) / 2;
-                    int y = (parentRect.bottom - parentRect.top - height - 50);
-                    SetWindowPos(g_hPnlBanner, NULL, x, y, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
-                }
-            }
-            else if (unitId == FeedUnitId)
-            {
-                SetWindowPos(g_hPnlFeed, NULL, 10, 545, 400, 50, SWP_NOZORDER | SWP_SHOWWINDOW);
-            }
-            else if (unitId == EmbeddedUnitId)
-            {
-                SetWindowPos(g_hPnlEmbedded, NULL, 10, 605, 200, 200, SWP_NOZORDER | SWP_SHOWWINDOW);
-            }
-        }
+        AppendLog(L"CMP has been removed.");
     }
     catch (const std::exception&)
     {
