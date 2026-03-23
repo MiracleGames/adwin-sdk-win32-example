@@ -23,19 +23,27 @@ namespace CSharpApp
             InitializeComponent();
             AdvertManager.AdClickEvent += AdvertManager_AdClickEvent;
             AdvertManager.AdCloseEvent += AdvertManager_AdCloseEvent;
-        }
 
-        //Production environment
-        private const string YourAppId = "69316b6861328938223cc124";
-        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-        private const string SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
-        private const string ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
-        private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
-        private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
-        private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
-        private const string RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
-        private const string FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
-        private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
+            adUnitMap = new Dictionary<string, string>
+            {
+                ["SplashAdUnitId"] = SplashAdUnitId,
+                ["BannerUnitId"] = BannerUnitId,
+                ["InterstitialUnitId"] = InterstitialUnitId,
+                ["CoupletUnitId"] = CoupletUnitId,
+                ["RewardedUnitId"] = RewardedUnitId
+            };
+        } 
+        //Test Environment  
+        private const string YourAppId = "692e5d6a207c9dd383ba56f7";
+        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg9pm4A6JkgQr7Xx5UUmX/NT+ZKM+ZF/2btAIBsdrJF76gCgYIKoZIzj0DAQehRANCAARrjJmtngZzxhRAa0Wn99ZN7QGf9ozmvghuvaicqFmA3j35XDkfXBgIqMTABogfpd+1LrAADeXkgOPzqw6b12my";
+        private const string SplashAdUnitId = "9ad41e3410084523a4f2a13ca65df395";             //Splash Ad:1920 x 1080
+        private const string ExitAdUnitId = "a0e4a92613674feab0e3eaa36d1c17b8";                 //Exit Ad:1920 x 1080
+        private const string BannerUnitId = "948ba7ccdfa34a0b8e2f96a66244c494";                 //Banner Ad:728 x 90
+        private const string InterstitialUnitId = "10494292d2d9431691c3bebf0f35815c";           //Interstitial Ad:1024 x 768
+        private const string CoupletUnitId = "ef5f566b0eb14132987efbd57d6af60f";                //Couple Ad:300 x 600
+        private const string RewardedUnitId = "a9bd7d57faef4f8cb016979284c86102";             //Rewarded Ad:1024x768
+        private const string FeedUnitId = "e13d9a6a4dbd42c2bd50561773dbda40";                 //Feed，Developers need to maintain the advertising control.
+        private const string EmbeddedUnitId = "eb60d1e936c044adb696d9fa8147d590";         //Embedded，Developers need to maintain the advertising control.
 
         private void AdvertManager_AdClickEvent(object sender, string e)
         {
@@ -68,17 +76,6 @@ namespace CSharpApp
                         _ = await AdvertManager.ReportAdRewardFulfillment(unitId, resourceId, materialId, rewardId);//Report to MG
                     });
                 }
-            }
-            //Feed and Embedded ads may alter their Location within the AdSizeChangedEvent event; Location must be restored here.
-            else if (unitId == FeedUnitId)
-            {
-                panelAd6_2.Size = new Size(400, 50);
-                panelAd6_2.Location = new Point(14, 335);
-            }
-            else if (unitId == EmbeddedUnitId)
-            {
-                panelAd8_2.Size = new Size(200, 200);
-                panelAd8_2.Location = new Point(230, 444);
             }
         }
 
@@ -126,6 +123,10 @@ namespace CSharpApp
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"web\"}", AdType.Splash);
         }
+        private void btnAd1_4_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + SplashAdUnitId + "\",\"media\":\"image\"}", AdType.Splash);
+        }
 
         /// <summary>
         /// Interstitial Ad  
@@ -146,7 +147,10 @@ namespace CSharpApp
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"web\"}", AdType.Interstitial);
         }
-
+        private void btn4_4_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + InterstitialUnitId + "\",\"media\":\"image\"}", AdType.Interstitial);
+        }
         /// <summary>
         /// Banner Ad 
         /// 728*90
@@ -162,7 +166,10 @@ namespace CSharpApp
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + BannerUnitId + "\",\"media\":\"web\"}", AdType.Banner);
         }
-
+        private void btnAd3_3_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + BannerUnitId + "\",\"media\":\"image\"}", AdType.Banner);
+        }
         /// <summary>
         /// Couple Ad
         /// 300*600
@@ -176,6 +183,10 @@ namespace CSharpApp
         private void btnAd5_2_Click(object sender, EventArgs e)
         {
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + CoupletUnitId + "\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\",\"media\":\"web\"}", AdType.Couplet);
+        }
+        private void btnAd5_3_Click(object sender, EventArgs e)
+        {
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + CoupletUnitId + "\",\"tag\":\"MGADKEY_COUPLET_LEFT\",\"tag2\":\"MGADKEY_COUPLET_RIGHT\",\"media\":\"image\"}", AdType.Couplet);
         }
 
         /// <summary>
@@ -196,14 +207,18 @@ namespace CSharpApp
             comment = Uri.EscapeDataString(comment);
             AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\",\"media\":\"web\"}", AdType.Rewarded);
         }
-
+        private void btnAd6_3_Click(object sender, EventArgs e)
+        {
+            string comment = "id123,abc,$9.99";
+            comment = Uri.EscapeDataString(comment);
+            AdvertManager.ShowAd(this, "{\"unitId\": \"" + RewardedUnitId + "\",\"comment\":\"" + comment + "\",\"media\":\"video\"}", AdType.Rewarded);
+        }
         //Feed
         private void btnAd7_Click(object sender, EventArgs e)
         {
             dynamic jsonObj = new
             {
                 unitId = FeedUnitId,//Customizable dimensions, example: MG backend settings 400×50
-                media = "image",
                 width = panelAd6.Width,
                 height = panelAd6.Height
             };
@@ -217,19 +232,31 @@ namespace CSharpApp
                 unitId = FeedUnitId,
                 media = "web",
                 width = panelAd6_2.Width,
+                height = panelAd6_2.Height,
+                cmpLocationX = 50,
+                cmpLocationY = 200
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd6_2, json, AdType.Feed);
+        }
+        private void btnAd7_3_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = FeedUnitId,
+                media = "image",
+                width = panelAd6_2.Width,
                 height = panelAd6_2.Height
             };
             string json = JsonConvert.SerializeObject(jsonObj);
             AdvertManager.ShowAd(this.panelAd6_2, json, AdType.Feed);
         }
-
         //Embedded
         private void btnAd8_Click(object sender, EventArgs e)
         {
             dynamic jsonObj = new
             {
                 unitId = EmbeddedUnitId,//Customizable dimensions, example: MG backend settings 200x200
-                media = "image",
                 width = panelAd.Width,
                 height = panelAd.Height
             };
@@ -249,7 +276,18 @@ namespace CSharpApp
             string json = JsonConvert.SerializeObject(jsonObj);
             AdvertManager.ShowAd(this.panelAd8_2, json, AdType.Embedded);
         }
-
+        private void btnAd8_3_Click(object sender, EventArgs e)
+        {
+            dynamic jsonObj = new
+            {
+                unitId = EmbeddedUnitId,
+                media = "image",
+                width = panelAd8_2.Width,
+                height = panelAd8_2.Height
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            AdvertManager.ShowAd(this.panelAd8_2, json, AdType.Embedded);
+        }
         /// <summary>
         /// Remove Ad Slot
         /// Frontend functionality; developers are responsible for removing specified controls;
@@ -329,6 +367,117 @@ namespace CSharpApp
                     return;
                 }
             }
+        }
+
+        private Dictionary<string, string> adUnitMap;
+        private async void btn_getAd1_Click(object sender, EventArgs e)
+        {
+            Button btnGetAd = (Button)sender;
+            string btnTag = btnGetAd.Tag.ToString();
+            string adUnitId = adUnitMap[btnTag.Split(',')[0]];
+            AdType adType = (AdType)Convert.ToInt32(btnTag.Split(',')[1]);
+
+            ShowMessage($"广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 开始预缓存...");
+            dynamic jsonObj = new
+            {
+                unitId = adUnitId,
+                media = "video"
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = await AdvertManager.PreloadAd(json, adType);
+            if (result == 1)
+            {
+                EnableAdBtn(btnTag.Split(',')[0]);
+                ShowMessage($"广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 素材准备完毕");
+            }
+            else
+            {
+                ShowMessage($"广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 预加载失败，返回结果：[{result}]");
+            }
+        }
+        private void EnableAdBtn(string adKey)
+        {
+            foreach (var item in groupBox1.Controls)
+            {
+                if (item is Button button)
+                {
+                    if (button.Tag.ToString().Contains($"SHOW_{adKey}"))
+                    {
+                        button.Enabled = true;
+                        return;
+                    }
+                }
+            }
+        }
+        private void btn_showAd1_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string btnTag = btn.Tag.ToString();
+            string adUnitId = adUnitMap[btnTag.Split(',')[0].Replace("SHOW_", "")];
+            AdType adType = (AdType)Convert.ToInt32(btnTag.Split(',')[1]);
+            dynamic jsonObj = new
+            {
+                unitId = adUnitId,
+                media = "video"
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = AdvertManager.ShowPreloadAd(this, json, adType);
+            if (result == 1)
+                btn.Enabled = false;
+        }
+
+        private async void btn_getGoogleAd1_Click(object sender, EventArgs e)
+        {
+            Button btnGetAd = (Button)sender;
+            string btnTag = btnGetAd.Tag.ToString();
+            string adUnitId = adUnitMap[btnTag.Split(',')[0]];
+            AdType adType = (AdType)Convert.ToInt32(btnTag.Split(',')[1]);
+
+            ShowMessage($"Google广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 开始预缓存...");
+            dynamic jsonObj = new
+            {
+                unitId = adUnitId,
+                media = "web"
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = await AdvertManager.PreloadAd(json, adType);
+            if (result == 1)
+            {
+                foreach (var item in groupBox2.Controls)
+                {
+                    if (item is Button button)
+                    {
+                        if (button.Tag.ToString().Contains($"SHOW_{btnTag.Split(',')[0]}"))
+                        {
+                            button.Enabled = true;
+                            break;
+                        }
+                    }
+                }
+
+                ShowMessage($"Google广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 素材准备完毕");
+            }
+            else
+            {
+                ShowMessage($"Google广告位[{adUnitId}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 预加载失败，返回结果：[{result}]");
+            }
+        }
+
+        private void btn_showGoogleAd1_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string btnTag = btn.Tag.ToString();
+            string adUnitId = adUnitMap[btnTag.Split(',')[0].Replace("SHOW_", "")];
+            AdType adType = (AdType)Convert.ToInt32(btnTag.Split(',')[1]);
+            dynamic jsonObj = new
+            {
+                unitId = adUnitId,
+                media = "web"
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = AdvertManager.ShowPreloadAd(this, json, adType);
+            if (result == 1)
+                btn.Enabled = false;
         }
     }
 }

@@ -22,9 +22,12 @@ typedef void(WINAPI* InitCompleteEvent)(CallbackDelegate onInitComplete);
 
 typedef void(WINAPI* SetupExitAd)(const char* exitAdUnitId);
 typedef void(WINAPI* ShowExitAdBlocking)();
-typedef int(WINAPI* ShowAd)(const char* jsonParam);
+typedef void(WINAPI* ShowAd)(const char* jsonParam);
 typedef void(WINAPI* ReportAdRewardFulfillment)(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
-typedef void(WINAPI* AdCloseEvent)(CallbackDelegate onAdCloseEvent);
+typedef void(WINAPI* AdCloseEvent)(CallbackDelegate callback);
+typedef void(WINAPI* PreloadAd)(const char* jsonParam);
+typedef int(WINAPI* ShowPreloadAd)(const char* jsonParam);
+typedef void(WINAPI* AdPreloadEvent)(CallbackDelegate onAdPreloadEvent);
 
 // SDK 操作函数声明 
 void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey);
@@ -35,6 +38,8 @@ void setupExitAd(HINSTANCE hDLL);
 void showExitAdBlocking(HINSTANCE hDLL);
 void showAd(const char* s);
 void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const char* materialId, const char* rewardId);
+void preloadAd(const char* s);
+int showPreloadAd(const char* s, HWND adBntHwnd);
 
 // 回调函数声明 
 void onCmpSizeChangedEvent(char* s);
@@ -42,6 +47,7 @@ void onCmpClosedEvent(char* s);
 
 void onInitCompleteEvent(char* s);
 void onAdCloseEvent(char* s);
+void onAdPreloadEvent(char* s);
 
 // 定义所使用控件 ID 
 // 1.开屏 2.退屏 3.Banner 4.插屏 5.对联 6.激励视频 7.信息流 8.嵌入式
@@ -52,9 +58,13 @@ void onAdCloseEvent(char* s);
 #define ID_BTN_AD4               240 //插屏
 #define ID_BTN_AD41              241 //插屏仅视频
 #define ID_BTN_AD42              242 //插屏仅Web
+#define ID_BTN_AD4PRELOAD        243 //插屏预缓存
+#define ID_BTN_AD4PRESHOW        244 //插屏预缓存展示
 #define ID_BTN_AD5               250 //对联
 #define ID_BTN_AD6               260 //激励视频
 #define ID_BTN_AD61              261 //激励视频仅Web
+#define ID_BTN_AD6PRELOAD        262 //激励视频预缓存
+#define ID_BTN_AD6PRESHOW        263 //激励视频预缓存展示
 #define ID_BTN_AD7               270 //信息流
 #define ID_BTN_AD8               280 //信息流 
 #define ID_BTN_DELCMP            301 //删除CMP 

@@ -173,7 +173,8 @@ HWND g_hPnlInterstitial = NULL;//[Interstitial]
 HWND g_hPnlReward = NULL;//[Rewarded]
 HWND g_hPnlFeed = NULL;//[Feed]
 HWND g_hPnlEmbedded = NULL;//[Embedded]
-
+HWND g_hBtnRewardedAdShow = NULL;
+HWND g_hBtnInterstitialAdShow = NULL;
 // Custom Message
 #define WM_SHOW_ADVERT (WM_USER + 300)
 #define WM_SHOW_OPENSCREEN_ADVERT (WM_USER + 301)
@@ -185,16 +186,28 @@ int g_cmpChangedHeight = 0;
 int g_cmpSdkControlHandle = 0;
 
 //1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
-const char* YourAppId = "69316b6861328938223cc124";
-const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-const char* SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
-const char* ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
-const char* BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
-const char* InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
-const char* CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
-const char* RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
-const char* FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
-const char* EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
+//const char* YourAppId = "69316b6861328938223cc124";
+//const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
+//const char* SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+//const char* ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
+//const char* BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
+//const char* InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
+//const char* CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
+//const char* RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
+//const char* FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
+//const char* EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
+
+//1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
+const char* YourAppId = "692e5d6a207c9dd383ba56f7";
+const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg9pm4A6JkgQr7Xx5UUmX/NT+ZKM+ZF/2btAIBsdrJF76gCgYIKoZIzj0DAQehRANCAARrjJmtngZzxhRAa0Wn99ZN7QGf9ozmvghuvaicqFmA3j35XDkfXBgIqMTABogfpd+1LrAADeXkgOPzqw6b12my";
+const char* SplashAdUnitId = "9ad41e3410084523a4f2a13ca65df395";         //Splash Ad:1920 x 1080
+const char* ExitAdUnitId = "a0e4a92613674feab0e3eaa36d1c17b8";           //Exit Ad:1920 x 1080
+const char* BannerUnitId = "948ba7ccdfa34a0b8e2f96a66244c494";           //Banner Ad:728 x 90
+const char* InterstitialUnitId = "10494292d2d9431691c3bebf0f35815c";     //Interstitial Ad:1024 x 768
+const char* CoupletUnitId = "ef5f566b0eb14132987efbd57d6af60f";          //Couple Ad:300 x 600
+const char* RewardedUnitId = "a9bd7d57faef4f8cb016979284c86102";         //Rewarded Ad:1024x768
+const char* FeedUnitId = "e13d9a6a4dbd42c2bd50561773dbda40";             //Feed，Developers need to maintain the advertising control.
+const char* EmbeddedUnitId = "eb60d1e936c044adb696d9fa8147d590";         //Embedded，Developers need to maintain the advertising control.
 
 void CreateSplashScreenAdPanel(HWND hWnd) {
     RECT rect;
@@ -312,9 +325,13 @@ void CreateControls(HWND hWnd) {
 
     CreateWindowW(L"BUTTON", L"Interstitial", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD4, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"I Preload ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        150, y, 130, 30, hWnd, (HMENU)ID_BTN_AD4PRELOAD, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Interstitial Video", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD41, hInst, NULL);
+    g_hBtnInterstitialAdShow = CreateWindowW(L"BUTTON", L"I Preload show", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        150, y, 130, 30, hWnd, (HMENU)ID_BTN_AD4PRESHOW, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Interstitial Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD42, hInst, NULL);
@@ -324,9 +341,13 @@ void CreateControls(HWND hWnd) {
 
     CreateWindowW(L"BUTTON", L"Rewarded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD6, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Preload rewarded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        150, y, 130, 30, hWnd, (HMENU)ID_BTN_AD6PRELOAD, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Rewarded Web", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD61, hInst, NULL);
+    g_hBtnRewardedAdShow = CreateWindowW(L"BUTTON", L"Preload show", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        150, y, 130, 30, hWnd, (HMENU)ID_BTN_AD6PRESHOW, hInst, NULL);
 
     CreateWindowW(L"BUTTON", L"Feed", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD7, hInst, NULL);
@@ -342,6 +363,8 @@ void CreateControls(HWND hWnd) {
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
         300, 10, 1200, 200, hWnd, (HMENU)ID_TXT_LOG, hInst, NULL);
 
+    EnableWindow(g_hBtnInterstitialAdShow, FALSE);
+    EnableWindow(g_hBtnRewardedAdShow, FALSE);
     //Feed ad container
     g_hPnlFeed = CreateWindowW(L"STATIC", L"This is a panel for Feed advertising", WS_CHILD | WS_VISIBLE, 10, y += 150, 400, 50, hWnd, (HMENU)2071, hInst, NULL);
     BringWindowToTop(g_hPnlFeed);
@@ -364,6 +387,8 @@ void InitMgAdSdk(HWND hWnd) {
             func(onInitCompleteEvent);
         if (auto func = (AdCloseEvent)GetProcAddress(hDLL, "AdCloseEvent")) //Callback function for ad close event
             func(onAdCloseEvent);
+        if (auto func = (AdPreloadEvent)GetProcAddress(hDLL, "AdPreloadEvent")) //Callback function for ad preload event
+            func(onAdPreloadEvent);
 
         //1.Set parameters
         setAppId(hDLL, YourAppId, YourSecretKey);
@@ -479,6 +504,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             showAd(jsonStr.c_str());
             break;
         }
+        case ID_BTN_AD4PRELOAD: {
+            nlohmann::json json_obj = {
+                  {"unitId", InterstitialUnitId},
+                  {"appType", 1},
+                  {"adType", 4}
+            };
+            std::string jsonStr = json_obj.dump();
+            preloadAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD4PRESHOW: {
+            CreateInterstitialAdPannel(g_hwndMain);
+            nlohmann::json json_obj = {
+                  {"unitId", InterstitialUnitId},
+                  {"appType", 1},
+                  {"adType", 4},
+                  {"handle", reinterpret_cast<int>(g_hPnlInterstitial)}
+            };
+            std::string jsonStr = json_obj.dump();
+            showPreloadAd(jsonStr.c_str(), g_hBtnInterstitialAdShow);
+            break;
+        }
         case ID_BTN_AD41:
         {//Interstitial
             CreateInterstitialAdPannel(hWnd);
@@ -538,6 +585,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             };
             std::string jsonStr = json_obj.dump();
             showAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD6PRELOAD: {
+            nlohmann::json json_obj = {
+                 {"unitId", RewardedUnitId},
+                 {"comment", "abc123"},
+                 {"appType", 1},
+                 {"adType", 6},
+                 {"media", "video"},
+                 {"width", 1024},
+                 {"height", 768}
+            };
+            std::string jsonStr = json_obj.dump();
+            preloadAd(jsonStr.c_str());
+            break;
+        }
+        case ID_BTN_AD6PRESHOW: {
+            CreateRewardAdPannel(hWnd);
+            nlohmann::json json_obj = {
+                 {"unitId", RewardedUnitId},
+                 {"comment", "abc123"},
+                 {"appType", 1},
+                 {"adType", 6},
+                 {"media", "video"},
+                 {"handle", reinterpret_cast<int>(g_hPnlReward)},
+                 {"width", 1024},
+                 {"height", 768}
+            };
+            std::string jsonStr = json_obj.dump();
+            showPreloadAd(jsonStr.c_str(), g_hBtnRewardedAdShow);
             break;
         }
         case ID_BTN_AD61:
@@ -917,10 +994,7 @@ void showAd(const char* json) {
 
         ShowAd func = (ShowAd)GetProcAddress(hDLL, "ShowAd");
         if (func) {
-            int result = func(json);
-            if (result == 1) {
-                // success 
-            }
+            func(json);
         }
     }
     catch (const std::exception& ex)
@@ -934,6 +1008,75 @@ void reportAdRewardFulfillment(const char* unitId, const char* resourceId, const
     if (func) {
         func(unitId, resourceId, materialId, rewardId);
     }
+}
+
+void preloadAd(const char* json)
+{
+    try
+    {
+        // 确保在调用前COM已初始化
+        if (!g_comInitialized) {
+            HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+            if (SUCCEEDED(hr)) {
+                g_comInitialized = true;
+            }
+        }
+        PreloadAd func = (PreloadAd)GetProcAddress(hDLL, "PreloadAd");
+        if (func) {
+            func(json);
+        }
+    }
+    catch (const std::exception& ex)
+    {
+    }
+}
+
+void onAdPreloadEvent(char* s) {
+    AppendLog(L"onAdPreloadEvent: %hs", s);
+    //eg.s = {"unitId":"a9bd7d57faef4f8cb016979284c86102","advertStatus":1,"completeStatus":0,"displayStatus":0,"comment":"abc123","rewardId":""}
+    //...
+
+    nlohmann::json json_obj = nlohmann::json::parse(s);
+    std::string unitId = json_obj["unitId"];
+    std::int32_t adStatus = json_obj["advertStatus"];
+    if (adStatus == 1)
+    {   // The button show the advert can be clicked.
+        if (unitId == InterstitialUnitId)
+        {
+            EnableWindow(g_hBtnInterstitialAdShow, TRUE);
+        }
+        else  if (unitId == RewardedUnitId)
+        {
+            EnableWindow(g_hBtnRewardedAdShow, TRUE);
+        }
+    }
+}
+
+int showPreloadAd(const char* json, HWND adBntHwnd)
+{
+    int result = 0;
+    try
+    {
+        if (!g_comInitialized) {
+            HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+            if (SUCCEEDED(hr)) {
+                g_comInitialized = true;
+            }
+        }
+        ShowPreloadAd func = (ShowPreloadAd)GetProcAddress(hDLL, "ShowPreloadAd");
+        if (func) {
+            result = func(json);
+            if (result == 1) {
+                // success 
+                AppendLog(L"show mg ad: success");
+                EnableWindow(adBntHwnd, FALSE);
+            }
+        }
+    }
+    catch (const std::exception& ex)
+    {
+    }
+    return result;
 }
 #pragma endregion
 
