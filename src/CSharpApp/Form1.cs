@@ -32,18 +32,18 @@ namespace CSharpApp
                 ["CoupletUnitId"] = CoupletUnitId,
                 ["RewardedUnitId"] = RewardedUnitId
             };
-        } 
-        //Test Environment  
-        private const string YourAppId = "692e5d6a207c9dd383ba56f7";
-        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg9pm4A6JkgQr7Xx5UUmX/NT+ZKM+ZF/2btAIBsdrJF76gCgYIKoZIzj0DAQehRANCAARrjJmtngZzxhRAa0Wn99ZN7QGf9ozmvghuvaicqFmA3j35XDkfXBgIqMTABogfpd+1LrAADeXkgOPzqw6b12my";
-        private const string SplashAdUnitId = "9ad41e3410084523a4f2a13ca65df395";             //Splash Ad:1920 x 1080
-        private const string ExitAdUnitId = "a0e4a92613674feab0e3eaa36d1c17b8";                 //Exit Ad:1920 x 1080
-        private const string BannerUnitId = "948ba7ccdfa34a0b8e2f96a66244c494";                 //Banner Ad:728 x 90
-        private const string InterstitialUnitId = "10494292d2d9431691c3bebf0f35815c";           //Interstitial Ad:1024 x 768
-        private const string CoupletUnitId = "ef5f566b0eb14132987efbd57d6af60f";                //Couple Ad:300 x 600
-        private const string RewardedUnitId = "a9bd7d57faef4f8cb016979284c86102";             //Rewarded Ad:1024x768
-        private const string FeedUnitId = "e13d9a6a4dbd42c2bd50561773dbda40";                 //Feed，Developers need to maintain the advertising control.
-        private const string EmbeddedUnitId = "eb60d1e936c044adb696d9fa8147d590";         //Embedded，Developers need to maintain the advertising control.
+        }
+
+        private const string YourAppId = "69316b6861328938223cc124";
+        private const string YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
+        private const string SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+        private const string ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
+        private const string BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
+        private const string InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
+        private const string CoupletUnitId = "b502f6e6281c43e4b28ea22503471039";              //Couple Ad:300 x 600
+        private const string RewardedUnitId = "2ae60936ba664fbfb7d92ce3a19c2915";           //Rewarded Ad:1024x768
+        private const string FeedUnitId = "f152f6caf7a8440f8510bc31534baf4e";                      //Feed，Developers need to maintain the advertising control.
+        private const string EmbeddedUnitId = "4192966a9db343f48dd2f6308ea9ec30";         //Embedded，Developers need to maintain the advertising control.
 
         private void AdvertManager_AdClickEvent(object sender, string e)
         {
