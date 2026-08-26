@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnOpenCmp = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -97,6 +98,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnOpenCmp);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel1.Controls.Add(this.panelAd8_2);
@@ -131,9 +133,19 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(1334, 791);
-            this.splitContainer1.SplitterDistance = 443;
+            this.splitContainer1.Size = new System.Drawing.Size(1434, 861);
+            this.splitContainer1.SplitterDistance = 476;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // btnOpenCmp
+            // 
+            this.btnOpenCmp.Location = new System.Drawing.Point(12, 573);
+            this.btnOpenCmp.Name = "btnOpenCmp";
+            this.btnOpenCmp.Size = new System.Drawing.Size(109, 23);
+            this.btnOpenCmp.TabIndex = 37;
+            this.btnOpenCmp.Text = "Open CMP";
+            this.btnOpenCmp.UseVisualStyleBackColor = true;
+            this.btnOpenCmp.Click += new System.EventHandler(this.btnOpenCmp_Click);
             // 
             // groupBox2
             // 
@@ -152,17 +164,17 @@
             this.groupBox2.Size = new System.Drawing.Size(214, 165);
             this.groupBox2.TabIndex = 36;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Google广告预加载";
+            this.groupBox2.Text = "Google ad preload only";
             // 
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(99, 134);
+            this.button2.Location = new System.Drawing.Point(152, 134);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(111, 23);
+            this.button2.Size = new System.Drawing.Size(56, 23);
             this.button2.TabIndex = 9;
             this.button2.Tag = "SHOW_RewardedUnitId,6";
-            this.button2.Text = "加载完成可以显示";
+            this.button2.Text = "Show Ad";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.btn_showGoogleAd1_Click);
             // 
@@ -170,10 +182,10 @@
             // 
             this.button4.Location = new System.Drawing.Point(2, 134);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(91, 23);
+            this.button4.Size = new System.Drawing.Size(146, 23);
             this.button4.TabIndex = 8;
             this.button4.Tag = "RewardedUnitId,6";
-            this.button4.Text = "5.激励视频";
+            this.button4.Text = "5.Rewarded full screen preload";
             this.button4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.btn_getGoogleAd1_Click);
@@ -181,12 +193,12 @@
             // button6
             // 
             this.button6.Enabled = false;
-            this.button6.Location = new System.Drawing.Point(99, 76);
+            this.button6.Location = new System.Drawing.Point(152, 76);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(111, 23);
+            this.button6.Size = new System.Drawing.Size(56, 23);
             this.button6.TabIndex = 7;
             this.button6.Tag = "SHOW_BannerUnitId,3";
-            this.button6.Text = "加载完成可以显示";
+            this.button6.Text = "Show Ad";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.btn_showGoogleAd1_Click);
             // 
@@ -194,10 +206,10 @@
             // 
             this.button7.Location = new System.Drawing.Point(2, 76);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(91, 23);
+            this.button7.Size = new System.Drawing.Size(146, 23);
             this.button7.TabIndex = 6;
             this.button7.Tag = "BannerUnitId,3";
-            this.button7.Text = "3.横幅";
+            this.button7.Text = "3.Banner preload";
             this.button7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.btn_getGoogleAd1_Click);
@@ -205,12 +217,12 @@
             // button8
             // 
             this.button8.Enabled = false;
-            this.button8.Location = new System.Drawing.Point(99, 47);
+            this.button8.Location = new System.Drawing.Point(152, 47);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(111, 23);
+            this.button8.Size = new System.Drawing.Size(56, 23);
             this.button8.TabIndex = 5;
-            this.button8.Tag = "SHOW_SplashAdUnitId,1";
-            this.button8.Text = "加载完成可以显示";
+            this.button8.Tag = "SHOW_FullScreenAdUnitId,1";
+            this.button8.Text = "Show Ad";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.btn_showGoogleAd1_Click);
             // 
@@ -218,10 +230,10 @@
             // 
             this.button9.Location = new System.Drawing.Point(2, 47);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(91, 23);
+            this.button9.Size = new System.Drawing.Size(146, 23);
             this.button9.TabIndex = 4;
-            this.button9.Tag = "SplashAdUnitId,1";
-            this.button9.Text = "2.全屏";
+            this.button9.Tag = "FullScreenAdUnitId,1";
+            this.button9.Text = "2.FullScreen preload";
             this.button9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.btn_getGoogleAd1_Click);
@@ -230,24 +242,24 @@
             // 
             this.button10.BackColor = System.Drawing.Color.Gainsboro;
             this.button10.Enabled = false;
-            this.button10.Location = new System.Drawing.Point(99, 105);
+            this.button10.Location = new System.Drawing.Point(152, 105);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(111, 23);
+            this.button10.Size = new System.Drawing.Size(56, 23);
             this.button10.TabIndex = 3;
             this.button10.Tag = "SHOW_CoupletUnitId,5";
-            this.button10.Text = "加载完成可以显示";
+            this.button10.Text = "Show Ad";
             this.button10.UseVisualStyleBackColor = false;
             this.button10.Click += new System.EventHandler(this.btn_showGoogleAd1_Click);
             // 
             // btn_showGoogleAd1
             // 
             this.btn_showGoogleAd1.Enabled = false;
-            this.btn_showGoogleAd1.Location = new System.Drawing.Point(99, 18);
+            this.btn_showGoogleAd1.Location = new System.Drawing.Point(152, 18);
             this.btn_showGoogleAd1.Name = "btn_showGoogleAd1";
-            this.btn_showGoogleAd1.Size = new System.Drawing.Size(111, 23);
+            this.btn_showGoogleAd1.Size = new System.Drawing.Size(56, 23);
             this.btn_showGoogleAd1.TabIndex = 1;
             this.btn_showGoogleAd1.Tag = "SHOW_InterstitialUnitId,4";
-            this.btn_showGoogleAd1.Text = "加载完成可以显示";
+            this.btn_showGoogleAd1.Text = "Show Ad";
             this.btn_showGoogleAd1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_showGoogleAd1.UseVisualStyleBackColor = true;
             this.btn_showGoogleAd1.Click += new System.EventHandler(this.btn_showGoogleAd1_Click);
@@ -257,10 +269,10 @@
             this.button12.BackColor = System.Drawing.Color.Gainsboro;
             this.button12.Location = new System.Drawing.Point(2, 105);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(91, 23);
+            this.button12.Size = new System.Drawing.Size(146, 23);
             this.button12.TabIndex = 2;
             this.button12.Tag = "CoupletUnitId,5";
-            this.button12.Text = "4.对联预加载";
+            this.button12.Text = "4.Couplet preload";
             this.button12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button12.UseVisualStyleBackColor = false;
             this.button12.Click += new System.EventHandler(this.btn_getGoogleAd1_Click);
@@ -269,10 +281,10 @@
             // 
             this.btn_getGoogleAd1.Location = new System.Drawing.Point(2, 18);
             this.btn_getGoogleAd1.Name = "btn_getGoogleAd1";
-            this.btn_getGoogleAd1.Size = new System.Drawing.Size(91, 23);
+            this.btn_getGoogleAd1.Size = new System.Drawing.Size(146, 23);
             this.btn_getGoogleAd1.TabIndex = 0;
             this.btn_getGoogleAd1.Tag = "InterstitialUnitId,4";
-            this.btn_getGoogleAd1.Text = "1.插屏预加载";
+            this.btn_getGoogleAd1.Text = "1.Interstitial preload";
             this.btn_getGoogleAd1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getGoogleAd1.UseVisualStyleBackColor = true;
             this.btn_getGoogleAd1.Click += new System.EventHandler(this.btn_getGoogleAd1_Click);
@@ -294,17 +306,17 @@
             this.groupBox1.Size = new System.Drawing.Size(214, 165);
             this.groupBox1.TabIndex = 35;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "广告预加载";
+            this.groupBox1.Text = "Preload Ad";
             // 
             // button5
             // 
             this.button5.Enabled = false;
-            this.button5.Location = new System.Drawing.Point(99, 134);
+            this.button5.Location = new System.Drawing.Point(154, 134);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(111, 23);
+            this.button5.Size = new System.Drawing.Size(56, 23);
             this.button5.TabIndex = 9;
             this.button5.Tag = "SHOW_RewardedUnitId,6";
-            this.button5.Text = "加载完成可以显示";
+            this.button5.Text = "Show Ad";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.btn_showAd1_Click);
             // 
@@ -312,10 +324,10 @@
             // 
             this.btn_getAd5.Location = new System.Drawing.Point(2, 134);
             this.btn_getAd5.Name = "btn_getAd5";
-            this.btn_getAd5.Size = new System.Drawing.Size(91, 23);
+            this.btn_getAd5.Size = new System.Drawing.Size(146, 23);
             this.btn_getAd5.TabIndex = 8;
             this.btn_getAd5.Tag = "RewardedUnitId,6";
-            this.btn_getAd5.Text = "5.激励视频";
+            this.btn_getAd5.Text = "5.Rewarded preload";
             this.btn_getAd5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getAd5.UseVisualStyleBackColor = true;
             this.btn_getAd5.Click += new System.EventHandler(this.btn_getAd1_Click);
@@ -323,12 +335,12 @@
             // button3
             // 
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(99, 76);
+            this.button3.Location = new System.Drawing.Point(154, 76);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(111, 23);
+            this.button3.Size = new System.Drawing.Size(56, 23);
             this.button3.TabIndex = 7;
             this.button3.Tag = "SHOW_BannerUnitId,3";
-            this.button3.Text = "加载完成可以显示";
+            this.button3.Text = "Show Ad";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.btn_showAd1_Click);
             // 
@@ -336,10 +348,10 @@
             // 
             this.btn_getAd3.Location = new System.Drawing.Point(2, 76);
             this.btn_getAd3.Name = "btn_getAd3";
-            this.btn_getAd3.Size = new System.Drawing.Size(91, 23);
+            this.btn_getAd3.Size = new System.Drawing.Size(146, 23);
             this.btn_getAd3.TabIndex = 6;
             this.btn_getAd3.Tag = "BannerUnitId,3";
-            this.btn_getAd3.Text = "3.横幅";
+            this.btn_getAd3.Text = "3.Banner preload";
             this.btn_getAd3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getAd3.UseVisualStyleBackColor = true;
             this.btn_getAd3.Click += new System.EventHandler(this.btn_getAd1_Click);
@@ -347,12 +359,12 @@
             // button1
             // 
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(99, 47);
+            this.button1.Location = new System.Drawing.Point(154, 47);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(111, 23);
+            this.button1.Size = new System.Drawing.Size(56, 23);
             this.button1.TabIndex = 5;
-            this.button1.Tag = "SHOW_SplashAdUnitId,1";
-            this.button1.Text = "加载完成可以显示";
+            this.button1.Tag = "SHOW_FullScreenAdUnitId,1";
+            this.button1.Text = "Show Ad";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.btn_showAd1_Click);
             // 
@@ -360,10 +372,10 @@
             // 
             this.btn_getAd2.Location = new System.Drawing.Point(2, 47);
             this.btn_getAd2.Name = "btn_getAd2";
-            this.btn_getAd2.Size = new System.Drawing.Size(91, 23);
+            this.btn_getAd2.Size = new System.Drawing.Size(146, 23);
             this.btn_getAd2.TabIndex = 4;
-            this.btn_getAd2.Tag = "SplashAdUnitId,1";
-            this.btn_getAd2.Text = "2.全屏";
+            this.btn_getAd2.Tag = "FullScreenAdUnitId,1";
+            this.btn_getAd2.Text = "2.FullScreen preload";
             this.btn_getAd2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getAd2.UseVisualStyleBackColor = true;
             this.btn_getAd2.Click += new System.EventHandler(this.btn_getAd1_Click);
@@ -372,24 +384,24 @@
             // 
             this.btn_showAd4.BackColor = System.Drawing.Color.Gainsboro;
             this.btn_showAd4.Enabled = false;
-            this.btn_showAd4.Location = new System.Drawing.Point(99, 105);
+            this.btn_showAd4.Location = new System.Drawing.Point(154, 105);
             this.btn_showAd4.Name = "btn_showAd4";
-            this.btn_showAd4.Size = new System.Drawing.Size(111, 23);
+            this.btn_showAd4.Size = new System.Drawing.Size(56, 23);
             this.btn_showAd4.TabIndex = 3;
             this.btn_showAd4.Tag = "SHOW_CoupletUnitId,5";
-            this.btn_showAd4.Text = "加载完成可以显示";
+            this.btn_showAd4.Text = "Show Ad";
             this.btn_showAd4.UseVisualStyleBackColor = false;
             this.btn_showAd4.Click += new System.EventHandler(this.btn_showAd1_Click);
             // 
             // btn_showAd1
             // 
             this.btn_showAd1.Enabled = false;
-            this.btn_showAd1.Location = new System.Drawing.Point(99, 18);
+            this.btn_showAd1.Location = new System.Drawing.Point(154, 18);
             this.btn_showAd1.Name = "btn_showAd1";
-            this.btn_showAd1.Size = new System.Drawing.Size(111, 23);
+            this.btn_showAd1.Size = new System.Drawing.Size(56, 23);
             this.btn_showAd1.TabIndex = 1;
             this.btn_showAd1.Tag = "SHOW_InterstitialUnitId,4";
-            this.btn_showAd1.Text = "加载完成可以显示";
+            this.btn_showAd1.Text = "Show Ad";
             this.btn_showAd1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_showAd1.UseVisualStyleBackColor = true;
             this.btn_showAd1.Click += new System.EventHandler(this.btn_showAd1_Click);
@@ -399,10 +411,10 @@
             this.btn_getAd4.BackColor = System.Drawing.Color.Gainsboro;
             this.btn_getAd4.Location = new System.Drawing.Point(2, 105);
             this.btn_getAd4.Name = "btn_getAd4";
-            this.btn_getAd4.Size = new System.Drawing.Size(91, 23);
+            this.btn_getAd4.Size = new System.Drawing.Size(146, 23);
             this.btn_getAd4.TabIndex = 2;
             this.btn_getAd4.Tag = "CoupletUnitId,5";
-            this.btn_getAd4.Text = "4.对联预加载";
+            this.btn_getAd4.Text = "4.Couplet preload";
             this.btn_getAd4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getAd4.UseVisualStyleBackColor = false;
             this.btn_getAd4.Click += new System.EventHandler(this.btn_getAd1_Click);
@@ -411,10 +423,10 @@
             // 
             this.btn_getAd1.Location = new System.Drawing.Point(2, 18);
             this.btn_getAd1.Name = "btn_getAd1";
-            this.btn_getAd1.Size = new System.Drawing.Size(91, 23);
+            this.btn_getAd1.Size = new System.Drawing.Size(146, 23);
             this.btn_getAd1.TabIndex = 0;
             this.btn_getAd1.Tag = "InterstitialUnitId,4";
-            this.btn_getAd1.Text = "1.插屏预加载";
+            this.btn_getAd1.Text = "1.Interstitial preload";
             this.btn_getAd1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_getAd1.UseVisualStyleBackColor = true;
             this.btn_getAd1.Click += new System.EventHandler(this.btn_getAd1_Click);
@@ -534,6 +546,7 @@
             this.btnDeleteCmp.TabIndex = 23;
             this.btnDeleteCmp.Text = "Remove CMP";
             this.btnDeleteCmp.UseVisualStyleBackColor = true;
+            this.btnDeleteCmp.Visible = false;
             this.btnDeleteCmp.Click += new System.EventHandler(this.btnDeleteCmp_Click);
             // 
             // btnAd5_2
@@ -586,7 +599,7 @@
             this.btnAd1.Name = "btnAd1";
             this.btnAd1.Size = new System.Drawing.Size(98, 23);
             this.btnAd1.TabIndex = 18;
-            this.btnAd1.Text = "1.Splash Ad";
+            this.btnAd1.Text = "1.Full Screen";
             this.btnAd1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnAd1.UseVisualStyleBackColor = true;
             this.btnAd1.Click += new System.EventHandler(this.btnAd1_Click);
@@ -681,7 +694,7 @@
             this.btnAd5.Name = "btnAd5";
             this.btnAd5.Size = new System.Drawing.Size(98, 23);
             this.btnAd5.TabIndex = 9;
-            this.btnAd5.Text = "5.Couple Ad";
+            this.btnAd5.Text = "5.Couplet Ad";
             this.btnAd5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnAd5.UseVisualStyleBackColor = true;
             this.btnAd5.Click += new System.EventHandler(this.btnAd5_Click);
@@ -722,7 +735,7 @@
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(887, 791);
+            this.textBox1.Size = new System.Drawing.Size(954, 861);
             this.textBox1.TabIndex = 0;
             // 
             // panelAd6_2
@@ -737,11 +750,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1334, 791);
+            this.ClientSize = new System.Drawing.Size(1434, 861);
             this.Controls.Add(this.panelAd6_2);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -810,6 +825,7 @@
         private System.Windows.Forms.Button btn_showGoogleAd1;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button btn_getGoogleAd1;
+        private System.Windows.Forms.Button btnOpenCmp;
     }
 }
 

@@ -92,17 +92,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CPPAPP));
-    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_CPPAPP);
-    wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc    = WndProc;
+    wcex.cbClsExtra     = 0;
+    wcex.cbWndExtra     = 0;
+    wcex.hInstance      = hInstance;
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CPPAPP));
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CPPAPP);
+    wcex.lpszClassName  = szWindowClass;
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
 }
@@ -165,7 +165,7 @@ std::wstring UTF8ToWide(const std::string& utf8str) {
 }
 
 HWND g_hPnlCmp = NULL; //CMP container, at startup it should be at the very top of the program, width full, height 50
-HWND g_hPnlSplashScreen = NULL; //[Splash Ad]
+HWND g_hPnlSplashScreen = NULL; //[FullScreen Ad]
 HWND g_hPnlBanner = NULL; //[Banner]
 HWND g_hPnlCoupletLeft = NULL; //[Couplet left]
 HWND g_hPnlCoupletRight = NULL; //[Couplet right]
@@ -185,10 +185,15 @@ int g_cmpChangedWidth = 0;
 int g_cmpChangedHeight = 0;
 int g_cmpSdkControlHandle = 0;
 
-//1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
+/*
+* 1.Downlodad the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CppSdk/SdkDownload
+* 2.Reference the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CppSdk/AdIntegrationGuide
+*/
+
+//1.FullScreen Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
 const char* YourAppId = "69316b6861328938223cc124";
 const char* YourSecretKey = "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZgULOuiIDYZyGiUyYdGr3odHVN6ebZ1uDwXx7PXiHh2gCgYIKoZIzj0DAQehRANCAASf1FWCfsSn/tXFVRt04C7JkpRG12KSC3wnaJRWb5QWin9dsBk1OR31BCsELMYtWsFhA7e6Q6Fi4Mi6+ub24O5a";
-const char* SplashAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //Splash Ad:1920 x 1080
+const char* FullScreenAdUnitId = "b871f83c5e8845f1b43325561bcdd6c7";             //FullScreen Ad:1920 x 1080
 const char* ExitAdUnitId = "5076eab6ae1042b6b92f73ea01981475";                 //Exit Ad:1920 x 1080
 const char* BannerUnitId = "cb7d9688a2d9499992febb6b642b3625";               //Banner Ad:728 x 90
 const char* InterstitialUnitId = "2cb66a1301404561881a3f26b6ce5ba7";           //Interstitial Ad:1024 x 768
@@ -303,7 +308,7 @@ void CreateEmbeddedAdPanel(HWND hWnd) {
 
 void CreateControls(HWND hWnd) {
     int y = 10;
-    CreateWindowW(L"BUTTON", L"Splash Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+    CreateWindowW(L"BUTTON", L"FullScreen Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y, 130, 30, hWnd, (HMENU)ID_BTN_AD1, hInst, NULL);
     CreateWindowW(L"BUTTON", L"Exit Ad", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_EXITAD, hInst, NULL);
@@ -343,8 +348,8 @@ void CreateControls(HWND hWnd) {
     CreateWindowW(L"BUTTON", L"Embedded", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_AD8, hInst, NULL);
 
-    CreateWindowW(L"BUTTON", L"Close CMP", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_DELCMP, hInst, NULL);
+    CreateWindowW(L"BUTTON", L"Open CMP again", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, y += 35, 130, 30, hWnd, (HMENU)ID_BTN_OPENCMP, hInst, NULL);
 
     // Log
     g_hwndLog = CreateWindow(L"EDIT", L"",
@@ -377,36 +382,22 @@ void InitMgAdSdk(HWND hWnd) {
             func(onAdCloseEvent);
         if (auto func = (AdPreloadEvent)GetProcAddress(hDLL, "AdPreloadEvent")) //Callback function for ad preload event
             func(onAdPreloadEvent);
+        if (auto func = (AdShowPreloadEvent)GetProcAddress(hDLL, "AdShowPreloadEvent")) //Callback function for show ad preload event
+            func(onAdShowPreloadEvent);
+        
 
         //1.Set parameters
         setAppId(hDLL, YourAppId, YourSecretKey);
 
-        //2.First, determine whether to pop up CMP
-        if (isOpenCmp(hDLL))
-        {
-            RECT clientRect;
-            if (GetClientRect(hWnd, &clientRect)) {
-                int panelWidth = clientRect.right - clientRect.left;
-                int panelHeight = clientRect.bottom - clientRect.top;
-
-                //2.1.Create CMP container
-                HINSTANCE minstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
-                g_hPnlCmp = CreateWindowW(L"STATIC", L"This is a panel for CMP", WS_CHILD | WS_VISIBLE, 0, 0, panelWidth, 50, hWnd, (HMENU)3011, minstance, NULL);
-                BringWindowToTop(g_hPnlCmp);
-
-                //2.2.Show CMP
-                nlohmann::json json_obj = {
-                 {"handle", reinterpret_cast<int>(g_hPnlCmp)},
-                 {"parentWidth", panelWidth},
-                 {"parentHeight", panelHeight}
-                };
-                std::string jsonStr = json_obj.dump();
-                openCmp(hDLL, jsonStr.c_str());//Returns the handle of the CMP control in the SDK, saved using the global variable g_cmpSdkControlHandle.
-            }
-        }
-
-        //3.SDK initialisation
-        initialize(hDLL);
+        //2.Show CMP 
+        nlohmann::json json_obj = {
+        {"ignoreExpiredCheck",false},// false (recommended): Popup will not appear again after user's first choice, compliant with GDPR; true: Popup appears on every launch, suitable for test environment
+        {"width", 900},//Optional; default value is 900
+        {"height", 500}//Optional; default value is 900
+        };
+        std::string jsonStr = json_obj.dump();
+        openCmp(hDLL, jsonStr.c_str());
+        //3.Initialize the SDK after the CMP call completes.
     }
 }
 
@@ -444,18 +435,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
         case ID_BTN_AD1:
-        {//Splash Ad
+        {//FullScreen Ad
             RECT clientRect;
             if (GetClientRect(hWnd, &clientRect)) {
                 int clientWidth = clientRect.right - clientRect.left;
                 int clientHeight = clientRect.bottom - clientRect.top;
                 nlohmann::json json_obj = {
-                 {"unitId", SplashAdUnitId},
+                 {"unitId", FullScreenAdUnitId},
                  {"appType", 1},
-                 {"adType", 1},//1.Splash Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
+                 {"adType", 1},//1.FullScreen Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
                  {"handle", reinterpret_cast<int>(g_hwndMain)},
-                 {"width", clientWidth},//For splash ad, the program's width and height must be provided.
-                 {"height", clientHeight},
+                 //{"width", clientWidth},//For splash ad, the program's width and height must be provided.
+                 //{"height", clientHeight},
                  {"parentWidth", clientWidth},
                  {"parentHeight", clientHeight}
                 };
@@ -470,7 +461,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int containerHandle = reinterpret_cast<int>(g_hPnlBanner);
             nlohmann::json json_obj = {
                 {"unitId", BannerUnitId},
-                {"media", "web"},//Only image-type creatives,support media types (image, video, web). Can be left empty.
+                //{"media", "web"},//Only image-type creatives,support media types (image, video, web). Can be left empty.
                 {"appType", 1},
                 {"adType", 3},//Banner
                 {"handle", containerHandle}
@@ -581,7 +572,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                  {"comment", "abc123"},
                  {"appType", 1},
                  {"adType", 6},
-                 {"media", "video"},
+                 //{"media", "web"},
                  {"width", 1024},
                  {"height", 768}
             };
@@ -596,7 +587,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                  {"comment", "abc123"},
                  {"appType", 1},
                  {"adType", 6},
-                 {"media", "video"},
+                 //{"media", "web"},
                  {"handle", reinterpret_cast<int>(g_hPnlReward)},
                  {"width", 1024},
                  {"height", 768}
@@ -657,6 +648,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case ID_BTN_EXITAD:
             showExitAdBlocking(hDLL);
             break;
+        case ID_BTN_OPENCMP: {
+            bool needcmp = getUserRegionCmpRequirement(hDLL);//This method relies on the store package and always returns false when debugging locally.
+            if (needcmp)
+            {
+                AppendLog(L"CMP will open");
+                nlohmann::json json_obj = {
+                   {"ignoreExpiredCheck",true},// false (recommended): Popup will not appear again after user's first choice, compliant with GDPR; true: Popup appears on every launch, suitable for test environment
+                   {"width", 900},//Optional; default value is 900
+                   {"height", 500}//Optional; default value is 500
+                };
+                std::string jsonStr = json_obj.dump();
+                openCmp(hDLL, jsonStr.c_str());
+            }
+        }
+        break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
@@ -670,11 +676,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int clientWidth = clientRect.right - clientRect.left;
             int clientHeight = clientRect.bottom - clientRect.top;
             nlohmann::json json_obj = {
-             {"unitId", SplashAdUnitId},
+             {"unitId", FullScreenAdUnitId},
              {"appType", 1},
              {"adType", 1},
              {"handle", reinterpret_cast<int>(g_hPnlSplashScreen)},
-             {"width", clientWidth},//Splash ad requires passing in the program's width and height.
+             {"width", clientWidth},//FullScreen ad requires passing in the program's width and height.
              {"height", clientHeight},
              {"parentWidth", clientWidth},
              {"parentHeight", clientHeight}
@@ -692,17 +698,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         return 0;
     }
-    case WM_DESTROY_CMP: {
+   /* case WM_DESTROY_CMP: {
         try
         {
             DestroyWindow(g_hPnlCmp);
             g_hPnlCmp = NULL;
         }
-        catch (const std::exception& ex)
+        catch (...)
         {
         }
         return 0;
-    }
+    }*/
     case WM_DESTROY_ADVERT: {
         const char* json = reinterpret_cast<const char*>(lParam);
         if (json) {
@@ -710,7 +716,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 nlohmann::json json_obj = nlohmann::json::parse(json);
                 std::string unitId = json_obj["unitId"];
-                if (unitId == SplashAdUnitId)
+                if (unitId == FullScreenAdUnitId)
                 {//Delete splash ad container
                     DestroyWindow(g_hPnlSplashScreen);
                     g_hPnlSplashScreen = NULL;
@@ -772,7 +778,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     }
                 }
             }
-            catch (const std::exception& ex)
+            catch (...)
             {
             }
             free((void*)json);
@@ -793,35 +799,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             int parentWidth = LOWORD(lParam);
             int parentHeight = HIWORD(lParam);
-            if (g_hPnlCmp != NULL)//When the window size changes, the CMP container's size needs to be modified.
-            {
-                RECT cmpRect;
-                GetClientRect(g_hPnlCmp, &cmpRect);
-                int cmpWidth = cmpRect.right - cmpRect.left;
-                int cmpHeight = cmpRect.bottom - cmpRect.top;
-                if (cmpHeight > 50)
-                {
-                    //1.In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.
-                    int x = (parentWidth - cmpWidth) / 2;
-                    int y = (parentHeight - cmpHeight) / 2;
-                    SetWindowPos(g_hPnlCmp, NULL, x, y, cmpWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-                }
-                else
-                {
-                    //2.CMP original interface. The height is fixed at 50px, and the width remains full across the App.
-                    if (cmpWidth != parentWidth)
-                    {
-                        //Modify the size of the CMP panel.
-                        SetWindowPos(g_hPnlCmp, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-                        if (g_cmpSdkControlHandle > 0)
-                        {
-                            //Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.
-                            HWND hWndSdkControl = (HWND)(INT_PTR)g_cmpSdkControlHandle;
-                            SetWindowPos(hWndSdkControl, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-                        }
-                    }
-                }
-            }
+            //if (g_hPnlCmp != NULL)//When the window size changes, the CMP container's size needs to be modified.
+            //{
+            //    RECT cmpRect;
+            //    GetClientRect(g_hPnlCmp, &cmpRect);
+            //    int cmpWidth = cmpRect.right - cmpRect.left;
+            //    int cmpHeight = cmpRect.bottom - cmpRect.top;
+            //    if (cmpHeight > 50)
+            //    {
+            //        //1.In the CMP interface, when the user selects "Custom", the CMP interface changes from the top banner to a rectangle in the middle of the program.
+            //        int x = (parentWidth - cmpWidth) / 2;
+            //        int y = (parentHeight - cmpHeight) / 2;
+            //        SetWindowPos(g_hPnlCmp, NULL, x, y, cmpWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+            //    }
+            //    else
+            //    {
+            //        //2.CMP original interface. The height is fixed at 50px, and the width remains full across the App.
+            //        if (cmpWidth != parentWidth)
+            //        {
+            //            //Modify the size of the CMP panel.
+            //            SetWindowPos(g_hPnlCmp, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+            //            if (g_cmpSdkControlHandle > 0)
+            //            {
+            //                //Modify the size of the CMP control within the SDK. This Handle is returned by the OpenCmp interface.
+            //                HWND hWndSdkControl = (HWND)(INT_PTR)g_cmpSdkControlHandle;
+            //                SetWindowPos(hWndSdkControl, NULL, 0, 0, parentWidth, cmpHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+            //            }
+            //        }
+            //    }
+            //}
 
             if (g_hPnlBanner != NULL) {
                 RECT adcRect;
@@ -848,13 +854,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 #pragma region 1.CMP
 /*
-为实现CMP功能，开发者需按以下步骤创建并管理控件：
-1.初始化创建：开发者需在应用启动时，创建CMP控件并将其置于视图顶层。控件初始尺寸应设为：宽度与App等宽，高度为50 px。
-2.完成与清理：当用户完成授权(即CMP关闭)后，开发者必须在 CmpClosedEvent 回调事件中，销毁CMP控件实例，以释放资源。
+CMP和初始化的完整流程
+1.在UI线程调用CMP
+2.在CMP回调事件中初始化SDK
+3.在SDK初始化完成事件中调用开屏广告，广告需要在UI线程中调用
 
-To implement CMP functionality, developers must create and manage the control following these steps:
-1. Initialization and Creation: Developers must create the CMP control upon application launch and place it at the top layer of the view. The control's initial dimensions should be set to: width equal to the App's width, height set to 50 px.
-2. Completion and Cleanup: After the user completes authorization (i.e., the CMP closes), developers must destroy the CMP control instance within the CmpClosedEvent callback to release resources.
+Complete Process for CMP and Initialization
+1. Call CMP on the UI thread
+2. Initialize the SDK in the CMP callback event
+3. Call the splash screen ad in the SDK initialization complete event; the ad must be called on the UI thread
 */
 void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey) {
     try
@@ -862,50 +870,47 @@ void setAppId(HINSTANCE hdll, const char* appId, const char* secretKey) {
         SetAppId func = (SetAppId)GetProcAddress(hdll, "SetAppId");
         func(appId, secretKey);
     }
-    catch (const std::exception&)
+    catch (...)
     {
     }
-}
-bool isOpenCmp(HINSTANCE hdll) {
-    bool result = false;
-    try
-    {
-        IsOpenCmp func = (IsOpenCmp)GetProcAddress(hdll, "IsOpenCmp");
-        result = func();
-    }
-    catch (const std::exception&)
-    {
-    }
-    AppendLog(L"Cmp IsOpen Flag  %hs", result ? "true" : "false");
-    return result;
 }
 void openCmp(HINSTANCE hdll, const char* jsonParam) {
     try
     {
         OpenCmp func = (OpenCmp)GetProcAddress(hdll, "OpenCmp");
-        g_cmpSdkControlHandle = func(jsonParam);//Return the handle of the CMP control in the SDK
+        func(jsonParam);//Return the handle of the CMP control in the SDK
     }
-    catch (const std::exception&)
+    catch (...)
+    {
+    }
+}
+void onCmpClosedEvent(char* s) {
+    try
+    { 
+        AppendLog(L"CMP result: %hs", s);
+        
+        initialize(hDLL); 
+    }
+    catch (...)
     {
     }
 }
 
-void onCmpClosedEvent(char* s) {
+bool getUserRegionCmpRequirement(HINSTANCE hdll)
+{
+    bool result = false;
     try
     {
-        g_cmpChangedWidth = 0;
-        g_cmpChangedHeight = 0;
-
-        //Remove CMP control
-        /* DestroyWindow(g_hPnlCmp);
-        g_hPnlCmp = NULL;*/
-        PostMessage(g_hwndMain, WM_DESTROY_CMP, 0, NULL);
-
-        AppendLog(L"CMP has been removed.");
+        GetUserRegionCmpRequirement func = (GetUserRegionCmpRequirement)GetProcAddress(hdll, "GetUserRegionCmpRequirement");
+        result =  func();//Get regional CMP requirement (Additional interface, for specific scenarios)
+        //This method relies on the store package and always returns false when debugging locally.
+        std::string resultString = result ? "true" : "false";
+        AppendLog(L"Get regional CMP requirement, result = %hs", resultString.c_str());
     }
-    catch (const std::exception&)
+    catch (...)
     {
     }
+    return result; 
 }
 #pragma endregion
 
@@ -916,7 +921,7 @@ void initialize(HINSTANCE hdll) {
         Initialize func = (Initialize)GetProcAddress(hdll, "Initialize");
         func();
     }
-    catch (const std::exception&)
+    catch (...)
     {
     }
 }
@@ -934,7 +939,7 @@ void onInitCompleteEvent(char* s) {
             //PostMessage(g_hwndMain, WM_SHOW_OPENSCREEN_ADVERT, 0, NULL);//Open screen advertisement 
         }
     }
-    catch (const std::exception&)
+    catch (...)
     {
     }
 }
@@ -985,7 +990,7 @@ void showAd(const char* json) {
             func(json);
         }
     }
-    catch (const std::exception& ex)
+    catch (...)
     {
     }
 }
@@ -1014,14 +1019,14 @@ void preloadAd(const char* json)
             func(json);
         }
     }
-    catch (const std::exception& ex)
+    catch (...)
     {
     }
 }
 
 void onAdPreloadEvent(char* s) {
     AppendLog(L"onAdPreloadEvent: %hs", s);
-    //eg.s = {"unitId":"a9bd7d57faef4f8cb016979284c86102","advertStatus":1,"completeStatus":0,"displayStatus":0,"comment":"abc123","rewardId":""}
+    //eg.s = {"unitId":"a9bd7d57faef4f8cb016979284c86102","advertStatus":1,"displayStatus":0}
     //...
 
     nlohmann::json json_obj = nlohmann::json::parse(s);
@@ -1030,19 +1035,18 @@ void onAdPreloadEvent(char* s) {
     if (adStatus == 1)
     {   // The button show the advert can be clicked.
         if (unitId == InterstitialUnitId)
-        {
+        {  
             EnableWindow(g_hBtnInterstitialAdShow, TRUE);
         }
         else  if (unitId == RewardedUnitId)
-        {
+        { 
             EnableWindow(g_hBtnRewardedAdShow, TRUE);
         }
     }
 }
 
-int showPreloadAd(const char* json, HWND adBntHwnd)
-{
-    int result = 0;
+int showPreloadAd(const char* json,HWND adBntHwnd)
+{ 
     try
     {
         if (!g_comInitialized) {
@@ -1053,18 +1057,36 @@ int showPreloadAd(const char* json, HWND adBntHwnd)
         }
         ShowPreloadAd func = (ShowPreloadAd)GetProcAddress(hDLL, "ShowPreloadAd");
         if (func) {
-            result = func(json);
-            if (result == 1) {
-                // success 
-                AppendLog(L"show mg ad: success");
-                EnableWindow(adBntHwnd, FALSE);
-            }
+             func(json); 
+
+             AppendLog(L"show mg ad: success");
+             EnableWindow(adBntHwnd, FALSE);
         }
     }
-    catch (const std::exception& ex)
+    catch (...)
     {
     }
-    return result;
+    return 0;
+}
+void onAdShowPreloadEvent(char* s) {
+    AppendLog(L"onAdShowPreloadEvent: %hs", s);
+    //eg.s = {"unitId":"a9bd7d57faef4f8cb016979284c86102","advertStatus":1,"displayStatus":1}
+    //...
+
+    nlohmann::json json_obj = nlohmann::json::parse(s);
+    std::string unitId = json_obj["unitId"];
+    std::int32_t adStatus = json_obj["advertStatus"];
+    if (adStatus == 1)
+    {   
+        if (unitId == InterstitialUnitId)
+        { 
+            //EnableWindow(g_hBtnInterstitialAdShow, FALSE);
+        }
+        else  if (unitId == RewardedUnitId)
+        {
+            //EnableWindow(g_hBtnRewardedAdShow, FALSE);
+        }
+    }
 }
 #pragma endregion
 
