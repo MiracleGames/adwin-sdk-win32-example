@@ -20,7 +20,7 @@ namespace CSharpApp
     {
         /*
          * 1.Downlodad the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CSharpSdk/SdkDownload
-         * 2.Reference the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CSharpSdk/AdIntegrationGuide
+         * 2.Reference the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CSharpSdk/DevelopmentEnvironmentConfig
          */
         public Form1()
         {

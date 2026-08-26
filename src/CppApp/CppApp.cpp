@@ -187,7 +187,7 @@ int g_cmpSdkControlHandle = 0;
 
 /*
 * 1.Downlodad the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CppSdk/SdkDownload
-* 2.Reference the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CppSdk/AdIntegrationGuide
+* 2.Reference the SDK  https://doc.mg-ads.com/en/docs/AdSdkService/CppSdk/DevelopmentEnvironmentConfig
 */
 
 //1.FullScreen Ad 2.Exit Ad 3.Banner 4.Interstitial 5.Couplet 6.Rewarded 7.Feed 8.Embedded
