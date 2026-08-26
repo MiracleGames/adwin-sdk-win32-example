@@ -385,7 +385,6 @@ void InitMgAdSdk(HWND hWnd) {
         if (auto func = (AdShowPreloadEvent)GetProcAddress(hDLL, "AdShowPreloadEvent")) //Callback function for show ad preload event
             func(onAdShowPreloadEvent);
         
-
         //1.Set parameters
         setAppId(hDLL, YourAppId, YourSecretKey);
 
